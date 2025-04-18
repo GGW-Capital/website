@@ -96,11 +96,11 @@ export default function Navbar() {
               +971 56 866 3666
             </a>
             <a
-              href="mailto:info@ggwcapital.com"
+              href="mailto:hello@gulfgatewaycsp.ae"
               className="flex items-center hover:text-[#D4AF37] transition-colors"
             >
               <Mail className="h-4 w-4 mr-2" />
-              info@ggwcapital.com
+              hello@gulfgatewaycsp.ae
             </a>
           </div>
           <div className="flex items-center">
@@ -124,14 +124,14 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="relative z-50">
             <div className="flex items-center">
-                <Image
-                  src="/images/ggw-capital-logo.svg"
-                  alt="GGW Capital"
-                  width={224}
-                  height={47.6}
-                  className="object-contain"
-                  priority
-                />
+              <Image
+                src="/images/ggw-capital-logo.svg"
+                alt="GGW Capital"
+                width={224}
+                height={47.6}
+                className="object-contain"
+                priority
+              />
             </div>
           </Link>
 
@@ -176,7 +176,9 @@ export default function Navbar() {
 
           {/* CTA Button */}
           <div className="hidden md:block">
-            <GradientButton><Link href='/contact'>Book a Consultation</Link></GradientButton>
+            <GradientButton>
+              <Link href="/contact">Book a Consultation</Link>
+            </GradientButton>
           </div>
 
           {/* Mobile Menu Button */}
@@ -244,7 +246,7 @@ export default function Navbar() {
 
           <div className="mt-8 space-y-4">
             <GradientButton className="w-full  py-6 font-semibold">
-              <Link href='/contact'>Book a Consultation</Link>
+              <Link href="/contact">Book a Consultation</Link>
             </GradientButton>
 
             <div className="flex flex-col space-y-4 pt-6">
@@ -256,11 +258,11 @@ export default function Navbar() {
                 +971 56 866 3666
               </a>
               <a
-                href="mailto:info@ggwcapital.com"
+                href="mailto:hello@gulfgatewaycsp.ae"
                 className="flex items-center text-white/70 hover:text-[#D4AF37] transition-colors font-medium"
               >
                 <Mail className="h-5 w-5 mr-3" />
-                info@ggwcapital.com
+                hello@gulfgatewaycsp.ae
               </a>
             </div>
           </div>

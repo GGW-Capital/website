@@ -2,7 +2,16 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { MapPin, Phone, Mail, ChevronRight, Instagram, Facebook, Linkedin, Twitter } from "lucide-react";
+import {
+  MapPin,
+  Phone,
+  Mail,
+  ChevronRight,
+  Instagram,
+  Facebook,
+  Linkedin,
+  Twitter,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { usePathname } from "next/navigation";
@@ -113,10 +122,10 @@ export default function Footer() {
               <li className="flex items-center">
                 <Mail className="h-5 w-5 mr-3 text-[#D4AF37]" />
                 <a
-                  href="mailto:info@ggwcapital.com"
+                  href="mailto:hello@gulfgatewaycsp.ae"
                   className="text-white/70 hover:text-[#D4AF37] transition-colors"
                 >
-                  info@ggwcapital.com
+                  hello@gulfgatewaycsp.ae
                 </a>
               </li>
             </ul>

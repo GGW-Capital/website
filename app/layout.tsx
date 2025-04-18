@@ -83,7 +83,7 @@ export const metadata: Metadata = {
     images: ["/og-image.jpg"],
   },
   alternates: {
-    canonical: "/",
+    canonical: "https://gulfgatewaycsp.com/",
   },
   verification: {
     google: "google-site-verification-code", // Replace with actual verification code when available
