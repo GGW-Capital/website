@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="600" fill="#0D0D0D"/>
+  
+  <!-- Water bodies -->
+  <path d="M0 300 Q 100 350, 200 300 T 400 300 T 600 300 T 800 300 L 800 600 L 0 600 Z" fill="#1A3E5F" fill-opacity="0.3"/>
+  
+  <!-- Land -->
+  <path d="M100 100 L 200 120 L 300 110 L 400 150 L 500 130 L 600 140 L 700 120 L 750 180 L 780 250 L 800 300 L 800 0 L 0 0 L 0 200 L 50 180 Z" fill="#2B2B2B"/>
+  
+  <!-- Roads - Major arteries -->
+  <path d="M100 200 L 700 200" stroke="#D4AF37" stroke-opacity="0.4" stroke-width="2"/>
+  <path d="M100 300 L 700 300" stroke="#D4AF37" stroke-opacity="0.4" stroke-width="2"/>
+  <path d="M200 100 L 200 500" stroke="#D4AF37" stroke-opacity="0.4" stroke-width="2"/>
+  <path d="M400 100 L 400 500" stroke="#D4AF37" stroke-opacity="0.4" stroke-width="2"/>
+  <path d="M600 100 L 600 500" stroke="#D4AF37" stroke-opacity="0.4" stroke-width="2"/>
+  
+  <!-- Roads - Minor roads -->
+  <path d="M150 150 L 650 150" stroke="#666666" stroke-opacity="0.3" stroke-width="1"/>
+  <path d="M150 250 L 650 250" stroke="#666666" stroke-opacity="0.3" stroke-width="1"/>
+  <path d="M150 350 L 650 350" stroke="#666666" stroke-opacity="0.3" stroke-width="1"/>
+  <path d="M150 400 L 650 400" stroke="#666666" stroke-opacity="0.3" stroke-width="1"/>
+  <path d="M150 450 L 650 450" stroke="#666666" stroke-opacity="0.3" stroke-width="1"/>
+  
+  <path d="M300 120 L 300 480" stroke="#666666" stroke-opacity="0.3" stroke-width="1"/>
+  <path d="M500 120 L 500 480" stroke="#666666" stroke-opacity="0.3" stroke-width="1"/>
+  
+  <!-- Landmark dots -->
+  <circle cx="250" cy="200" r="4" fill="#D4AF37" fill-opacity="0.8"/>
+  <circle cx="400" cy="250" r="4" fill="#D4AF37" fill-opacity="0.8"/>
+  <circle cx="550" cy="300" r="4" fill="#D4AF37" fill-opacity="0.8"/>
+  <circle cx="300" cy="350" r="4" fill="#D4AF37" fill-opacity="0.8"/>
+  <circle cx="450" cy="400" r="4" fill="#D4AF37" fill-opacity="0.8"/>
+  
+  <!-- Abstract neighborhood blocks -->
+  <rect x="220" y="170" width="60" height="60" rx="2" fill="#444444" fill-opacity="0.3"/>
+  <rect x="370" y="220" width="60" height="60" rx="2" fill="#444444" fill-opacity="0.3"/>
+  <rect x="520" y="270" width="60" height="60" rx="2" fill="#444444" fill-opacity="0.3"/>
+  <rect x="270" y="320" width="60" height="60" rx="2" fill="#444444" fill-opacity="0.3"/>
+  <rect x="420" y="370" width="60" height="60" rx="2" fill="#444444" fill-opacity="0.3"/>
+  
+  <!-- Palm Jumeirah Abstract Representation -->
+  <circle cx="150" cy="350" r="30" stroke="#D4AF37" stroke-opacity="0.4" stroke-width="1" fill="none"/>
+  <path d="M120 350 L 180 350" stroke="#D4AF37" stroke-opacity="0.4" stroke-width="1"/>
+  <path d="M150 320 L 150 380" stroke="#D4AF37" stroke-opacity="0.4" stroke-width="1"/>
+  <path d="M130 330 L 170 370" stroke="#D4AF37" stroke-opacity="0.4" stroke-width="1"/>
+  <path d="M130 370 L 170 330" stroke="#D4AF37" stroke-opacity="0.4" stroke-width="1"/>
+  
+  <!-- Burj Khalifa area -->
+  <circle cx="400" cy="200" r="8" fill="#D4AF37" fill-opacity="0.2"/>
+  <circle cx="400" cy="200" r="2" fill="#D4AF37"/>
+  
+  <!-- Dubai Marina area -->
+  <path d="M600 350 C 620 330, 640 350, 620 370 C 600 390, 580 370, 600 350 Z" fill="#1A3E5F" fill-opacity="0.4"/>
+  <circle cx="610" cy="360" r="2" fill="#D4AF37"/>
+</svg>
