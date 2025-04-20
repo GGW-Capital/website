@@ -20,12 +20,14 @@ interface FAQSectionProps {
   showMoreLink?: boolean;
   className?: string;
   maxFaqs?: number;
+  withTitle?: boolean;
 }
 
 export default function FAQSection({
   showMoreLink = true,
   className,
   maxFaqs = 6,
+  withTitle = false,
 }: FAQSectionProps) {
   const [faqs, setFaqs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -52,11 +54,12 @@ export default function FAQSection({
   return (
     <div className={cn("w-full bg-black", className)}>
       <div className="container mx-auto max-w-4xl px-4 py-16">
+        {withTitle && (
           <h2 className="text-4xl md:text-5xl heading-2 font-semibold text-white text-center mb-12">
             Frequently Asked{" "}
             <GradientTitle element="span">Questions</GradientTitle>
           </h2>
-        
+        )}
 
         {loading ? (
           <div className="space-y-4">

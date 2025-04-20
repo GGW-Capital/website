@@ -49,7 +49,7 @@ export default function Home() {
         <ExclusiveServices />
         <WhyChooseUs />
         <TestimonialsSection />
-        <FAQSection showMoreLink={true} maxFaqs={6} />
+        <FAQSection withTitle showMoreLink={true} maxFaqs={6} />
       </div>
     </main>
   )
