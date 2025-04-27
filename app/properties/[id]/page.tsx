@@ -1,7 +1,5 @@
 import { Metadata } from "next";
 import { getPropertyBySlug, urlFor } from "@/lib/sanity";
-import Navbar from "@/components/navbar";
-import Footer from "@/components/footer";
 import Image from "next/image";
 import Link from "next/link";
 import { MapPin, Compass, Building } from "lucide-react";
@@ -146,7 +144,7 @@ export default async function PropertyDetailsPage({
 
           <div className="flex flex-col justify-end">
             <p className="text-2xl md:text-3xl font-bold text-[#D4AF37] mb-2">
-              {formattedPrice}
+              {formattedPrice} {property.status === 'rent' && 'per month'}
             </p>
             <div className="flex flex-wrap gap-2 mb-4">
               <span className="bg-[#0a0a0a] border border-[#D4AF37]/20 px-3 py-1 rounded-full text-sm">

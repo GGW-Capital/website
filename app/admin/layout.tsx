@@ -25,8 +25,7 @@ export default function AdminLayout({
       <body className="font-sans bg-white">
         {children}
       </body>
+      <style dangerouslySetInnerHTML={{__html: `* iframe, * .widget-visible iframe{display: none !important;}`}}/>
     </html>
   )
 }
-
-// This is a special layout for the admin section that doesn't inherit from root layout
