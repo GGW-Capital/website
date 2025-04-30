@@ -27,6 +27,8 @@ export const metadata: Metadata = {
   },
 };
 
+export let revalidate = 60 * 5;
+
 export default async function ContactPage() {
   // Fetch team members from Sanity CMS server-side
   let teamMembers = [];
@@ -69,7 +71,7 @@ export default async function ContactPage() {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <a
-                href="tel:+97141234567"
+                href="tel:+971568663666"
                 className="flex-1 bg-[#0a0a0a] border border-[#D4AF37]/20 rounded-xl p-6 flex items-center gap-4 hover:shadow-[0_0_15px_rgba(212,175,55,0.3)] transition-all"
               >
                 <div className="bg-[#D4AF37]/10 p-3 rounded-full">
@@ -77,7 +79,7 @@ export default async function ContactPage() {
                 </div>
                 <div>
                   <h3 className="text-lg font-medium text-white">Call Us</h3>
-                  <p className="text-white/70">+971 4 123 4567</p>
+                  <p className="text-white/70">+971 56 866 3666</p>
                 </div>
               </a>
 
@@ -90,7 +92,7 @@ export default async function ContactPage() {
                 </div>
                 <div>
                   <h3 className="text-lg font-medium text-white">WhatsApp</h3>
-                  <p className="text-white/70">+971 50 123 4567</p>
+                  <p className="text-white/70">+971 56 866 3666</p>
                 </div>
               </a>
             </div>

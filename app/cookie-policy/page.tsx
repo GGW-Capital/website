@@ -1,10 +1,12 @@
+import GradientTitle from "@/components/ui/gradient-title"
+
 export default function CookiePolicyPage() {
   return (
-    <main className="min-h-screen bg-black text-white pt-20 pb-20">
+    <main className="min-h-screen bg-black text-white pt-40 pb-20">
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="mb-12 text-center">
-          <h1 className="text-4xl heading-1 md:text-5xl font-bold mb-6 text-white">
-            Cookie <span className="text-[#D4AF37]">Policy</span>
+          <h1 className="text-4xl heading-2 md:text-5xl font-bold mb-6 text-white">
+            Cookie <GradientTitle element="span">Policy</GradientTitle>
           </h1>
           <div className="w-24 h-1 bg-[#D4AF37]/60 mx-auto mb-6"></div>
           <p className="text-lg text-white/80">Last Updated: March 25, 2025</p>

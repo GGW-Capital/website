@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     images: ['/og-image.jpg'],
   },
 }
-
+export let revalidate = 60 * 5;
 export default function Home() {
   return (
     <main className="min-h-screen bg-black text-white">
