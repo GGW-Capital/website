@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { Search, ChevronDown } from "lucide-react";
 import { GradientButton } from "@/components/ui/gradient-button";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -13,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
 import FilterToggle from "@/components/filter-toggle";
 import { getDevelopers, getLifestyles } from "@/lib/sanity";
 
@@ -51,7 +51,6 @@ const defaultLifestyleOptions = [
 export default function HeroSearch() {
   const router = useRouter();
   const [priceRange, setPriceRange] = useState([200, 500]);
-  const [enablePriceFilter, setEnablePriceFilter] = useState(true);
   const [bedrooms, setBedrooms] = useState("any");
   const [location, setLocation] = useState("");
   const [showSearchPanel, setShowSearchPanel] = useState(false);
@@ -69,12 +68,6 @@ export default function HeroSearch() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [activeLifestyle, setActiveLifestyle] = useState("all");
   const [activeDeveloper, setActiveDeveloper] = useState("all");
-  const [rentalPeriod, setRentalPeriod] = useState("any");
-
-  // Format price for display
-  const formatPrice = (price: number) => {
-    return `${price}k AED`;
-  };
 
   // Fetch developers and lifestyles from Sanity
   useEffect(() => {
@@ -114,13 +107,8 @@ export default function HeroSearch() {
   const handleSearch = () => {
     // Build query parameters
     const params = new URLSearchParams();
-    
-    if (enablePriceFilter) {
-      params.append("minPrice", (priceRange[0] * 1000).toString());
-      params.append("maxPrice", (priceRange[1] * 1000).toString());
-    }
-    
-    params.append("enablePriceFilter", enablePriceFilter.toString());
+    params.append("minPrice", (priceRange[0] * 1000).toString());
+    params.append("maxPrice", (priceRange[1] * 1000).toString());
 
     if (bedrooms !== "any") {
       params.append("bedrooms", bedrooms);
@@ -128,11 +116,6 @@ export default function HeroSearch() {
 
     if (location) {
       params.append("location", location);
-    }
-    
-    // Add rental period parameter if transaction type is rent
-    if (activeTransactionType === "rent" && rentalPeriod !== "any") {
-      params.append("rentalPeriod", rentalPeriod);
     }
 
     // Different parameters needed for different pages
@@ -286,61 +269,22 @@ export default function HeroSearch() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div className="space-y-3">
-              <div className="flex items-center">
-                <label className="text-sm font-semibold text-white/90">
-                  Price Range (kAED)
-                </label>
-                <div className="ml-auto">
-                  <Checkbox 
-                    id="enablePriceFilterHero" 
-                    className="border-[#D4AF37]/50 data-[state=checked]:bg-[#D4AF37] data-[state=checked]:text-black" 
-                    checked={enablePriceFilter}
-                    onCheckedChange={() => setEnablePriceFilter(!enablePriceFilter)}
-                  />
-                  <label htmlFor="enablePriceFilterHero" className="ml-2 text-xs text-white/70">
-                    Enable
-                  </label>
-                </div>
+              <label className="text-sm font-semibold text-white/90">
+                Price Range (kAED)
+              </label>
+              <div className="pt-6 px-2">
+                <Slider
+                  defaultValue={[200, 500]}
+                  max={activeListingType === "project" ? 200000 : 50000}
+                  step={100}
+                  min={activeListingType === "project" ? 5000 : 200}
+                  value={[priceRange[0], priceRange[1]]}
+                  onValueChange={(value) => setPriceRange(value as number[])}
+                />
               </div>
-              <div className="flex flex-col space-y-3">
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1">
-                    <label className="text-xs text-white/70">Min</label>
-                    <Input
-                      type="number"
-                      className="bg-transparent border-ggw-gold/40 text-white font-medium"
-                      value={priceRange[0]}
-                      onChange={(e) => {
-                        const val = parseInt(e.target.value) || 0;
-                        setPriceRange([val, priceRange[1]]);
-                      }}
-                      placeholder="Min price"
-                      min={0}
-                      step={10}
-                      disabled={!enablePriceFilter}
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-xs text-white/70">Max</label>
-                    <Input
-                      type="number"
-                      className="bg-transparent border-ggw-gold/40 text-white font-medium"
-                      value={priceRange[1]}
-                      onChange={(e) => {
-                        const val = parseInt(e.target.value) || 0;
-                        setPriceRange([priceRange[0], val]);
-                      }}
-                      placeholder="Max price"
-                      min={0}
-                      step={10}
-                      disabled={!enablePriceFilter}
-                    />
-                  </div>
-                </div>
-                <div className="flex justify-between text-xs text-white/50 font-medium">
-                  <span>{formatPrice(priceRange[0])}</span>
-                  <span>{formatPrice(priceRange[1])}</span>
-                </div>
+              <div className="flex justify-between text-sm text-white/70 font-medium">
+                <span>{priceRange[0]}k AED</span>
+                <span>{priceRange[1]}k AED</span>
               </div>
             </div>
 
@@ -372,28 +316,6 @@ export default function HeroSearch() {
                     <SelectItem value="4" className="font-medium">
                       4+ Bedrooms
                     </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-            
-            {/* Rental Period - only for rent */}
-            {activeListingType === "property" && 
-              activeMarketType === "secondary-market" && 
-              activeTransactionType === "rent" && (
-              <div className="space-y-3">
-                <label className="text-sm font-semibold text-white/90">
-                  Rental Period
-                </label>
-                <Select onValueChange={setRentalPeriod} defaultValue="any">
-                  <SelectTrigger className="bg-transparent border-ggw-gold/40 text-white h-12 font-medium">
-                    <SelectValue placeholder="Select period" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-black border-ggw-gold/40 text-white">
-                    <SelectItem value="any" className="font-medium">Any Period</SelectItem>
-                    <SelectItem value="weekly" className="font-medium">Weekly</SelectItem>
-                    <SelectItem value="monthly" className="font-medium">Monthly</SelectItem>
-                    <SelectItem value="yearly" className="font-medium">Yearly</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

@@ -110,10 +110,6 @@ export async function getFeaturedProperties() {
         type,
         location,
         price,
-        priceWeekly,
-        priceMonthly,
-        priceYearly,
-        defaultRentalPeriod,
         bedrooms,
         bathrooms,
         area,
@@ -136,7 +132,7 @@ export async function getFeaturedProperties() {
         "projectName": project->name,
         "projectSlug": project->slug,
         furnishingStatus,
-        "amenities": amenities[]->name,
+        amenities,
         views
       }
     `);
@@ -158,10 +154,6 @@ export async function getPropertiesByMarketType(marketType: string) {
         type,
         location,
         price,
-        priceWeekly,
-        priceMonthly,
-        priceYearly,
-        defaultRentalPeriod,
         bedrooms,
         bathrooms,
         area,
@@ -213,10 +205,6 @@ export async function getAllProperties(filters?: Record<string, any>) {
       if (filters.marketType) {
         filterConditions.push(`marketType == "${filters.marketType}"`);
       }
-      // Filter by rental period if specified and for rental properties
-      if (filters.rentalPeriod && filters.rentalPeriod !== "any" && filters.marketType === "rent") {
-        filterConditions.push(`defaultRentalPeriod == "${filters.rentalPeriod}"`);
-      }
 
       if (filters.category && filters.category !== "all") {
         filterConditions.push(`category == "${filters.category}"`);
@@ -237,46 +225,14 @@ export async function getAllProperties(filters?: Record<string, any>) {
       }
 
       if (filters.minPrice) {
-        if (filters.marketType === 'rent') {
-          // For rental properties, check all price fields based on rental period
-          filterConditions.push(`(
-            (defaultRentalPeriod == "weekly" && priceWeekly >= ${filters.minPrice}) || 
-            (defaultRentalPeriod == "monthly" && priceMonthly >= ${filters.minPrice}) || 
-            (defaultRentalPeriod == "yearly" && priceYearly >= ${filters.minPrice}) || 
-            (
-              !defined(defaultRentalPeriod) && 
-              (
-                (defined(priceMonthly) && priceMonthly >= ${filters.minPrice}) || 
-                price >= ${filters.minPrice}
-              )
-            )
-          )`);
-        } else {
-          // For sale properties, use regular price
-          filterConditions.push(`price >= ${filters.minPrice}`);
-        }
+        filterConditions.push(`price >= ${filters.minPrice}`);
       }
 
       if (filters.maxPrice) {
-        if (filters.marketType === 'rent') {
-          // For rental properties, check all price fields based on rental period
-          filterConditions.push(`(
-            (defaultRentalPeriod == "weekly" && priceWeekly <= ${filters.maxPrice}) || 
-            (defaultRentalPeriod == "monthly" && priceMonthly <= ${filters.maxPrice}) || 
-            (defaultRentalPeriod == "yearly" && priceYearly <= ${filters.maxPrice}) || 
-            (
-              !defined(defaultRentalPeriod) && 
-              (
-                (defined(priceMonthly) && priceMonthly <= ${filters.maxPrice}) || 
-                price <= ${filters.maxPrice}
-              )
-            )
-          )`);
-        } else {
-          // For sale properties, use regular price
-          filterConditions.push(`price <= ${filters.maxPrice}`);
-        }
-      }      if (filters.bedrooms && filters.bedrooms !== "any") {
+        filterConditions.push(`price <= ${filters.maxPrice}`);
+      }
+
+      if (filters.bedrooms && filters.bedrooms !== "any") {
         if (filters.bedrooms === "studio") {
           filterConditions.push(`bedrooms == 0`);
         } else if (filters.bedrooms === "4") {
@@ -327,10 +283,6 @@ export async function getAllProperties(filters?: Record<string, any>) {
       type,
       location,
       price,
-        priceWeekly,
-        priceMonthly,
-        priceYearly,
-        defaultRentalPeriod,
       bedrooms,
       bathrooms,
       area,
@@ -396,46 +348,13 @@ export async function getProjects(filters?: Record<string, any>) {
       }
 
       if (filters.minPrice) {
-        if (filters.marketType === 'rent') {
-          // For rental properties, check all price fields based on rental period
-          filterConditions.push(`(
-            (defaultRentalPeriod == "weekly" && priceWeekly >= ${filters.minPrice}) || 
-            (defaultRentalPeriod == "monthly" && priceMonthly >= ${filters.minPrice}) || 
-            (defaultRentalPeriod == "yearly" && priceYearly >= ${filters.minPrice}) || 
-            (
-              !defined(defaultRentalPeriod) && 
-              (
-                (defined(priceMonthly) && priceMonthly >= ${filters.minPrice}) || 
-                price >= ${filters.minPrice}
-              )
-            )
-          )`);
-        } else {
-          // For sale properties, use regular price
-          filterConditions.push(`price >= ${filters.minPrice}`);
-        }
+        filterConditions.push(`price >= ${filters.minPrice}`);
       }
 
       if (filters.maxPrice) {
-        if (filters.marketType === 'rent') {
-          // For rental properties, check all price fields based on rental period
-          filterConditions.push(`(
-            (defaultRentalPeriod == "weekly" && priceWeekly <= ${filters.maxPrice}) || 
-            (defaultRentalPeriod == "monthly" && priceMonthly <= ${filters.maxPrice}) || 
-            (defaultRentalPeriod == "yearly" && priceYearly <= ${filters.maxPrice}) || 
-            (
-              !defined(defaultRentalPeriod) && 
-              (
-                (defined(priceMonthly) && priceMonthly <= ${filters.maxPrice}) || 
-                price <= ${filters.maxPrice}
-              )
-            )
-          )`);
-        } else {
-          // For sale properties, use regular price
-          filterConditions.push(`price <= ${filters.maxPrice}`);
-        }
+        filterConditions.push(`price <= ${filters.maxPrice}`);
       }
+
       if (filters.bedrooms && filters.bedrooms !== "any") {
         if (filters.bedrooms === "studio") {
           filterConditions.push(`bedrooms == 0`);
@@ -450,10 +369,6 @@ export async function getProjects(filters?: Record<string, any>) {
         filterConditions.push(`developer->_id == "${filters.developer}"`);
       }
       if (filters.neighborhood && filters.neighborhood !== "all") {
-      // Filter by rental period if specified and for rental properties
-      if (filters.rentalPeriod && filters.rentalPeriod !== "any" && filters.marketType === "rent") {
-        filterConditions.push(`defaultRentalPeriod == "${filters.rentalPeriod}"`);
-      }
         filterConditions.push(`neighborhood->_id == "${filters.neighborhood}"`);
       }
       if (filters.marketType && filters.marketType !== "all") {
@@ -472,10 +387,6 @@ export async function getProjects(filters?: Record<string, any>) {
       name,
       location,
       price,
-        priceWeekly,
-        priceMonthly,
-        priceYearly,
-        defaultRentalPeriod,
       description,
       completionDate,
       coordinates,
@@ -503,10 +414,6 @@ export async function getProjects(filters?: Record<string, any>) {
         type,
         location,
         price,
-        priceWeekly,
-        priceMonthly,
-        priceYearly,
-        defaultRentalPeriod,
         bedrooms,
         bathrooms,
         area,
@@ -534,10 +441,6 @@ export async function getFeaturedProjects() {
         name,
         location,
         price,
-        priceWeekly,
-        priceMonthly,
-        priceYearly,
-        defaultRentalPeriod,
         description,
         completionDate,
         coordinates,
@@ -565,10 +468,6 @@ export async function getFeaturedProjects() {
           type,
           location,
           price,
-        priceWeekly,
-        priceMonthly,
-        priceYearly,
-        defaultRentalPeriod,
           bedrooms,
           bathrooms,
           area,
@@ -664,10 +563,6 @@ export async function getPropertyBySlug(slug: string) {
         type,
         location,
         price,
-        priceWeekly,
-        priceMonthly,
-        priceYearly,
-        defaultRentalPeriod,
         bedrooms,
         bathrooms,
         area,
@@ -690,7 +585,7 @@ export async function getPropertyBySlug(slug: string) {
         "projectName": project->name,
         "projectSlug": project->slug,
         furnishingStatus,
-        "amenities": amenities[]->name,
+        amenities,
         "neighborhoodId": coalesce(neighborhood->_id, project->neighborhood->_id),
         "neighborhoodName": coalesce(neighborhood->name, project->neighborhood->name),
         "neighborhoodSlug": coalesce(neighborhood->slug, project->neighborhood->slug),
@@ -714,10 +609,6 @@ export async function getProjectBySlug(slug: string) {
         name,
         location,
         price,
-        priceWeekly,
-        priceMonthly,
-        priceYearly,
-        defaultRentalPeriod,
         description,
         completionDate,
         coordinates,
@@ -744,10 +635,6 @@ export async function getProjectBySlug(slug: string) {
           type,
           location,
           price,
-        priceWeekly,
-        priceMonthly,
-        priceYearly,
-        defaultRentalPeriod,
           bedrooms,
           bathrooms,
           area,
@@ -860,10 +747,6 @@ export async function getNeighborhoodBySlug(slug: string) {
           type,
           location,
           price,
-        priceWeekly,
-        priceMonthly,
-        priceYearly,
-        defaultRentalPeriod,
           bedrooms,
           bathrooms,
           area,
@@ -878,10 +761,6 @@ export async function getNeighborhoodBySlug(slug: string) {
           name,
           location,
           price,
-        priceWeekly,
-        priceMonthly,
-        priceYearly,
-        defaultRentalPeriod,
           mainImage,
           completionDate,
           category,

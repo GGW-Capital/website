@@ -8,7 +8,6 @@ import { GradientButton } from "@/components/ui/gradient-button";
 import StaticMap from "@/components/client-google-map";
 import Image from "next/image";
 import { urlFor } from "@/lib/sanity";
-import { getAmenityIcon } from "@/utils/amenities";
 
 interface ClientPropertyTabsProps {
   property: any;
@@ -22,7 +21,7 @@ export default function ClientPropertyTabs({ property }: ClientPropertyTabsProps
   
   // Extract neighborhood name
   const neighborhoodName = property.neighborhood?.name || property.neighborhoodName || "Not specified";
-  
+  console.log(property.amenities)
   return (
     <div className="mb-12">
       <Tabs defaultValue="features" className="w-full">
@@ -86,11 +85,9 @@ export default function ClientPropertyTabs({ property }: ClientPropertyTabsProps
             
             {property.amenities && property.amenities.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {property.amenities.map((amenity: string, index: number) => (
+                {property.amenities.map((amenity:string, index: number) => (
                   <div key={index} className="flex items-center gap-2">
-                    <div className="text-[#D4AF37]">
-                      {getAmenityIcon(amenity)}
-                    </div>
+                    <span className="text-[#D4AF37]">•</span>
                     <span>{amenity}</span>
                   </div>
                 ))}
@@ -108,18 +105,20 @@ export default function ClientPropertyTabs({ property }: ClientPropertyTabsProps
             {property.images && property.images.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {property.images.map((image: any, index: number) => (
-                  <div key={index} className="relative h-60 rounded-md overflow-hidden">
-                    <Image
+                  <div key={index} className="relative h-48 rounded-lg overflow-hidden">
+                    <Image 
                       src={urlFor(image).url()}
-                      alt={`${property.title} image ${index + 1}`}
+                      alt={`Property image ${index + 1}`}
                       fill
-                      className="object-cover hover:scale-105 transition-transform duration-300"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      style={{ objectFit: 'cover' }}
+                      className="transition-transform hover:scale-105 duration-300"
                     />
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-white/70">No additional images available for this property.</p>
+              <p className="text-white/70">No gallery images available for this property.</p>
             )}
           </div>
         </TabsContent>
@@ -128,43 +127,40 @@ export default function ClientPropertyTabs({ property }: ClientPropertyTabsProps
           <div className="bg-[#0a0a0a] border border-[#D4AF37]/20 rounded-xl p-6">
             <h3 className="text-xl font-bold mb-4">Location</h3>
             
-            <div className="mb-6">
-              <p className="text-white/80">
-                {property.location}
-                {property.neighborhood && (
-                  <>, <Link href={`/neighborhoods/${property.neighborhood?.slug?.current || '#'}`} className="text-[#D4AF37] hover:underline">
-                    {neighborhoodName}
-                  </Link>
-                </>
-                )}
-              </p>
+            <div className="mb-4">
+              <p className="text-white/70 mb-1">Address:</p>
+              <p className="font-medium">{property.location || "Address not specified"}</p>
             </div>
             
-            {/* Google Map */}
-            <div className="h-[400px] rounded-xl overflow-hidden">
-            {property.googleMapsUrl ? (
-                  <StaticMap 
-                    googleMapsUrl={property.googleMapsUrl}
-                    locationName={property.location}
-                  />
-                ) : property.coordinates ? (
-                  <StaticMap 
-                    googleMapsUrl={`https://www.google.com/maps/search/?api=1&query=${property.coordinates.lat},${property.coordinates.lng}`}
-                    locationName={property.location}
-                  />
-                ) : (
-                  <StaticMap locationName={property.location} />
-                )}
+            <div className="mb-4">
+              <p className="text-white/70 mb-1">Neighborhood:</p>
+              <p className="font-medium">{neighborhoodName}</p>
             </div>
+            
+            {property.googleMapsUrl && (
+              <div className="relative h-96 rounded-lg overflow-hidden mt-6">
+                <StaticMap 
+                  googleMapsUrl={property.googleMapsUrl} 
+                  locationName={property.location || "Property Location"}
+                />
+              </div>
+            )}
           </div>
         </TabsContent>
         
         {(property.projectName || property.projectId) && (
           <TabsContent value="project" className="pt-6">
             <div className="bg-[#0a0a0a] border border-[#D4AF37]/20 rounded-xl p-6">
-              <h3 className="text-xl font-bold mb-4">{property.projectName || "Project Information"}</h3>
+              <h3 className="text-xl font-bold mb-4">Project Details</h3>
               
-              {property.developer && (
+              {property.projectName && (
+                <div className="mb-4">
+                  <p className="text-white/70 mb-1">Project:</p>
+                  <p className="font-medium">{property.projectName}</p>
+                </div>
+              )}
+              
+              {developerName && (
                 <div className="mb-4">
                   <p className="text-white/70 mb-1">Developer:</p>
                   <p className="font-medium">{developerName}</p>

@@ -3,6 +3,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { MapPin, BedDouble, Bath, Maximize2, Building } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { formatCurrency, formatRentalPrice } from "@/lib/utils"
 
 interface PropertyCardProps {
   property: any
@@ -22,13 +23,17 @@ export default function PropertyCard({ property }: PropertyCardProps) {
       <div className="bg-[#0a0a0a] border border-[#D4AF37]/20 rounded-xl overflow-hidden shadow-[0_0_20px_rgba(212,175,55,0.15)] hover:shadow-[0_0_30px_rgba(212,175,55,0.3)] transition-all duration-500 h-full">
         <div className="relative h-[300px]">
           <Image
-            src={property.images[0] || "/placeholder.svg"}
+            src={property.images?.[0] || "/placeholder.svg"}
             alt={property.title}
             fill
             className="object-cover group-hover:scale-110 transition-transform duration-700"
           />
           <div className="absolute top-4 left-4">
-            <span className="bg-[#D4AF37] text-black px-3 py-1 rounded-md text-sm font-medium">{property.status}</span>
+            <span className="bg-[#D4AF37] text-black px-3 py-1 rounded-md text-sm font-medium">
+              {property.marketType === "buy" ? "For Sale" : 
+               property.marketType === "rent" ? "For Rent" : 
+               property.marketType === "off-plan" ? "Off Plan" : ""}
+            </span>
           </div>
           <div className="absolute top-4 right-4">
             <span className="bg-black/70 text-white px-3 py-1 rounded-md text-sm font-medium border border-[#D4AF37]/30">
@@ -107,7 +112,12 @@ export default function PropertyCard({ property }: PropertyCardProps) {
           </div>
 
           <div className="flex justify-between items-center">
-            <span className="font-semibold text-[#D4AF37]">AED {property.price}</span>
+            <span className="font-semibold text-[#D4AF37]">
+              {property.marketType === 'rent' 
+                ? formatRentalPrice(property)
+                : formatCurrency(property.price)
+              }
+            </span>
             <Button variant="outline" size="sm" className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10">
               View Details
             </Button>

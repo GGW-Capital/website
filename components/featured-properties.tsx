@@ -132,8 +132,9 @@ export default function FeaturedProperties() {
             />
             <div className="absolute top-4 left-4">
               <span className="bg-ggw-gold text-black px-3 py-1 rounded-[2px] text-sm font-medium font-sans">
-                {property.status || (property.marketType === "buy" ? "For Sale" : 
-                                    property.marketType === "rent" ? "For Rent" : "Off-Plan")}
+                {property.marketType === "buy" ? "For Sale" : 
+                 property.marketType === "rent" ? "For Rent" : 
+                 property.marketType === "off-plan" ? "Off Plan" : ""}
               </span>
             </div>
             <div className="absolute top-4 right-4">
@@ -158,13 +159,15 @@ export default function FeaturedProperties() {
               <div className="flex items-center">
                 <BedDouble className="h-4 w-4 mr-1 text-ggw-gold" />
                 <span>
-                  {property.bedrooms} {property.bedrooms === 1 ? "Bed" : "Beds"}
+                  {property.bedrooms === 0 || property.bedrooms === "0" || property.type === "Studio"
+                    ? "Studio"
+                    : `${property.bedrooms} ${property.bedrooms === 1 || property.bedrooms === "1" ? "Bed" : "Beds"}`}
                 </span>
               </div>
               <div className="flex items-center">
                 <Bath className="h-4 w-4 mr-1 text-ggw-gold" />
                 <span>
-                  {property.bathrooms} {property.bathrooms === 1 ? "Bath" : "Baths"}
+                  {property.bathrooms} {property.bathrooms === 1 || property.bathrooms === "1" ? "Bath" : "Baths"}
                 </span>
               </div>
               <div className="flex items-center">
@@ -174,12 +177,12 @@ export default function FeaturedProperties() {
             </div>
 
             <div className="flex justify-between items-center">
-              <span className="font-semibold text-ggw-gold font-sans">{property.price}</span>
-              <Link href={`/properties/${propertySlug}`}>
-                <Button variant="outline" size="sm" className="rounded-[2px]">
-                  View Details
-                </Button>
-              </Link>
+              <span className="font-semibold text-ggw-gold font-sans">
+                {property.price ? `AED ${property.price.toLocaleString('en-US')}` : "Price on Request"}
+              </span>
+              <Button variant="outline" size="sm" className="rounded-[2px] bg-black text-ggw-gold border-ggw-gold hover:bg-ggw-gold/10">
+                View Details
+              </Button>
             </div>
           </div>
         </div>
@@ -197,40 +200,47 @@ export default function FeaturedProperties() {
           transition={{ duration: 0.8 }}
           className="max-w-4xl mx-auto text-center mb-16"
         >
-          <h2 className="heading-2 mb-6 text-white">
-            Featured <span className="text-ggw-gold">Properties</span>
+          <h2 className="text-3xl md:text-5xl font-bold mb-6 text-white">
+            Featured <span className="text-[#D4AF37]">Properties</span>
           </h2>
-          <div className="w-24 h-1 bg-ggw-gold/60 mx-auto mb-6"></div>
-          <p className="text-lg text-white/80 font-sans">
+          <div className="w-24 h-1 bg-[#D4AF37]/60 mx-auto mb-6"></div>
+          <p className="text-lg text-white/80">
             Discover our handpicked selection of the most exclusive properties in the UAE.
           </p>
         </motion.div>
 
-        <div className="mb-10 max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-white/90">Market Type:</label>
-              <FilterToggle options={marketTypes} activeId={activeMarketType} onChange={setActiveMarketType} />
-            </div>
+        {/* Filter controls */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 max-w-7xl mx-auto">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-white/90">Market Type:</label>
+            <FilterToggle options={marketTypes} activeId={activeMarketType} onChange={setActiveMarketType} />
+          </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-white/90">Property Type:</label>
-              <FilterToggle options={propertyCategories} activeId={activeCategory} onChange={setActiveCategory} />
-            </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-white/90">Property Type:</label>
+            <FilterToggle
+              options={propertyCategories}
+              activeId={activeCategory}
+              onChange={setActiveCategory}
+            />
+          </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-white/90">Lifestyle:</label>
-              <FilterToggle options={lifestyleOptions} activeId={activeLifestyle} onChange={setActiveLifestyle} />
-            </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-white/90">Lifestyle:</label>
+            <FilterToggle
+              options={lifestyleOptions}
+              activeId={activeLifestyle}
+              onChange={setActiveLifestyle}
+            />
           </div>
         </div>
 
         {filteredProperties.length === 0 ? (
-          <div className="text-center py-12 bg-[#0a0a0a] border border-ggw-gold/20 rounded-[2px]">
-            <p className="text-white/80 mb-4 font-sans">No properties found matching your filters.</p>
+          <div className="text-center py-12 bg-[#0a0a0a] border border-[#D4AF37]/20 rounded-xl max-w-6xl mx-auto">
+            <p className="text-white/80 mb-4">No properties found matching your filters.</p>
             <Button
               variant="outline"
-              className="rounded-[2px] font-sans"
+              className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10"
               onClick={() => {
                 setActiveMarketType("all")
                 setActiveCategory("all")
@@ -241,23 +251,24 @@ export default function FeaturedProperties() {
             </Button>
           </div>
         ) : (
-          <Carousel
-            showArrows={true}
-            showDots={true}
-            autoPlay={true}
-            interval={5000}
-            itemsPerView={3}
-            className="mb-16"
-          >
-            {filteredProperties.map((property) => (
-              <PropertyCardNew key={property._id} property={property} />
-            ))}
-          </Carousel>
+          <div className="max-w-7xl mx-auto">
+            <Carousel
+              showArrows={true}
+              showDots={true}
+              autoPlay={true}
+              interval={5000}
+              itemsPerView={3}
+            >
+              {filteredProperties.map((property, index) => (
+                <PropertyCard key={property._id || index} property={property} />
+              ))}
+            </Carousel>
+          </div>
         )}
 
-        <div className="flex justify-center">
+        <div className="flex justify-center mt-12">
           <Link href="/buy">
-            <Button className="bg-black border border-ggw-gold text-ggw-gold hover:bg-ggw-gold/10 flex items-center gap-2 px-8 py-6 text-lg rounded-[2px] transition-all duration-300 transform hover:scale-105 font-sans">
+            <Button className="bg-[#D4AF37] text-black hover:bg-[#C4A030] flex items-center gap-2 px-8 py-6 text-lg rounded-md transition-all duration-300 transform hover:scale-105">
               View All Properties <ArrowRight className="h-5 w-5" />
             </Button>
           </Link>
@@ -266,4 +277,3 @@ export default function FeaturedProperties() {
     </section>
   )
 }
-

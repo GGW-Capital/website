@@ -12,9 +12,17 @@ export default {
     {
       name: 'value',
       title: 'Value',
-      type: 'string',
-      description: 'A unique identifier for this amenity (lowercase, no spaces)',
-      validation: (Rule: any) => Rule.required(),
+      type: 'slug',
+      description: 'Auto-generated from name (lowercase, no spaces)',
+      options: {
+        source: 'name',
+        maxLength: 200,
+        slugify: (input: string) => input
+          .toLowerCase()
+          .replace(/\s+/g, '_')
+          .replace(/[^\w-]+/g, '')
+          .slice(0, 200)
+      },
     },
     {
       name: 'category',
@@ -39,13 +47,6 @@ export default {
           { title: 'Nearby', value: 'nearby' },
         ],
       },
-      validation: (Rule: any) => Rule.required(),
-    },
-    {
-      name: 'icon',
-      title: 'Icon Name',
-      type: 'string',
-      description: 'Name of the Lucide icon to use (e.g., "pool", "wifi", "lock")',
       validation: (Rule: any) => Rule.required(),
     },
     {

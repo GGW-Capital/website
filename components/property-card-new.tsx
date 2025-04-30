@@ -4,6 +4,7 @@ import Link from "next/link"
 import { MapPin, BedDouble, Bath, Maximize2, Building } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { urlFor } from "@/lib/sanity"
+import { formatCurrency, formatRentalPrice } from "@/lib/utils"
 
 interface PropertyCardProps {
   property: any
@@ -35,8 +36,9 @@ export default function PropertyCardNew({ property }: PropertyCardProps) {
           />
           <div className="absolute top-4 left-4">
             <span className="bg-ggw-gold text-black px-3 py-1 rounded-[2px] text-sm font-medium font-sans">
-              {property.status || (property.marketType === "buy" ? "For Sale" : 
-                                  property.marketType === "rent" ? "For Rent" : "Off-Plan")}
+              {property.marketType === "buy" ? "For Sale" : 
+               property.marketType === "rent" ? "For Rent" : 
+               property.marketType === "off-plan" ? "Off Plan" : ""}
             </span>
           </div>
           <div className="absolute top-4 right-4">
@@ -107,7 +109,12 @@ export default function PropertyCardNew({ property }: PropertyCardProps) {
         </div>
 
         <div className="flex justify-between items-center">
-          <span className="font-semibold text-ggw-gold font-sans">{property.price}</span>
+          <span className="font-semibold text-ggw-gold font-sans">
+            {property.marketType === 'rent' 
+              ? formatRentalPrice(property)
+              : formatCurrency(property.price)
+            }
+          </span>
           <Link href={`/properties/${propertySlug}`}>
             <Button variant="outline" size="sm" className="rounded-[2px] bg-black text-ggw-gold border-ggw-gold hover:bg-ggw-gold/10">
               View Details

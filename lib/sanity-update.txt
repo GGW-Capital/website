@@ -1,0 +1,41 @@
+      if (filters.minPrice) {
+        if (filters.marketType === 'rent') {
+          // For rental properties, check all price fields based on rental period
+          filterConditions.push(`(
+            (defaultRentalPeriod == "weekly" && priceWeekly >= ${filters.minPrice}) || 
+            (defaultRentalPeriod == "monthly" && priceMonthly >= ${filters.minPrice}) || 
+            (defaultRentalPeriod == "yearly" && priceYearly >= ${filters.minPrice}) || 
+            (
+              !defined(defaultRentalPeriod) && 
+              (
+                (defined(priceMonthly) && priceMonthly >= ${filters.minPrice}) || 
+                price >= ${filters.minPrice}
+              )
+            )
+          )`);
+        } else {
+          // For sale properties, use regular price
+          filterConditions.push(`price >= ${filters.minPrice}`);
+        }
+      }
+
+      if (filters.maxPrice) {
+        if (filters.marketType === 'rent') {
+          // For rental properties, check all price fields based on rental period
+          filterConditions.push(`(
+            (defaultRentalPeriod == "weekly" && priceWeekly <= ${filters.maxPrice}) || 
+            (defaultRentalPeriod == "monthly" && priceMonthly <= ${filters.maxPrice}) || 
+            (defaultRentalPeriod == "yearly" && priceYearly <= ${filters.maxPrice}) || 
+            (
+              !defined(defaultRentalPeriod) && 
+              (
+                (defined(priceMonthly) && priceMonthly <= ${filters.maxPrice}) || 
+                price <= ${filters.maxPrice}
+              )
+            )
+          )`);
+        } else {
+          // For sale properties, use regular price
+          filterConditions.push(`price <= ${filters.maxPrice}`);
+        }
+      }

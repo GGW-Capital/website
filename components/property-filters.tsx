@@ -22,7 +22,6 @@ import {
 import { Button } from "@/components/ui/button"
 import { GradientButton } from "@/components/ui/gradient-button"
 import { Input } from "@/components/ui/input"
-import { Slider } from "@/components/ui/slider"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import FilterToggle from "@/components/filter-toggle"
@@ -99,6 +98,10 @@ export default function PropertyFilters({
   
   // Add state for lifestyle options
   const [lifestyleOptions, setLifestyleOptions] = useState(defaultLifestyleOptions)
+  
+  // State for enabling price and area filters
+  const [enablePriceFilter, setEnablePriceFilter] = useState(searchParams.get('enablePriceFilter') !== 'false')
+  const [enableAreaFilter, setEnableAreaFilter] = useState(searchParams.get('enableAreaFilter') !== 'false')
 
   // Filter states with defaults from search params
   const [activeCategory, setActiveCategory] = useState(searchParams.get('category') || 'all')
@@ -137,6 +140,9 @@ export default function PropertyFilters({
   )
   const [completionYear, setCompletionYear] = useState(searchParams.get('completionYear') || 'any')
   const [furnishingStatus, setFurnishingStatus] = useState(searchParams.get('furnishingStatus') || 'any')
+  
+  // Rental Period - only used for rent page
+  const [rentalPeriod, setRentalPeriod] = useState(searchParams.get('rentalPeriod') || 'any')
 
   // Format price for display
   const formatPrice = (price: number) => {
@@ -224,8 +230,8 @@ export default function PropertyFilters({
         lifestyle: activeLifestyle === 'all' ? undefined : activeLifestyle,
         developer: activeDeveloper === 'all' ? undefined : activeDeveloper,
         locations: selectedLocations.length > 0 ? selectedLocations : undefined,
-        priceRange: priceRange,
-        areaRange: areaRange,
+        priceRange: enablePriceFilter ? priceRange : null,
+        areaRange: enableAreaFilter ? areaRange : null,
         bedrooms: bedrooms === 'any' ? undefined : bedrooms,
         bathrooms: bathrooms === 'any' ? undefined : bathrooms,
         amenities: selectedAmenities.length > 0 ? selectedAmenities : undefined,
@@ -233,7 +239,10 @@ export default function PropertyFilters({
         completionYear: completionYear === 'any' ? undefined : completionYear,
         furnishingStatus: furnishingStatus === 'any' ? undefined : furnishingStatus,
         neighborhoods: selectedNeighborhoods.length > 0 ? selectedNeighborhoods : undefined,
+        rentalPeriod: rentalPeriod === 'any' ? undefined : rentalPeriod,
         keyword: searchKeyword || undefined,
+        enablePriceFilter,
+        enableAreaFilter,
         ...newFilters
       }
       
@@ -266,8 +275,10 @@ export default function PropertyFilters({
   const applyFilters = () => {
     updateFilters({
       locations: selectedLocations,
-      priceRange: priceRange.length === 2 ? [priceRange[0], priceRange[1]] : undefined,
-      areaRange: areaRange.length === 2 ? [areaRange[0], areaRange[1]] : undefined,
+      minPrice: enablePriceFilter ? priceRange[0] : null,
+      maxPrice: enablePriceFilter ? priceRange[1] : null,
+      minArea: enableAreaFilter ? areaRange[0] : null,
+      maxArea: enableAreaFilter ? areaRange[1] : null,
       bedrooms: bedrooms,
       bathrooms: bathrooms,
       amenities: selectedAmenities,
@@ -275,10 +286,9 @@ export default function PropertyFilters({
       completionYear: completionYear,
       furnishingStatus: furnishingStatus,
       neighborhoods: selectedNeighborhoods,
-      minPrice: priceRange[0],
-      maxPrice: priceRange[1],
-      minArea: areaRange[0],
-      maxArea: areaRange[1]
+      rentalPeriod: rentalPeriod,
+      enablePriceFilter,
+      enableAreaFilter
     })
     
     setShowMobileFilters(false)
@@ -299,7 +309,10 @@ export default function PropertyFilters({
     setSelectedViews([])
     setCompletionYear('any')
     setFurnishingStatus('any')
+    setRentalPeriod('any')
     setSearchKeyword('')
+    setEnablePriceFilter(true)
+    setEnableAreaFilter(true)
     
     // Clear all search parameters and redirect to the base URL
     router.push(pathname, { scroll: false })
@@ -444,24 +457,22 @@ export default function PropertyFilters({
             </div>
           )}
 
-          {/* Advanced Filters Toggle */}
+          {/* Advanced Filters button - Desktop only */}
           <Button
             variant="outline"
+            className="hidden md:flex text-white border-[#D4AF37]/50 hover:border-[#D4AF37] hover:bg-[#D4AF37]/10"
             onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-            className="hidden md:flex items-center border-[#D4AF37]/30 hover:bg-[#D4AF37]/10 text-white"
           >
             <Filter className="h-4 w-4 mr-2" />
             Filters
-            <ChevronDown
-              className={`h-4 w-4 ml-2 transition-transform ${showAdvancedFilters ? "rotate-180" : ""}`}
-            />
+            <ChevronDown className={`h-4 w-4 ml-2 transition-transform ${showAdvancedFilters ? 'rotate-180' : ''}`} />
           </Button>
 
-          {/* Mobile Filters Toggle */}
+          {/* Mobile Filters button */}
           <Button
             variant="outline"
+            className="md:hidden text-white border-[#D4AF37]/50 hover:border-[#D4AF37] hover:bg-[#D4AF37]/10"
             onClick={() => setShowMobileFilters(true)}
-            className="md:hidden flex flex-1 items-center border-[#D4AF37]/30 hover:bg-[#D4AF37]/10 text-white"
           >
             <Filter className="h-4 w-4 mr-2" />
             Filters
@@ -469,506 +480,755 @@ export default function PropertyFilters({
         </div>
       </div>
 
-      {/* Desktop Advanced Filters */}
+      {/* Advanced Filters Dropdown */}
       <AnimatePresence>
         {showAdvancedFilters && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden"
+            transition={{ duration: 0.3 }}
+            className="bg-[#121212] border border-[#D4AF37]/30 rounded-lg p-6 mb-6 overflow-hidden"
           >
-            <div className="bg-black/20 border border-[#D4AF37]/20 rounded-lg p-6 mb-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {/* Price Range */}
-                <div>
-                  <h3 className="text-white font-semibold mb-3">Price Range</h3>
-                  <div className="mb-2">
-                    <Slider
-                      value={priceRange}
-                      min={pageType === 'rent' ? 20000 : 100000}
-                      max={pageType === 'rent' ? 1000000 : 50000000}
-                      step={pageType === 'rent' ? 5000 : 50000}
-                      onValueChange={(values) => setPriceRange(values as [number, number])}
-                      className="my-4"
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Price Range Filter */}
+              <div>
+                <div className="flex items-center mb-2">
+                  <h3 className="text-white font-semibold">Price Range</h3>
+                  <div className="ml-auto">
+                    <Checkbox 
+                      id="enablePriceFilter" 
+                      className="border-[#D4AF37]/50 data-[state=checked]:bg-[#D4AF37] data-[state=checked]:text-black" 
+                      checked={enablePriceFilter}
+                      onCheckedChange={() => setEnablePriceFilter(!enablePriceFilter)}
                     />
-                  </div>
-                  <div className="flex justify-between text-sm text-white/70">
-                    <span>{formatPrice(priceRange[0])}</span>
-                    <span>{formatPrice(priceRange[1])}</span>
-                  </div>
-                </div>
-
-                {/* Area Range */}
-                <div>
-                  <h3 className="text-white font-semibold mb-3">Area (sq.ft)</h3>
-                  <div className="mb-2">
-                    <Slider
-                      value={areaRange}
-                      min={100}
-                      max={20000}
-                      step={100}
-                      onValueChange={(values) => setAreaRange(values as [number, number])}
-                      className="my-4"
-                    />
-                  </div>
-                  <div className="flex justify-between text-sm text-white/70">
-                    <span>{formatArea(areaRange[0])}</span>
-                    <span>{formatArea(areaRange[1])}</span>
+                    <label htmlFor="enablePriceFilter" className="ml-2 text-xs text-white/70">
+                      Enable price filter
+                    </label>
                   </div>
                 </div>
-
-                {/* Bedrooms */}
-                <div>
-                  <h3 className="text-white font-semibold mb-3">Bedrooms</h3>
-                  <Select value={bedrooms} onValueChange={setBedrooms}>
-                    <SelectTrigger className="w-full bg-black/50 border-[#D4AF37]/30 focus:border-[#D4AF37] text-white">
-                      <SelectValue placeholder="Any" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-[#0F0F0F] border-[#D4AF37]/30">
-                      <SelectItem value="any" className="text-white hover:bg-[#D4AF37]/10">Any</SelectItem>
-                      <SelectItem value="studio" className="text-white hover:bg-[#D4AF37]/10">Studio</SelectItem>
-                      <SelectItem value="1" className="text-white hover:bg-[#D4AF37]/10">1 Bedroom</SelectItem>
-                      <SelectItem value="2" className="text-white hover:bg-[#D4AF37]/10">2 Bedrooms</SelectItem>
-                      <SelectItem value="3" className="text-white hover:bg-[#D4AF37]/10">3 Bedrooms</SelectItem>
-                      <SelectItem value="4+" className="text-white hover:bg-[#D4AF37]/10">4+ Bedrooms</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Bathrooms */}
-                <div>
-                  <h3 className="text-white font-semibold mb-3">Bathrooms</h3>
-                  <Select value={bathrooms} onValueChange={setBathrooms}>
-                    <SelectTrigger className="w-full bg-black/50 border-[#D4AF37]/30 focus:border-[#D4AF37] text-white">
-                      <SelectValue placeholder="Any" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-[#0F0F0F] border-[#D4AF37]/30">
-                      <SelectItem value="any" className="text-white hover:bg-[#D4AF37]/10">Any</SelectItem>
-                      <SelectItem value="1" className="text-white hover:bg-[#D4AF37]/10">1 Bathroom</SelectItem>
-                      <SelectItem value="2" className="text-white hover:bg-[#D4AF37]/10">2 Bathrooms</SelectItem>
-                      <SelectItem value="3" className="text-white hover:bg-[#D4AF37]/10">3 Bathrooms</SelectItem>
-                      <SelectItem value="4+" className="text-white hover:bg-[#D4AF37]/10">4+ Bathrooms</SelectItem>
-                    </SelectContent>
-                  </Select>
+                <div className="flex flex-col space-y-3">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="text-xs text-white/70">Min Price</label>
+                      <Input
+                        type="number"
+                        className="bg-black border-[#D4AF37]/30 text-white focus:border-[#D4AF37] focus:ring-[#D4AF37]/10"
+                        value={priceRange[0]}
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value) || 0;
+                          setPriceRange([val, priceRange[1]]);
+                        }}
+                        placeholder="Min price"
+                        min={pageType === 'rent' ? 10000 : 200000}
+                        step={pageType === 'rent' ? 1000 : 10000}
+                        disabled={!enablePriceFilter}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs text-white/70">Max Price</label>
+                      <Input
+                        type="number"
+                        className="bg-black border-[#D4AF37]/30 text-white focus:border-[#D4AF37] focus:ring-[#D4AF37]/10"
+                        value={priceRange[1]}
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value) || 0;
+                          setPriceRange([priceRange[0], val]);
+                        }}
+                        placeholder="Max price"
+                        min={pageType === 'rent' ? 10000 : 200000}
+                        step={pageType === 'rent' ? 1000 : 10000}
+                        disabled={!enablePriceFilter}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-between text-xs text-white/50 font-medium">
+                    <span>Min: {formatPrice(priceRange[0])}</span>
+                    <span>Max: {formatPrice(priceRange[1])}</span>
+                  </div>
                 </div>
               </div>
 
-              {/* More Filters */}
-              <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Locations */}
-                {availableLocations.length > 0 && (
-                  <div>
-                    <h3 className="text-white font-semibold mb-3">Locations</h3>
-                    <div className="max-h-40 overflow-y-auto pr-2 space-y-2">
-                      {availableLocations.map((location) => (
-                        <div key={location} className="flex items-center">
-                          <Checkbox
-                            id={`location-${location}`}
-                            checked={selectedLocations.includes(location)}
-                            onCheckedChange={() => toggleLocation(location)}
-                            className="border-[#D4AF37]/50 data-[state=checked]:bg-[#D4AF37] data-[state=checked]:text-black"
-                          />
-                          <label
-                            htmlFor={`location-${location}`}
-                            className="ml-2 text-sm text-white/90 cursor-pointer"
-                          >
-                            {location}
-                          </label>
-                        </div>
-                      ))}
+              {/* Area Range */}
+              <div>
+                <div className="flex items-center mb-2">
+                  <h3 className="text-white font-semibold">Area (sq.ft)</h3>
+                  <div className="ml-auto">
+                    <Checkbox 
+                      id="enableAreaFilter" 
+                      className="border-[#D4AF37]/50 data-[state=checked]:bg-[#D4AF37] data-[state=checked]:text-black" 
+                      checked={enableAreaFilter}
+                      onCheckedChange={() => setEnableAreaFilter(!enableAreaFilter)}
+                    />
+                    <label htmlFor="enableAreaFilter" className="ml-2 text-xs text-white/70">
+                      Enable area filter
+                    </label>
+                  </div>
+                </div>
+                <div className="flex flex-col space-y-3">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="text-xs text-white/70">Min Area</label>
+                      <Input
+                        type="number"
+                        className="bg-black border-[#D4AF37]/30 text-white focus:border-[#D4AF37] focus:ring-[#D4AF37]/10"
+                        value={areaRange[0]}
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value) || 0;
+                          setAreaRange([val, areaRange[1]]);
+                        }}
+                        placeholder="Min area"
+                        min={100}
+                        step={100}
+                        disabled={!enableAreaFilter}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs text-white/70">Max Area</label>
+                      <Input
+                        type="number"
+                        className="bg-black border-[#D4AF37]/30 text-white focus:border-[#D4AF37] focus:ring-[#D4AF37]/10"
+                        value={areaRange[1]}
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value) || 0;
+                          setAreaRange([areaRange[0], val]);
+                        }}
+                        placeholder="Max area"
+                        min={100}
+                        step={100}
+                        disabled={!enableAreaFilter}
+                      />
                     </div>
                   </div>
-                )}
-
-                {/* Amenities */}
-                {availableAmenities.length > 0 && (
-                  <div>
-                    <h3 className="text-white font-semibold mb-3">Amenities</h3>
-                    <div className="max-h-40 overflow-y-auto pr-2 space-y-2">
-                      {availableAmenities.map((amenity) => (
-                        <div key={amenity} className="flex items-center">
-                          <Checkbox
-                            id={`amenity-${amenity}`}
-                            checked={selectedAmenities.includes(amenity)}
-                            onCheckedChange={() => toggleAmenity(amenity)}
-                            className="border-[#D4AF37]/50 data-[state=checked]:bg-[#D4AF37] data-[state=checked]:text-black"
-                          />
-                          <label
-                            htmlFor={`amenity-${amenity}`}
-                            className="ml-2 text-sm text-white/90 cursor-pointer flex items-center"
-                          >
-                            {amenityIcons[amenity.toLowerCase()] && (
-                              <span className="mr-1 text-[#D4AF37]">{amenityIcons[amenity.toLowerCase()]}</span>
-                            )}
-                            {amenity}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
+                  <div className="flex justify-between text-xs text-white/50 font-medium">
+                    <span>Min: {formatArea(areaRange[0])}</span>
+                    <span>Max: {formatArea(areaRange[1])}</span>
                   </div>
-                )}
-
-                {/* Views */}
-                {availableViews.length > 0 && (
-                  <div>
-                    <h3 className="text-white font-semibold mb-3">Views</h3>
-                    <div className="max-h-40 overflow-y-auto pr-2 space-y-2">
-                      {availableViews.map((view) => (
-                        <div key={view} className="flex items-center">
-                          <Checkbox
-                            id={`view-${view}`}
-                            checked={selectedViews.includes(view)}
-                            onCheckedChange={() => toggleView(view)}
-                            className="border-[#D4AF37]/50 data-[state=checked]:bg-[#D4AF37] data-[state=checked]:text-black"
-                          />
-                          <label
-                            htmlFor={`view-${view}`}
-                            className="ml-2 text-sm text-white/90 cursor-pointer"
-                          >
-                            {view}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                </div>
               </div>
 
-              {/* Additional Filters */}
-              <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Neighborhoods */}
-                {neighborhoodOptions.length > 0 && (
-                  <div>
-                    <h3 className="text-white font-semibold mb-3">Neighborhoods</h3>
-                    <div className="max-h-40 overflow-y-auto pr-2 space-y-2">
-                      {neighborhoodOptions.map((neighborhood) => (
-                        <div key={neighborhood.id} className="flex items-center">
-                          <Checkbox
-                            id={`neighborhood-${neighborhood.id}`}
-                            checked={selectedNeighborhoods.includes(neighborhood.id)}
-                            onCheckedChange={() => toggleNeighborhood(neighborhood.id)}
-                            className="border-[#D4AF37]/50 data-[state=checked]:bg-[#D4AF37] data-[state=checked]:text-black"
-                          />
-                          <label
-                            htmlFor={`neighborhood-${neighborhood.id}`}
-                            className="ml-2 text-sm text-white/90 cursor-pointer"
-                          >
-                            {neighborhood.name}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+              {/* Bedrooms */}
+              <div>
+                <h3 className="text-white font-semibold mb-3">Bedrooms</h3>
+                <Select value={bedrooms} onValueChange={setBedrooms}>
+                  <SelectTrigger className="bg-black/50 border-[#D4AF37]/30 focus:border-[#D4AF37] text-white">
+                    <SelectValue placeholder="Any" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#0F0F0F] border-[#D4AF37]/30">
+                    <SelectItem value="any" className="text-white hover:bg-[#D4AF37]/10">Any</SelectItem>
+                    <SelectItem value="studio" className="text-white hover:bg-[#D4AF37]/10">Studio</SelectItem>
+                    <SelectItem value="1" className="text-white hover:bg-[#D4AF37]/10">1 Bedroom</SelectItem>
+                    <SelectItem value="2" className="text-white hover:bg-[#D4AF37]/10">2 Bedrooms</SelectItem>
+                    <SelectItem value="3" className="text-white hover:bg-[#D4AF37]/10">3 Bedrooms</SelectItem>
+                    <SelectItem value="4" className="text-white hover:bg-[#D4AF37]/10">4+ Bedrooms</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-                {/* Furnishing Status */}
+              {/* Bathrooms */}
+              <div>
+                <h3 className="text-white font-semibold mb-3">Bathrooms</h3>
+                <Select value={bathrooms} onValueChange={setBathrooms}>
+                  <SelectTrigger className="bg-black/50 border-[#D4AF37]/30 focus:border-[#D4AF37] text-white">
+                    <SelectValue placeholder="Any" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#0F0F0F] border-[#D4AF37]/30">
+                    <SelectItem value="any" className="text-white hover:bg-[#D4AF37]/10">Any</SelectItem>
+                    <SelectItem value="1" className="text-white hover:bg-[#D4AF37]/10">1 Bathroom</SelectItem>
+                    <SelectItem value="2" className="text-white hover:bg-[#D4AF37]/10">2 Bathrooms</SelectItem>
+                    <SelectItem value="3" className="text-white hover:bg-[#D4AF37]/10">3 Bathrooms</SelectItem>
+                    <SelectItem value="4" className="text-white hover:bg-[#D4AF37]/10">4+ Bathrooms</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              {/* Rental Period - Only for rent page */}
+              {pageType === 'rent' && (
+                <div>
+                  <h3 className="text-white font-semibold mb-3">Rental Period</h3>
+                  <Select value={rentalPeriod} onValueChange={setRentalPeriod}>
+                    <SelectTrigger className="bg-black/50 border-[#D4AF37]/30 focus:border-[#D4AF37] text-white">
+                      <SelectValue placeholder="Any Period" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-[#0F0F0F] border-[#D4AF37]/30">
+                      <SelectItem value="any" className="text-white hover:bg-[#D4AF37]/10">Any Period</SelectItem>
+                      <SelectItem value="weekly" className="text-white hover:bg-[#D4AF37]/10">Weekly</SelectItem>
+                      <SelectItem value="monthly" className="text-white hover:bg-[#D4AF37]/10">Monthly</SelectItem>
+                      <SelectItem value="yearly" className="text-white hover:bg-[#D4AF37]/10">Yearly</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {/* Furnishing Status */}
+              {pageType === 'rent' && (
                 <div>
                   <h3 className="text-white font-semibold mb-3">Furnishing</h3>
                   <Select value={furnishingStatus} onValueChange={setFurnishingStatus}>
-                    <SelectTrigger className="w-full bg-black/50 border-[#D4AF37]/30 focus:border-[#D4AF37] text-white">
+                    <SelectTrigger className="bg-black/50 border-[#D4AF37]/30 focus:border-[#D4AF37] text-white">
                       <SelectValue placeholder="Any" />
                     </SelectTrigger>
                     <SelectContent className="bg-[#0F0F0F] border-[#D4AF37]/30">
                       <SelectItem value="any" className="text-white hover:bg-[#D4AF37]/10">Any</SelectItem>
-                      <SelectItem value="Furnished" className="text-white hover:bg-[#D4AF37]/10">Furnished</SelectItem>
-                      <SelectItem value="Unfurnished" className="text-white hover:bg-[#D4AF37]/10">Unfurnished</SelectItem>
-                      <SelectItem value="Partially Furnished" className="text-white hover:bg-[#D4AF37]/10">
-                        Partially Furnished
-                      </SelectItem>
+                      <SelectItem value="furnished" className="text-white hover:bg-[#D4AF37]/10">Furnished</SelectItem>
+                      <SelectItem value="unfurnished" className="text-white hover:bg-[#D4AF37]/10">Unfurnished</SelectItem>
+                      <SelectItem value="partially-furnished" className="text-white hover:bg-[#D4AF37]/10">Partially Furnished</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
+              )}
 
-                {/* Completion Year (for off-plan) */}
-                {pageType === 'off-plan' && availableCompletionYears.length > 0 && (
-                  <div>
-                    <h3 className="text-white font-semibold mb-3">Completion Year</h3>
-                    <Select value={completionYear} onValueChange={setCompletionYear}>
-                      <SelectTrigger className="w-full bg-black/50 border-[#D4AF37]/30 focus:border-[#D4AF37] text-white">
-                        <SelectValue placeholder="Any" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-[#0F0F0F] border-[#D4AF37]/30">
-                        <SelectItem value="any" className="text-white hover:bg-[#D4AF37]/10">Any</SelectItem>
-                        {availableCompletionYears.map((year) => (
-                          <SelectItem
-                            key={year}
-                            value={year}
-                            className="text-white hover:bg-[#D4AF37]/10"
-                          >
-                            {year}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
-              </div>
+              {/* Completion Year */}
+              {pageType === 'off-plan' && availableCompletionYears.length > 0 && (
+                <div>
+                  <h3 className="text-white font-semibold mb-3">Completion Year</h3>
+                  <Select value={completionYear} onValueChange={setCompletionYear}>
+                    <SelectTrigger className="bg-black/50 border-[#D4AF37]/30 focus:border-[#D4AF37] text-white">
+                      <SelectValue placeholder="Any" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-[#0F0F0F] border-[#D4AF37]/30">
+                      <SelectItem value="any" className="text-white hover:bg-[#D4AF37]/10">Any</SelectItem>
+                      {availableCompletionYears.map((year) => (
+                        <SelectItem key={year} value={year} className="text-white hover:bg-[#D4AF37]/10">
+                          {year}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+            </div>
 
-              {/* Filter Actions */}
-              <div className="mt-8 flex justify-end space-x-3">
-                <Button
-                  variant="outline"
-                  className="border-[#D4AF37]/30 text-white hover:bg-[#D4AF37]/10"
-                  onClick={resetFilters}
-                >
-                  Reset Filters
-                </Button>
-                <GradientButton onClick={applyFilters}>Apply Filters</GradientButton>
+            {/* Location Filter */}
+            {availableLocations.length > 0 && (
+              <div className="mt-6">
+                <h3 className="text-white font-semibold mb-3">Locations</h3>
+                <div className="flex flex-wrap gap-2">
+                  {availableLocations.map((location) => (
+                    <Button
+                      key={location}
+                      type="button"
+                      variant="outline"
+                      className={`text-sm py-1 h-auto ${
+                        selectedLocations.includes(location)
+                          ? 'bg-[#D4AF37]/20 text-[#D4AF37] border-[#D4AF37]'
+                          : 'text-white/70 border-[#D4AF37]/20 hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/10'
+                      }`}
+                      onClick={() => toggleLocation(location)}
+                    >
+                      {location}
+                    </Button>
+                  ))}
+                </div>
               </div>
+            )}
+
+            {/* Neighborhood Filter */}
+            {neighborhoodOptions.length > 0 && (
+              <div className="mt-6">
+                <h3 className="text-white font-semibold mb-3">Neighborhoods</h3>
+                <div className="flex flex-wrap gap-2">
+                  {neighborhoodOptions.map((neighborhood) => (
+                    <Button
+                      key={neighborhood.id}
+                      type="button"
+                      variant="outline"
+                      className={`text-sm py-1 h-auto ${
+                        selectedNeighborhoods.includes(neighborhood.id)
+                          ? 'bg-[#D4AF37]/20 text-[#D4AF37] border-[#D4AF37]'
+                          : 'text-white/70 border-[#D4AF37]/20 hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/10'
+                      }`}
+                      onClick={() => toggleNeighborhood(neighborhood.id)}
+                    >
+                      {neighborhood.name}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Amenities Filter */}
+            {availableAmenities.length > 0 && (
+              <div className="mt-6">
+                <h3 className="text-white font-semibold mb-3">Amenities</h3>
+                <div className="flex flex-wrap gap-2">
+                  {availableAmenities.map((amenity) => (
+                    <Button
+                      key={amenity}
+                      type="button"
+                      variant="outline"
+                      className={`text-sm py-1 h-auto ${
+                        selectedAmenities.includes(amenity)
+                          ? 'bg-[#D4AF37]/20 text-[#D4AF37] border-[#D4AF37]'
+                          : 'text-white/70 border-[#D4AF37]/20 hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/10'
+                      }`}
+                      onClick={() => toggleAmenity(amenity)}
+                    >
+                      <span className="mr-1">
+                        {amenityIcons[amenity.toLowerCase()] || null}
+                      </span>
+                      {amenity}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Views Filter */}
+            {availableViews.length > 0 && (
+              <div className="mt-6">
+                <h3 className="text-white font-semibold mb-3">Views</h3>
+                <div className="flex flex-wrap gap-2">
+                  {availableViews.map((view) => (
+                    <Button
+                      key={view}
+                      type="button"
+                      variant="outline"
+                      className={`text-sm py-1 h-auto ${
+                        selectedViews.includes(view)
+                          ? 'bg-[#D4AF37]/20 text-[#D4AF37] border-[#D4AF37]'
+                          : 'text-white/70 border-[#D4AF37]/20 hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/10'
+                      }`}
+                      onClick={() => toggleView(view)}
+                    >
+                      {view}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Filter Action Buttons */}
+            <div className="mt-6 flex justify-end space-x-4">
+              <Button
+                variant="outline"
+                className="text-white/70 border-[#D4AF37]/20 hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/10"
+                onClick={resetFilters}
+              >
+                Reset Filters
+              </Button>
+              <GradientButton onClick={applyFilters}>
+                Apply Filters
+              </GradientButton>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Mobile Filters (Modal) */}
-      <AnimatePresence>
-        {showMobileFilters && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/80 flex"
-          >
-            <motion.div
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="ml-auto w-full max-w-md h-full bg-black overflow-y-auto"
+      {/* Mobile Filters Sidebar */}
+      <div
+        className={`fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-opacity ${
+          showMobileFilters ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={() => setShowMobileFilters(false)}
+      >
+        <div
+          className={`absolute top-0 right-0 bottom-0 w-full max-w-md bg-[#121212] transition-transform duration-300 p-6 overflow-y-auto ${
+            showMobileFilters ? 'translate-x-0' : 'translate-x-full'
+          }`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-bold text-white">Filters</h2>
+            <Button
+              variant="ghost"
+              className="text-white/70 hover:text-white hover:bg-transparent p-0 h-auto"
+              onClick={() => setShowMobileFilters(false)}
             >
-              <div className="p-4 border-b border-[#D4AF37]/20 flex justify-between items-center sticky top-0 bg-black z-10">
-                <h2 className="text-xl font-bold text-white">Filters</h2>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setShowMobileFilters(false)}
-                  className="text-white hover:bg-[#D4AF37]/10"
-                >
-                  <X className="h-5 w-5" />
-                </Button>
-              </div>
+              <X className="h-6 w-6" />
+            </Button>
+          </div>
 
-              <div className="p-6 space-y-8">
-                {/* Category Filter */}
-                <div>
-                  <h3 className="text-white font-semibold mb-3">Property Type</h3>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button
-                      variant="outline"
-                      className={`border-[#D4AF37]/30 hover:bg-[#D4AF37]/10 text-white ${
-                        activeCategory === "all" ? "bg-[#D4AF37] !text-black hover:bg-[#D4AF37]/90" : ""
-                      }`}
-                      onClick={() => setActiveCategory("all")}
+          <div className="space-y-6">
+            {/* Category Filter */}
+            <div>
+              <h3 className="text-white font-semibold mb-3">Property Type</h3>
+              <Select value={activeCategory} onValueChange={setActiveCategory}>
+                <SelectTrigger className="bg-black/50 border-[#D4AF37]/30 focus:border-[#D4AF37] text-white">
+                  <SelectValue placeholder="All Types" />
+                </SelectTrigger>
+                <SelectContent className="bg-[#0F0F0F] border-[#D4AF37]/30">
+                  <SelectItem value="all" className="text-white hover:bg-[#D4AF37]/10">All Types</SelectItem>
+                  {propertyCategories.map((category) => (
+                    <SelectItem
+                      key={category.id}
+                      value={category.id}
+                      className="text-white hover:bg-[#D4AF37]/10"
                     >
-                      All Types
-                    </Button>
-                    {propertyCategories.map((category) => (
-                      <Button
-                        key={category.id}
-                        variant="outline"
-                        className={`border-[#D4AF37]/30 hover:bg-[#D4AF37]/10 text-white ${
-                          activeCategory === category.id ? "bg-[#D4AF37] !text-black hover:bg-[#D4AF37]/90" : ""
-                        }`}
-                        onClick={() => setActiveCategory(category.id)}
-                      >
-                        {category.label}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
+                      {category.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-                {/* Lifestyle Filter */}
-                <div>
-                  <h3 className="text-white font-semibold mb-3">Lifestyle</h3>
-                  <div className="grid grid-cols-2 gap-2">
-                    
-                    {lifestyleOptions.map((lifestyle) => (
-                      <Button
-                        key={lifestyle.id}
-                        variant="outline"
-                        className={`border-[#D4AF37]/30 hover:bg-[#D4AF37]/10 text-white ${
-                          activeLifestyle === lifestyle.id ? "bg-[#D4AF37] !text-black hover:bg-[#D4AF37]/90" : ""
-                        }`}
-                        onClick={() => setActiveLifestyle(lifestyle.id)}
-                      >
-                        {lifestyle.label}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
+            {/* Lifestyle Filter */}
+            <div>
+              <h3 className="text-white font-semibold mb-3">Lifestyle</h3>
+              <Select value={activeLifestyle} onValueChange={setActiveLifestyle}>
+                <SelectTrigger className="bg-black/50 border-[#D4AF37]/30 focus:border-[#D4AF37] text-white">
+                  <SelectValue placeholder="All Lifestyles" />
+                </SelectTrigger>
+                <SelectContent className="bg-[#0F0F0F] border-[#D4AF37]/30">
+                  {lifestyleOptions.map((lifestyle) => (
+                    <SelectItem
+                      key={lifestyle.id}
+                      value={lifestyle.id}
+                      className="text-white hover:bg-[#D4AF37]/10"
+                    >
+                      {lifestyle.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-                {/* Price Range */}
-                <div>
-                  <h3 className="text-white font-semibold mb-3">Price Range</h3>
-                  <div className="mb-2">
-                    <Slider
-                      value={priceRange}
-                      min={pageType === 'rent' ? 20000 : 500000}
-                      max={pageType === 'rent' ? 1000000 : 50000000}
-                      step={pageType === 'rent' ? 5000 : 50000}
-                      onValueChange={(values) => setPriceRange(values as [number, number])}
-                      className="my-4"
+            {/* Developer Filter */}
+            {availableDevelopers.length > 0 && (
+              <div>
+                <h3 className="text-white font-semibold mb-3">Developer</h3>
+                <Select value={activeDeveloper} onValueChange={setActiveDeveloper}>
+                  <SelectTrigger className="bg-black/50 border-[#D4AF37]/30 focus:border-[#D4AF37] text-white">
+                    <SelectValue placeholder="All Developers" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#0F0F0F] border-[#D4AF37]/30">
+                    <SelectItem value="all" className="text-white hover:bg-[#D4AF37]/10">All Developers</SelectItem>
+                    {availableDevelopers.map((developer) => (
+                      <SelectItem
+                        key={developer}
+                        value={developer}
+                        className="text-white hover:bg-[#D4AF37]/10"
+                      >
+                        {developer}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            {/* Price Range Filter */}
+            <div className="space-y-3">
+              <div className="flex items-center">
+                <h3 className="text-white font-semibold">Price Range</h3>
+                <div className="ml-auto">
+                  <Checkbox 
+                    id="enablePriceFilterMobile" 
+                    className="border-[#D4AF37]/50 data-[state=checked]:bg-[#D4AF37] data-[state=checked]:text-black" 
+                    checked={enablePriceFilter}
+                    onCheckedChange={() => setEnablePriceFilter(!enablePriceFilter)}
+                  />
+                  <label htmlFor="enablePriceFilterMobile" className="ml-2 text-xs text-white/70">
+                    Enable price filter
+                  </label>
+                </div>
+              </div>
+              <div className="flex flex-col space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <label className="text-xs text-white/70">Min Price</label>
+                    <Input
+                      type="number"
+                      className="bg-black border-[#D4AF37]/30 text-white focus:border-[#D4AF37] focus:ring-[#D4AF37]/10"
+                      value={priceRange[0]}
+                      onChange={(e) => {
+                        const val = parseInt(e.target.value) || 0;
+                        setPriceRange([val, priceRange[1]]);
+                      }}
+                      placeholder="Min price"
+                      min={pageType === 'rent' ? 10000 : 200000}
+                      step={pageType === 'rent' ? 1000 : 10000}
+                      disabled={!enablePriceFilter}
                     />
                   </div>
-                  <div className="flex justify-between text-sm text-white/70">
-                    <span>{formatPrice(priceRange[0])}</span>
-                    <span>{formatPrice(priceRange[1])}</span>
+                  <div className="space-y-1">
+                    <label className="text-xs text-white/70">Max Price</label>
+                    <Input
+                      type="number"
+                      className="bg-black border-[#D4AF37]/30 text-white focus:border-[#D4AF37] focus:ring-[#D4AF37]/10"
+                      value={priceRange[1]}
+                      onChange={(e) => {
+                        const val = parseInt(e.target.value) || 0;
+                        setPriceRange([priceRange[0], val]);
+                      }}
+                      placeholder="Max price"
+                      min={pageType === 'rent' ? 10000 : 200000}
+                      step={pageType === 'rent' ? 1000 : 10000}
+                      disabled={!enablePriceFilter}
+                    />
                   </div>
                 </div>
+                <div className="flex justify-between text-xs text-white/50 font-medium">
+                  <span>Min: {formatPrice(priceRange[0])}</span>
+                  <span>Max: {formatPrice(priceRange[1])}</span>
+                </div>
+              </div>
+            </div>
 
-                {/* Area Range */}
-                <div>
-                  <h3 className="text-white font-semibold mb-3">Area (sq.ft)</h3>
-                  <div className="mb-2">
-                    <Slider
-                      value={areaRange}
+            {/* Area Range */}
+            <div className="space-y-3">
+              <div className="flex items-center">
+                <h3 className="text-white font-semibold">Area (sq.ft)</h3>
+                <div className="ml-auto">
+                  <Checkbox 
+                    id="enableAreaFilterMobile" 
+                    className="border-[#D4AF37]/50 data-[state=checked]:bg-[#D4AF37] data-[state=checked]:text-black" 
+                    checked={enableAreaFilter}
+                    onCheckedChange={() => setEnableAreaFilter(!enableAreaFilter)}
+                  />
+                  <label htmlFor="enableAreaFilterMobile" className="ml-2 text-xs text-white/70">
+                    Enable area filter
+                  </label>
+                </div>
+              </div>
+              <div className="flex flex-col space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <label className="text-xs text-white/70">Min Area</label>
+                    <Input
+                      type="number"
+                      className="bg-black border-[#D4AF37]/30 text-white focus:border-[#D4AF37] focus:ring-[#D4AF37]/10"
+                      value={areaRange[0]}
+                      onChange={(e) => {
+                        const val = parseInt(e.target.value) || 0;
+                        setAreaRange([val, areaRange[1]]);
+                      }}
+                      placeholder="Min area"
                       min={100}
-                      max={20000}
                       step={100}
-                      onValueChange={(values) => setAreaRange(values as [number, number])}
-                      className="my-4"
+                      disabled={!enableAreaFilter}
                     />
                   </div>
-                  <div className="flex justify-between text-sm text-white/70">
-                    <span>{formatArea(areaRange[0])}</span>
-                    <span>{formatArea(areaRange[1])}</span>
+                  <div className="space-y-1">
+                    <label className="text-xs text-white/70">Max Area</label>
+                    <Input
+                      type="number"
+                      className="bg-black border-[#D4AF37]/30 text-white focus:border-[#D4AF37] focus:ring-[#D4AF37]/10"
+                      value={areaRange[1]}
+                      onChange={(e) => {
+                        const val = parseInt(e.target.value) || 0;
+                        setAreaRange([areaRange[0], val]);
+                      }}
+                      placeholder="Max area"
+                      min={100}
+                      step={100}
+                      disabled={!enableAreaFilter}
+                    />
                   </div>
                 </div>
-
-                {/* Bedrooms */}
-                <div>
-                  <h3 className="text-white font-semibold mb-3">Bedrooms</h3>
-                  <div className="grid grid-cols-3 gap-2">
-                    <Button
-                      variant="outline"
-                      className={`border-[#D4AF37]/30 hover:bg-[#D4AF37]/10 text-white ${
-                        bedrooms === "any" ? "bg-[#D4AF37] !text-black hover:bg-[#D4AF37]/90" : ""
-                      }`}
-                      onClick={() => setBedrooms("any")}
-                    >
-                      Any
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className={`border-[#D4AF37]/30 hover:bg-[#D4AF37]/10 text-white ${
-                        bedrooms === "studio" ? "bg-[#D4AF37] !text-black hover:bg-[#D4AF37]/90" : ""
-                      }`}
-                      onClick={() => setBedrooms("studio")}
-                    >
-                      Studio
-                    </Button>
-                    {["1", "2", "3", "4+"].map((num) => (
-                      <Button
-                        key={num}
-                        variant="outline"
-                        className={`border-[#D4AF37]/30 hover:bg-[#D4AF37]/10 text-white ${
-                          bedrooms === num ? "bg-[#D4AF37] !text-black hover:bg-[#D4AF37]/90" : ""
-                        }`}
-                        onClick={() => setBedrooms(num)}
-                      >
-                        {num === "4+" ? "4+" : num}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Bathrooms */}
-                <div>
-                  <h3 className="text-white font-semibold mb-3">Bathrooms</h3>
-                  <div className="grid grid-cols-3 gap-2">
-                    <Button
-                      variant="outline"
-                      className={`border-[#D4AF37]/30 hover:bg-[#D4AF37]/10 text-white ${
-                        bathrooms === "any" ? "bg-[#D4AF37] !text-black hover:bg-[#D4AF37]/90" : ""
-                      }`}
-                      onClick={() => setBathrooms("any")}
-                    >
-                      Any
-                    </Button>
-                    {["1", "2", "3", "4+"].map((num) => (
-                      <Button
-                        key={num}
-                        variant="outline"
-                        className={`border-[#D4AF37]/30 hover:bg-[#D4AF37]/10 text-white ${
-                          bathrooms === num ? "bg-[#D4AF37] !text-black hover:bg-[#D4AF37]/90" : ""
-                        }`}
-                        onClick={() => setBathrooms(num)}
-                      >
-                        {num === "4+" ? "4+" : num}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Developers */}
-                {availableDevelopers.length > 0 && (
-                  <div>
-                    <h3 className="text-white font-semibold mb-3">Developer</h3>
-                    <Select value={activeDeveloper} onValueChange={setActiveDeveloper}>
-                      <SelectTrigger className="w-full bg-black/50 border-[#D4AF37]/30 focus:border-[#D4AF37] text-white">
-                        <SelectValue placeholder="Any Developer" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-[#0F0F0F] border-[#D4AF37]/30">
-                        <SelectItem value="all" className="text-white hover:bg-[#D4AF37]/10">All Developers</SelectItem>
-                        {availableDevelopers.map((developer) => (
-                          <SelectItem
-                            key={developer}
-                            value={developer}
-                            className="text-white hover:bg-[#D4AF37]/10"
-                          >
-                            {developer}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
-
-                {/* Locations */}
-                {availableLocations.length > 0 && (
-                  <div>
-                    <h3 className="text-white font-semibold mb-3">Locations</h3>
-                    <div className="max-h-40 overflow-y-auto pr-2 space-y-2">
-                      {availableLocations.map((location) => (
-                        <div key={location} className="flex items-center">
-                          <Checkbox
-                            id={`mob-location-${location}`}
-                            checked={selectedLocations.includes(location)}
-                            onCheckedChange={() => toggleLocation(location)}
-                            className="border-[#D4AF37]/50 data-[state=checked]:bg-[#D4AF37] data-[state=checked]:text-black"
-                          />
-                          <label
-                            htmlFor={`mob-location-${location}`}
-                            className="ml-2 text-sm text-white/90 cursor-pointer"
-                          >
-                            {location}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Filter Actions */}
-                <div className="fixed bottom-0 left-0 right-0 p-4 bg-black border-t border-[#D4AF37]/20 flex space-x-3">
-                  <Button
-                    variant="outline"
-                    className="flex-1 border-[#D4AF37]/30 text-white hover:bg-[#D4AF37]/10"
-                    onClick={resetFilters}
-                  >
-                    Reset
-                  </Button>
-                  <GradientButton className="flex-1" onClick={applyFilters}>
-                    Apply Filters
-                  </GradientButton>
+                <div className="flex justify-between text-xs text-white/50 font-medium">
+                  <span>Min: {formatArea(areaRange[0])}</span>
+                  <span>Max: {formatArea(areaRange[1])}</span>
                 </div>
               </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </div>
+
+            {/* Bedrooms */}
+            <div>
+              <h3 className="text-white font-semibold mb-3">Bedrooms</h3>
+              <Select value={bedrooms} onValueChange={setBedrooms}>
+                <SelectTrigger className="bg-black/50 border-[#D4AF37]/30 focus:border-[#D4AF37] text-white">
+                  <SelectValue placeholder="Any" />
+                </SelectTrigger>
+                <SelectContent className="bg-[#0F0F0F] border-[#D4AF37]/30">
+                  <SelectItem value="any" className="text-white hover:bg-[#D4AF37]/10">Any</SelectItem>
+                  <SelectItem value="studio" className="text-white hover:bg-[#D4AF37]/10">Studio</SelectItem>
+                  <SelectItem value="1" className="text-white hover:bg-[#D4AF37]/10">1 Bedroom</SelectItem>
+                  <SelectItem value="2" className="text-white hover:bg-[#D4AF37]/10">2 Bedrooms</SelectItem>
+                  <SelectItem value="3" className="text-white hover:bg-[#D4AF37]/10">3 Bedrooms</SelectItem>
+                  <SelectItem value="4" className="text-white hover:bg-[#D4AF37]/10">4+ Bedrooms</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Bathrooms */}
+            <div>
+              <h3 className="text-white font-semibold mb-3">Bathrooms</h3>
+              <Select value={bathrooms} onValueChange={setBathrooms}>
+                <SelectTrigger className="bg-black/50 border-[#D4AF37]/30 focus:border-[#D4AF37] text-white">
+                  <SelectValue placeholder="Any" />
+                </SelectTrigger>
+                <SelectContent className="bg-[#0F0F0F] border-[#D4AF37]/30">
+                  <SelectItem value="any" className="text-white hover:bg-[#D4AF37]/10">Any</SelectItem>
+                  <SelectItem value="1" className="text-white hover:bg-[#D4AF37]/10">1 Bathroom</SelectItem>
+                  <SelectItem value="2" className="text-white hover:bg-[#D4AF37]/10">2 Bathrooms</SelectItem>
+                  <SelectItem value="3" className="text-white hover:bg-[#D4AF37]/10">3 Bathrooms</SelectItem>
+                  <SelectItem value="4" className="text-white hover:bg-[#D4AF37]/10">4+ Bathrooms</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            {/* Rental Period - Only for rent page */}
+            {pageType === 'rent' && (
+              <div>
+                <h3 className="text-white font-semibold mb-3">Rental Period</h3>
+                <Select value={rentalPeriod} onValueChange={setRentalPeriod}>
+                  <SelectTrigger className="bg-black/50 border-[#D4AF37]/30 focus:border-[#D4AF37] text-white">
+                    <SelectValue placeholder="Any Period" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#0F0F0F] border-[#D4AF37]/30">
+                    <SelectItem value="any" className="text-white hover:bg-[#D4AF37]/10">Any Period</SelectItem>
+                    <SelectItem value="weekly" className="text-white hover:bg-[#D4AF37]/10">Weekly</SelectItem>
+                    <SelectItem value="monthly" className="text-white hover:bg-[#D4AF37]/10">Monthly</SelectItem>
+                    <SelectItem value="yearly" className="text-white hover:bg-[#D4AF37]/10">Yearly</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            {/* Furnishing Status */}
+            {pageType === 'rent' && (
+              <div>
+                <h3 className="text-white font-semibold mb-3">Furnishing</h3>
+                <Select value={furnishingStatus} onValueChange={setFurnishingStatus}>
+                  <SelectTrigger className="bg-black/50 border-[#D4AF37]/30 focus:border-[#D4AF37] text-white">
+                    <SelectValue placeholder="Any" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#0F0F0F] border-[#D4AF37]/30">
+                    <SelectItem value="any" className="text-white hover:bg-[#D4AF37]/10">Any</SelectItem>
+                    <SelectItem value="furnished" className="text-white hover:bg-[#D4AF37]/10">Furnished</SelectItem>
+                    <SelectItem value="unfurnished" className="text-white hover:bg-[#D4AF37]/10">Unfurnished</SelectItem>
+                    <SelectItem value="partially-furnished" className="text-white hover:bg-[#D4AF37]/10">Partially Furnished</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            {/* Completion Year */}
+            {pageType === 'off-plan' && availableCompletionYears.length > 0 && (
+              <div>
+                <h3 className="text-white font-semibold mb-3">Completion Year</h3>
+                <Select value={completionYear} onValueChange={setCompletionYear}>
+                  <SelectTrigger className="bg-black/50 border-[#D4AF37]/30 focus:border-[#D4AF37] text-white">
+                    <SelectValue placeholder="Any" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#0F0F0F] border-[#D4AF37]/30">
+                    <SelectItem value="any" className="text-white hover:bg-[#D4AF37]/10">Any</SelectItem>
+                    {availableCompletionYears.map((year) => (
+                      <SelectItem key={year} value={year} className="text-white hover:bg-[#D4AF37]/10">
+                        {year}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            {/* Location Filter */}
+            {availableLocations.length > 0 && (
+              <div>
+                <h3 className="text-white font-semibold mb-3">Locations</h3>
+                <div className="flex flex-wrap gap-2 max-h-52 overflow-y-auto pr-2">
+                  {availableLocations.map((location) => (
+                    <Button
+                      key={location}
+                      type="button"
+                      variant="outline"
+                      className={`text-sm py-1 h-auto ${
+                        selectedLocations.includes(location)
+                          ? 'bg-[#D4AF37]/20 text-[#D4AF37] border-[#D4AF37]'
+                          : 'text-white/70 border-[#D4AF37]/20 hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/10'
+                      }`}
+                      onClick={() => toggleLocation(location)}
+                    >
+                      {location}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Neighborhood Filter */}
+            {neighborhoodOptions.length > 0 && (
+              <div>
+                <h3 className="text-white font-semibold mb-3">Neighborhoods</h3>
+                <div className="flex flex-wrap gap-2 max-h-52 overflow-y-auto pr-2">
+                  {neighborhoodOptions.map((neighborhood) => (
+                    <Button
+                      key={neighborhood.id}
+                      type="button"
+                      variant="outline"
+                      className={`text-sm py-1 h-auto ${
+                        selectedNeighborhoods.includes(neighborhood.id)
+                          ? 'bg-[#D4AF37]/20 text-[#D4AF37] border-[#D4AF37]'
+                          : 'text-white/70 border-[#D4AF37]/20 hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/10'
+                      }`}
+                      onClick={() => toggleNeighborhood(neighborhood.id)}
+                    >
+                      {neighborhood.name}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Amenities Filter */}
+            {availableAmenities.length > 0 && (
+              <div>
+                <h3 className="text-white font-semibold mb-3">Amenities</h3>
+                <div className="flex flex-wrap gap-2 max-h-52 overflow-y-auto pr-2">
+                  {availableAmenities.map((amenity) => (
+                    <Button
+                      key={amenity}
+                      type="button"
+                      variant="outline"
+                      className={`text-sm py-1 h-auto ${
+                        selectedAmenities.includes(amenity)
+                          ? 'bg-[#D4AF37]/20 text-[#D4AF37] border-[#D4AF37]'
+                          : 'text-white/70 border-[#D4AF37]/20 hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/10'
+                      }`}
+                      onClick={() => toggleAmenity(amenity)}
+                    >
+                      <span className="mr-1">
+                        {amenityIcons[amenity.toLowerCase()] || null}
+                      </span>
+                      {amenity}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Views Filter */}
+            {availableViews.length > 0 && (
+              <div>
+                <h3 className="text-white font-semibold mb-3">Views</h3>
+                <div className="flex flex-wrap gap-2 max-h-52 overflow-y-auto pr-2">
+                  {availableViews.map((view) => (
+                    <Button
+                      key={view}
+                      type="button"
+                      variant="outline"
+                      className={`text-sm py-1 h-auto ${
+                        selectedViews.includes(view)
+                          ? 'bg-[#D4AF37]/20 text-[#D4AF37] border-[#D4AF37]'
+                          : 'text-white/70 border-[#D4AF37]/20 hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/10'
+                      }`}
+                      onClick={() => toggleView(view)}
+                    >
+                      {view}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Filter Action Buttons */}
+          <div className="mt-8 flex flex-col space-y-3">
+            <GradientButton onClick={applyFilters} className="w-full">
+              Apply Filters
+            </GradientButton>
+            <Button
+              variant="outline"
+              className="w-full text-white/70 border-[#D4AF37]/20 hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/10"
+              onClick={resetFilters}
+            >
+              Reset Filters
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

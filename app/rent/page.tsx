@@ -31,7 +31,7 @@ export default async function RentPage({
 }) {
   // Prepare filter parameters from search params for server-side filtering
   const filterParams: Record<string, any> = {
-    status: "For Rent",
+    marketType: "rent",
   }
   
   searchParams = await searchParams;

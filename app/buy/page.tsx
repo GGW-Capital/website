@@ -29,7 +29,7 @@ export default async function BuyPage({
 }) {
   // Prepare filter parameters from search params for server-side filtering
   const filterParams: Record<string, any> = {
-    status: "For Sale",
+    marketType: "buy",
   }
   searchParams = await searchParams;
   

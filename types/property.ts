@@ -6,8 +6,12 @@ export interface Property {
       current: string;
     };
     location?: string;
-    // Price is always a number
+    // Price fields
     price?: number;
+    priceWeekly?: number;
+    priceMonthly?: number;
+    priceYearly?: number;
+    defaultRentalPeriod?: 'weekly' | 'monthly' | 'yearly';
     bedrooms?: number;
     bathrooms?: number;
     // Area is always a number 

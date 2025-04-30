@@ -5,12 +5,43 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function formatCurrency(amount: number): string {
+export function formatCurrency(amount: number | undefined): string {
+  if (!amount) return 'Price on Request'
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'AED',
     minimumFractionDigits: 0,
   }).format(amount)
+}
+
+export function formatRentalPrice(property: any): string {
+  // If it's not a rental property, use standard price format
+  if (property.marketType !== 'rent') {
+    return formatCurrency(property.price)
+  }
+  
+  // Get the price based on defaultRentalPeriod
+  const period = property.defaultRentalPeriod || 'monthly'
+  let price: number | undefined
+  let periodLabel: string
+  
+  switch(period) {
+    case 'weekly':
+      price = property.priceWeekly || property.price
+      periodLabel = '/week'
+      break
+    case 'yearly':
+      price = property.priceYearly || property.price
+      periodLabel = '/year'
+      break
+    case 'monthly':
+    default:
+      price = property.priceMonthly || property.price
+      periodLabel = '/month'
+      break
+  }
+  
+  return `${formatCurrency(price)} ${periodLabel}`
 }
 
 export function formatDate(date: string | Date): string {

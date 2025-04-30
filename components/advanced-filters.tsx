@@ -9,15 +9,6 @@ import {
   Filter,
   ChevronDown,
   X,
-  Palmtree,
-  Car,
-  Dumbbell,
-  PocketIcon as Pool,
-  Wifi,
-  UtensilsCrossed,
-  Lock,
-  Mountain,
-  Sparkles,
   Building,
   Home,
 } from "lucide-react"
@@ -84,15 +75,15 @@ const viewOptions = [
 ]
 
 const amenities = [
-  { id: "pool", label: "Swimming Pool", icon: <Pool className="h-4 w-4" /> },
-  { id: "gym", label: "Gym", icon: <Dumbbell className="h-4 w-4" /> },
-  { id: "parking", label: "Parking", icon: <Car className="h-4 w-4" /> },
-  { id: "security", label: "24/7 Security", icon: <Lock className="h-4 w-4" /> },
-  { id: "balcony", label: "Balcony", icon: <Palmtree className="h-4 w-4" /> },
-  { id: "wifi", label: "High-Speed Internet", icon: <Wifi className="h-4 w-4" /> },
-  { id: "furnished", label: "Fully Furnished", icon: <Sparkles className="h-4 w-4" /> },
-  { id: "kitchen", label: "Equipped Kitchen", icon: <UtensilsCrossed className="h-4 w-4" /> },
-  { id: "view", label: "Panoramic View", icon: <Mountain className="h-4 w-4" /> },
+  { id: "pool", label: "Swimming Pool" },
+  { id: "gym", label: "Gym" },
+  { id: "parking", label: "Parking" },
+  { id: "security", label: "24/7 Security" },
+  { id: "balcony", label: "Balcony" },
+  { id: "wifi", label: "High-Speed Internet" },
+  { id: "furnished", label: "Fully Furnished" },
+  { id: "kitchen", label: "Equipped Kitchen" },
+  { id: "view", label: "Panoramic View" },
 ]
 
 interface AdvancedFiltersProps {
@@ -134,13 +125,16 @@ export default function AdvancedFilters({
   const [priceRange, setPriceRange] = useState<[number, number]>(
     initialFilters.priceRange || (isRental ? [50000, 500000] : [500000, 20000000]),
   )
+  const [enablePriceFilter, setEnablePriceFilter] = useState(initialFilters.enablePriceFilter !== false)
   const [areaRange, setAreaRange] = useState<[number, number]>(initialFilters.areaRange || [500, 10000])
+  const [enableAreaFilter, setEnableAreaFilter] = useState(initialFilters.enableAreaFilter !== false)
   const [bedrooms, setBedrooms] = useState(initialFilters.bedrooms || "any")
   const [bathrooms, setBathrooms] = useState(initialFilters.bathrooms || "any")
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>(initialFilters.amenities || [])
   const [selectedViews, setSelectedViews] = useState<string[]>(initialFilters.views || [])
   const [completionYear, setCompletionYear] = useState(initialFilters.completionYear || "any")
   const [furnishingStatus, setFurnishingStatus] = useState(initialFilters.furnishingStatus || "any")
+  const [rentalPeriod, setRentalPeriod] = useState(initialFilters.rentalPeriod || "any")
 
   // Format price for display
   const formatPrice = (price: number) => {
@@ -197,23 +191,33 @@ export default function AdvancedFilters({
       lifestyle: activeLifestyle,
       developer: activeDeveloper,
       locations: selectedLocations,
-      priceRange,
-      areaRange,
+      priceRange: enablePriceFilter ? priceRange : null,
+      enablePriceFilter,
+      areaRange: enableAreaFilter ? areaRange : null,
+      enableAreaFilter,
       bedrooms,
       bathrooms,
       amenities: selectedAmenities,
       views: selectedViews,
+      neighborhoods: selectedNeighborhoods.map((id) => {
+        const neighborhood = neighborhoodOptions.find((n) => n.id === id)
+        return { id, name: neighborhood?.name || id }
+      }),
       completionYear,
       furnishingStatus,
-      neighborhoods: selectedNeighborhoods,
+      rentalPeriod,
       keyword: searchKeyword,
     }
 
     onFilterChange(filters)
-    setShowMobileFilters(false)
+    
+    // Close mobile filters after applying
+    if (showMobileFilters) {
+      setShowMobileFilters(false)
+    }
   }
 
-  // Reset all filters
+  // Reset all filters to defaults
   const resetFilters = () => {
     setActiveMarketType(isOffPlan ? "off-plan" : isRental ? "secondary-market" : "all")
     setActiveListingType("all")
@@ -223,163 +227,118 @@ export default function AdvancedFilters({
     setSelectedLocations([])
     setSelectedNeighborhoods([])
     setPriceRange(isRental ? [50000, 500000] : [500000, 20000000])
+    setEnablePriceFilter(true)
     setAreaRange([500, 10000])
+    setEnableAreaFilter(true)
     setBedrooms("any")
     setBathrooms("any")
     setSelectedAmenities([])
     setSelectedViews([])
     setCompletionYear("any")
     setFurnishingStatus("any")
+    setRentalPeriod("any")
     setSearchKeyword("")
     onReset()
-    setShowMobileFilters(false)
+    
+    // Close mobile filters after resetting
+    if (showMobileFilters) {
+      setShowMobileFilters(false)
+    }
   }
 
-  // Fetch neighborhoods and lifestyle data
+  // Fetch neighborhoods from Sanity
   useEffect(() => {
     async function fetchNeighborhoods() {
       try {
-        const neighborhoods = await getNeighborhoods();
-        if (neighborhoods && neighborhoods.length > 0) {
-          setNeighborhoodOptions(
-            neighborhoods.map((n: any) => ({
-              id: n._id,
-              name: n.name
-            }))
-          );
-        }
+        const neighborhoods = await getNeighborhoods()
+        setNeighborhoodOptions(
+          neighborhoods.map((n: any) => ({
+            id: n._id,
+            name: n.name,
+          }))
+        )
       } catch (error) {
-        console.error('Error fetching neighborhoods:', error);
+        console.error("Failed to fetch neighborhoods:", error)
       }
     }
-    
+
     async function fetchLifestyles() {
       try {
-        // Use the centralized getLifestyles utility function
-        const lifestyleData = await getLifestyles(true); // true = include "All" option
+        const lifestyles = await getLifestyles()
         
-        if (lifestyleData && lifestyleData.length > 0) {
-          setLifestyleOptions(lifestyleData);
+        if (lifestyles && lifestyles.length) {
+          setLifestyleOptions(
+            lifestyles.map((lifestyle: any) => ({
+              id: lifestyle.value,
+              label: lifestyle.title,
+            }))
+          )
         }
       } catch (error) {
-        console.error('Error fetching lifestyle data:', error);
-        // Keep the default options if there's an error
+        console.error("Failed to fetch lifestyles:", error)
       }
     }
     
-    fetchNeighborhoods();
-    fetchLifestyles();
-  }, []);
-
-  // Initial mounting flag to prevent auto-filtering on first render
-  const [initialRender, setInitialRender] = useState(true);
-  
-  // Update filters when any filter changes (for desktop view)
-  useEffect(() => {
-    // Skip filter application on the first render to show all properties initially
-    if (initialRender) {
-      setInitialRender(false);
-      return;
-    }
-    
-    // Apply filters on subsequent changes
-    if (!showMobileFilters) {
-      applyFilters()
-    }
-  }, [
-    activeMarketType,
-    activeListingType,
-    activeCategory,
-    activeLifestyle,
-    activeDeveloper,
-    // We don't include the other filters here because they have their own apply buttons
-    // or are part of the advanced filters that need to be explicitly applied
-  ])
+    fetchNeighborhoods()
+    fetchLifestyles()
+  }, [])
 
   return (
-    <div className="w-full">
-      {/* Search Bar */}
-      <div className="mb-6">
+    <div className="w-full flex flex-col gap-2">
+      {/* Search Bar (always visible) */}
+      <div className="relative w-full max-w-full mx-auto">
         <form onSubmit={handleSearchSubmit} className="relative">
-          <Input
-            type="text"
-            placeholder="Search by keyword, property name, or reference..."
-            value={searchKeyword}
-            onChange={(e) => setSearchKeyword(e.target.value)}
-            className="bg-[#0a0a0a] border-[#D4AF37]/30 focus:border-[#D4AF37] text-white h-12 pl-10 pr-4"
-          />
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[#D4AF37]/70" />
-          <Button
-            type="submit"
-            variant="ghost"
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 text-[#D4AF37] hover:bg-[#D4AF37]/10"
-          >
-            Search
-          </Button>
+          <div className="flex items-center">
+            <div className="relative flex-grow">
+              <Input
+                type="text"
+                placeholder="Search properties by location, developer, project..."
+                className="pl-10 pr-4 py-3 rounded-l-md border-0 bg-[#080808] text-white shadow-md focus:ring-2 focus:ring-[#D4AF37]/30 focus:border-0"
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+              />
+              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                <Search className="h-5 w-5" />
+              </span>
+            </div>
+            
+            {/* Filter toggle button (mobile only) */}
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              className="md:hidden border-0 shadow-md bg-[#080808] hover:bg-[#050505] text-white"
+              onClick={() => setShowMobileFilters(!showMobileFilters)}
+            >
+              <Filter className="h-5 w-5" />
+            </Button>
+            
+            {/* Advanced filters toggle (desktop) */}
+            <Button
+              type="button"
+              variant="outline"
+              className="hidden md:flex border-0 shadow-md rounded-r-md rounded-l-none px-4 py-3 h-10 bg-[#080808] hover:bg-[#050505] text-white"
+              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+            >
+              <Filter className="h-5 w-5 mr-2" />
+              <span>Filters</span>
+              <ChevronDown
+                className={`ml-2 h-4 w-4 transition-transform ${
+                  showAdvancedFilters ? "rotate-180" : ""
+                }`}
+              />
+            </Button>
+
+            <GradientButton
+              type="submit"
+              className="ml-2 px-6 text-sm"
+            >
+              Search
+            </GradientButton>
+          </div>
         </form>
-      </div>
 
-      {/* Basic Filters - Desktop */}
-      <div className="hidden md:block">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-          {/* Listing Type Filter (Property or Project) */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-white/90">Listing Type:</label>
-            <FilterToggle options={listingTypes} activeId={activeListingType} onChange={setActiveListingType} />
-          </div>
-
-          {/* Market Type Filter (if not on a specific market page) */}
-          {!isOffPlan && !isRental && (
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-white/90">Market Type:</label>
-              <FilterToggle options={marketTypes} activeId={activeMarketType} onChange={setActiveMarketType} />
-            </div>
-          )}
-
-          {/* Property Type Filter */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-white/90">Property Type:</label>
-            <FilterToggle options={propertyCategories} activeId={activeCategory} onChange={setActiveCategory} />
-          </div>
-
-          {/* Lifestyle Filter */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-white/90">Lifestyle:</label>
-            <FilterToggle options={lifestyleOptions} activeId={activeLifestyle} onChange={setActiveLifestyle} />
-          </div>
-
-          {/* Developer Filter (always shown for off-plan, optional for others) */}
-          {(isOffPlan || activeMarketType === "off-plan") && (
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-white/90">Developer:</label>
-              <FilterToggle options={developerOptions} activeId={activeDeveloper} onChange={setActiveDeveloper} />
-            </div>
-          )}
-        </div>
-
-        {/* Advanced Filters Toggle */}
-        <div className="flex justify-between items-center mb-6">
-          <Button
-            variant="outline"
-            className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10 flex items-center gap-2"
-            onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-          >
-            <Filter className="h-4 w-4" />
-            Advanced Filters
-            <ChevronDown className={`h-4 w-4 transition-transform ${showAdvancedFilters ? "rotate-180" : ""}`} />
-          </Button>
-
-          <Button
-            variant="outline"
-            className="border-[#D4AF37]/50 text-[#D4AF37] hover:bg-[#D4AF37]/10"
-            onClick={resetFilters}
-          >
-            <X className="h-4 w-4 mr-2" />
-            Reset Filters
-          </Button>
-        </div>
-
-        {/* Advanced Filters Panel */}
+        {/* Desktop filter panel */}
         <AnimatePresence>
           {showAdvancedFilters && (
             <motion.div
@@ -393,526 +352,649 @@ export default function AdvancedFilters({
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
                   {/* Price Range */}
                   <div className="space-y-3">
-                    <label className="text-sm font-semibold text-white/90">
-                      Price Range ({isRental ? "AED/year" : "AED"})
-                    </label>
-                    <div className="pt-6 px-2">
-                      <Slider
-                        value={priceRange}
-                        min={isRental ? 10000 : 200000}
-                        max={isRental ? 1000000 : 50000000}
-                        step={isRental ? 1000 : 10000}
-                        onValueChange={(value) => setPriceRange(value as [number, number])}
-                      />
+                    <div className="flex items-center justify-between">
+                      <label className="text-sm font-semibold text-white/90">
+                        Price Range ({isRental ? "AED/year" : "AED"})
+                      </label>
+                      <div className="flex items-center">
+                        <Checkbox 
+                          id="enablePriceFilter" 
+                          className="border-[#D4AF37] data-[state=checked]:bg-[#D4AF37] data-[state=checked]:text-black"
+                          checked={enablePriceFilter}
+                          onCheckedChange={(checked) => setEnablePriceFilter(checked as boolean)}
+                        />
+                        <label htmlFor="enablePriceFilter" className="ml-2 text-xs text-white/70">
+                          Enable filter
+                        </label>
+                      </div>
                     </div>
-                    <div className="flex justify-between text-sm text-white/70 font-medium">
-                      <span>{formatPrice(priceRange[0])}</span>
-                      <span>{formatPrice(priceRange[1])}</span>
+                    <div className="flex flex-col gap-2">
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1">
+                          <label className="text-xs text-white/70">Min Price</label>
+                          <Input
+                            type="number"
+                            className="bg-black border-[#D4AF37]/30 text-white focus:border-[#D4AF37] focus:ring-[#D4AF37]/10"
+                            value={priceRange[0]}
+                            onChange={(e) => {
+                              const val = parseInt(e.target.value) || 0;
+                              setPriceRange([val, priceRange[1]]);
+                            }}
+                            placeholder="Min price"
+                            min={isRental ? 10000 : 200000}
+                            step={isRental ? 1000 : 10000}
+                            disabled={!enablePriceFilter}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-xs text-white/70">Max Price</label>
+                          <Input
+                            type="number"
+                            className="bg-black border-[#D4AF37]/30 text-white focus:border-[#D4AF37] focus:ring-[#D4AF37]/10"
+                            value={priceRange[1]}
+                            onChange={(e) => {
+                              const val = parseInt(e.target.value) || 0;
+                              setPriceRange([priceRange[0], val]);
+                            }}
+                            placeholder="Max price"
+                            min={isRental ? 10000 : 200000}
+                            step={isRental ? 1000 : 10000}
+                            disabled={!enablePriceFilter}
+                          />
+                        </div>
+                      </div>
+                      <div className="flex justify-between text-xs text-white/50 font-medium mt-1">
+                        <span>Min: {formatPrice(priceRange[0])}</span>
+                        <span>Max: {formatPrice(priceRange[1])}</span>
+                      </div>
                     </div>
                   </div>
 
                   {/* Area Range */}
                   <div className="space-y-3">
-                    <label className="text-sm font-semibold text-white/90">Area (sq.ft)</label>
-                    <div className="pt-6 px-2">
-                      <Slider
-                        value={areaRange}
-                        min={100}
-                        max={20000}
-                        step={100}
-                        onValueChange={(value) => setAreaRange(value as [number, number])}
-                      />
+                    <div className="flex items-center justify-between">
+                      <label className="text-sm font-semibold text-white/90">Area (sq.ft)</label>
+                      <div className="flex items-center">
+                        <Checkbox 
+                          id="enableAreaFilter" 
+                          className="border-[#D4AF37] data-[state=checked]:bg-[#D4AF37] data-[state=checked]:text-black"
+                          checked={enableAreaFilter}
+                          onCheckedChange={(checked) => setEnableAreaFilter(checked as boolean)}
+                        />
+                        <label htmlFor="enableAreaFilter" className="ml-2 text-xs text-white/70">
+                          Enable filter
+                        </label>
+                      </div>
                     </div>
-                    <div className="flex justify-between text-sm text-white/70 font-medium">
-                      <span>{formatArea(areaRange[0])}</span>
-                      <span>{formatArea(areaRange[1])}</span>
+                    <div className="flex flex-col gap-2">
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1">
+                          <label className="text-xs text-white/70">Min Area</label>
+                          <Input
+                            type="number"
+                            className="bg-black border-[#D4AF37]/30 text-white focus:border-[#D4AF37] focus:ring-[#D4AF37]/10"
+                            value={areaRange[0]}
+                            onChange={(e) => {
+                              const val = parseInt(e.target.value) || 0;
+                              setAreaRange([val, areaRange[1]]);
+                            }}
+                            placeholder="Min area"
+                            min={100}
+                            step={50}
+                            disabled={!enableAreaFilter}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-xs text-white/70">Max Area</label>
+                          <Input
+                            type="number"
+                            className="bg-black border-[#D4AF37]/30 text-white focus:border-[#D4AF37] focus:ring-[#D4AF37]/10"
+                            value={areaRange[1]}
+                            onChange={(e) => {
+                              const val = parseInt(e.target.value) || 0;
+                              setAreaRange([areaRange[0], val]);
+                            }}
+                            placeholder="Max area"
+                            min={100}
+                            step={50}
+                            disabled={!enableAreaFilter}
+                          />
+                        </div>
+                      </div>
+                      <div className="flex justify-between text-xs text-white/50 font-medium mt-1">
+                        <span>Min: {formatArea(areaRange[0])}</span>
+                        <span>Max: {formatArea(areaRange[1])}</span>
+                      </div>
                     </div>
                   </div>
 
                   {/* Bedrooms */}
-                  <div className="space-y-3">
+                  <div className="space-y-2">
                     <label className="text-sm font-semibold text-white/90">Bedrooms</label>
                     <Select value={bedrooms} onValueChange={setBedrooms}>
-                      <SelectTrigger className="bg-transparent border-[#D4AF37]/40 text-white h-10 font-medium">
-                        <SelectValue placeholder="Select bedrooms" />
+                      <SelectTrigger className="border border-[#D4AF37]/30 bg-black text-white hover:border-[#D4AF37]">
+                        <SelectValue placeholder="Any" />
                       </SelectTrigger>
-                      <SelectContent className="bg-black border-[#D4AF37]/40 text-white">
-                        <SelectItem value="any" className="font-medium">Any</SelectItem>
-                        <SelectItem value="studio" className="font-medium">Studio</SelectItem>
-                        <SelectItem value="1" className="font-medium">1 Bedroom</SelectItem>
-                        <SelectItem value="2" className="font-medium">2 Bedrooms</SelectItem>
-                        <SelectItem value="3" className="font-medium">3 Bedrooms</SelectItem>
-                        <SelectItem value="4" className="font-medium">4 Bedrooms</SelectItem>
-                        <SelectItem value="5+" className="font-medium">5+ Bedrooms</SelectItem>
+                      <SelectContent className="bg-black border border-[#D4AF37]/30 text-white">
+                        <SelectItem value="any">Any</SelectItem>
+                        <SelectItem value="studio">Studio</SelectItem>
+                        <SelectItem value="1">1 Bedroom</SelectItem>
+                        <SelectItem value="2">2 Bedrooms</SelectItem>
+                        <SelectItem value="3">3 Bedrooms</SelectItem>
+                        <SelectItem value="4">4 Bedrooms</SelectItem>
+                        <SelectItem value="5+">5+ Bedrooms</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   {/* Bathrooms */}
-                  <div className="space-y-3">
+                  <div className="space-y-2">
                     <label className="text-sm font-semibold text-white/90">Bathrooms</label>
                     <Select value={bathrooms} onValueChange={setBathrooms}>
-                      <SelectTrigger className="bg-transparent border-[#D4AF37]/40 text-white h-10 font-medium">
-                        <SelectValue placeholder="Select bathrooms" />
+                      <SelectTrigger className="border border-[#D4AF37]/30 bg-black text-white hover:border-[#D4AF37]">
+                        <SelectValue placeholder="Any" />
                       </SelectTrigger>
-                      <SelectContent className="bg-black border-[#D4AF37]/40 text-white">
-                        <SelectItem value="any" className="font-medium">Any</SelectItem>
-                        <SelectItem value="1" className="font-medium">1 Bathroom</SelectItem>
-                        <SelectItem value="2" className="font-medium">2 Bathrooms</SelectItem>
-                        <SelectItem value="3" className="font-medium">3 Bathrooms</SelectItem>
-                        <SelectItem value="4" className="font-medium">4 Bathrooms</SelectItem>
-                        <SelectItem value="5+" className="font-medium">5+ Bathrooms</SelectItem>
+                      <SelectContent className="bg-black border border-[#D4AF37]/30 text-white">
+                        <SelectItem value="any">Any</SelectItem>
+                        <SelectItem value="1">1 Bathroom</SelectItem>
+                        <SelectItem value="2">2 Bathrooms</SelectItem>
+                        <SelectItem value="3">3 Bathrooms</SelectItem>
+                        <SelectItem value="4">4 Bathrooms</SelectItem>
+                        <SelectItem value="5+">5+ Bathrooms</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
-                  {/* Location Selection */}
-                  <div className="space-y-3">
-                    <label className="text-sm font-semibold text-white/90">Location</label>
-                    <div className="grid grid-cols-2 gap-2 mt-2">
-                      {locationOptions.map((location) => (
-                        <div key={location.id} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={`location-${location.id}`}
-                            checked={selectedLocations.includes(location.id)}
-                            onCheckedChange={() => toggleLocation(location.id)}
-                            className="border-[#D4AF37]/40 data-[state=checked]:bg-[#D4AF37] data-[state=checked]:text-black"
-                          />
-                          <label
-                            htmlFor={`location-${location.id}`}
-                            className="text-sm font-medium text-white/90 cursor-pointer"
-                          >
-                            {location.label}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Neighborhood Selection */}
-                  <div className="space-y-3">
-                    <label className="text-sm font-semibold text-white/90">Neighborhood</label>
-                    <div className="grid grid-cols-2 gap-2 mt-2">
-                      {neighborhoodOptions.length > 0 ? (
-                        neighborhoodOptions.map((neighborhood) => (
-                          <div key={neighborhood.id} className="flex items-center space-x-2">
-                            <Checkbox
-                              id={`neighborhood-${neighborhood.id}`}
-                              checked={selectedNeighborhoods.includes(neighborhood.id)}
-                              onCheckedChange={() => toggleNeighborhood(neighborhood.id)}
-                              className="border-[#D4AF37]/40 data-[state=checked]:bg-[#D4AF37] data-[state=checked]:text-black"
-                            />
-                            <label
-                              htmlFor={`neighborhood-${neighborhood.id}`}
-                              className="text-sm font-medium text-white/90 cursor-pointer"
-                            >
-                              {neighborhood.name}
-                            </label>
-                          </div>
-                        ))
-                      ) : (
-                        <p className="text-sm text-white/50 italic">No neighborhoods available</p>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Views Selection */}
-                  <div className="space-y-3">
-                    <label className="text-sm font-semibold text-white/90">Views</label>
-                    <div className="grid grid-cols-2 gap-2 mt-2">
-                      {viewOptions.map((view) => (
-                        <div key={view.id} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={`view-${view.id}`}
-                            checked={selectedViews.includes(view.id)}
-                            onCheckedChange={() => toggleView(view.id)}
-                            className="border-[#D4AF37]/40 data-[state=checked]:bg-[#D4AF37] data-[state=checked]:text-black"
-                          />
-                          <label
-                            htmlFor={`view-${view.id}`}
-                            className="text-sm font-medium text-white/90 cursor-pointer"
-                          >
-                            {view.label}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Amenities Selection */}
-                  <div className="space-y-3 lg:col-span-2">
-                    <label className="text-sm font-semibold text-white/90">Amenities</label>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
-                      {amenities.map((amenity) => (
-                        <div key={amenity.id} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={`amenity-${amenity.id}`}
-                            checked={selectedAmenities.includes(amenity.id)}
-                            onCheckedChange={() => toggleAmenity(amenity.id)}
-                            className="border-[#D4AF37]/40 data-[state=checked]:bg-[#D4AF37] data-[state=checked]:text-black"
-                          />
-                          <label
-                            htmlFor={`amenity-${amenity.id}`}
-                            className="text-sm font-medium text-white/90 cursor-pointer flex items-center gap-1.5"
-                          >
-                            {amenity.icon}
-                            {amenity.label}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Completion Year (for off-plan properties) */}
-                  {(isOffPlan || activeMarketType === "off-plan") && (
-                    <div className="space-y-3">
-                      <label className="text-sm font-semibold text-white/90">Completion Year</label>
-                      <Select value={completionYear} onValueChange={setCompletionYear}>
-                        <SelectTrigger className="bg-transparent border-[#D4AF37]/40 text-white h-10 font-medium">
-                          <SelectValue placeholder="Select year" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-black border-[#D4AF37]/40 text-white">
-                          <SelectItem value="any" className="font-medium">Any</SelectItem>
-                          <SelectItem value="2023" className="font-medium">2023</SelectItem>
-                          <SelectItem value="2024" className="font-medium">2024</SelectItem>
-                          <SelectItem value="2025" className="font-medium">2025</SelectItem>
-                          <SelectItem value="2026" className="font-medium">2026</SelectItem>
-                          <SelectItem value="2027+" className="font-medium">2027+</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
-
-                  {/* Furnishing Status (for rental properties) */}
+                  {/* Rental Period - Only show for rental properties */}
                   {isRental && (
-                    <div className="space-y-3">
-                      <label className="text-sm font-semibold text-white/90">Furnishing Status</label>
-                      <Select value={furnishingStatus} onValueChange={setFurnishingStatus}>
-                        <SelectTrigger className="bg-transparent border-[#D4AF37]/40 text-white h-10 font-medium">
-                          <SelectValue placeholder="Select status" />
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-white/90">Rental Period</label>
+                      <Select value={rentalPeriod} onValueChange={setRentalPeriod}>
+                        <SelectTrigger className="border border-[#D4AF37]/30 bg-black text-white hover:border-[#D4AF37]">
+                          <SelectValue placeholder="Any Period" />
                         </SelectTrigger>
-                        <SelectContent className="bg-black border-[#D4AF37]/40 text-white">
-                          <SelectItem value="any" className="font-medium">Any</SelectItem>
-                          <SelectItem value="furnished" className="font-medium">Furnished</SelectItem>
-                          <SelectItem value="unfurnished" className="font-medium">Unfurnished</SelectItem>
-                          <SelectItem value="partially-furnished" className="font-medium">Partially Furnished</SelectItem>
+                        <SelectContent className="bg-black border border-[#D4AF37]/30 text-white">
+                          <SelectItem value="any">Any Period</SelectItem>
+                          <SelectItem value="weekly">Weekly</SelectItem>
+                          <SelectItem value="monthly">Monthly</SelectItem>
+                          <SelectItem value="yearly">Yearly</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                   )}
 
-                  {/* Apply Button (for desktop advanced filters) */}
-                  <div className="flex items-end mt-4">
-                    <GradientButton className="w-full" onClick={applyFilters}>
-                      Apply Filters
-                    </GradientButton>
+                  {/* Property Category */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-white/90">Property Type</label>
+                    <div className="border border-[#D4AF37]/30 rounded-md bg-black p-2">
+                      <FilterToggle
+                        options={[{ id: "all", label: "All" }, ...propertyCategories]}
+                        activeId={activeCategory}
+                        onChange={setActiveCategory}
+                        showAll={true}
+                      />
+                    </div>
                   </div>
+
+                  {/* Lifestyle */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-white/90">Lifestyle</label>
+                    <div className="border border-[#D4AF37]/30 rounded-md bg-black p-2">
+                      <FilterToggle
+                        options={[{ id: "all", label: "All" }, ...lifestyleOptions]}
+                        activeId={activeLifestyle}
+                        onChange={setActiveLifestyle}
+                        showAll={true}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Amenities */}
+                <div className="mt-6">
+                  <label className="text-sm font-semibold text-white/90 mb-3 block">Amenities</label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
+                    {amenities.map((amenity) => (
+                      <div
+                        key={amenity.id}
+                        className={`flex items-center gap-2 p-2 rounded-md cursor-pointer transition-colors ${
+                          selectedAmenities.includes(amenity.id)
+                            ? "bg-[#D4AF37]/10 text-[#D4AF37]"
+                            : "text-white/70 hover:bg-[#D4AF37]/5"
+                        }`}
+                        onClick={() => toggleAmenity(amenity.id)}
+                      >
+                        <Checkbox
+                          checked={selectedAmenities.includes(amenity.id)}
+                          className="border-[#D4AF37] data-[state=checked]:bg-[#D4AF37] data-[state=checked]:text-black"
+                        />
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-sm">{amenity.label}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* View types */}
+                <div className="mt-6">
+                  <label className="text-sm font-semibold text-white/90 mb-3 block">Views</label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-5 gap-2">
+                    {viewOptions.map((view) => (
+                      <div
+                        key={view.id}
+                        className={`flex items-center gap-2 p-2 rounded-md cursor-pointer transition-colors ${
+                          selectedViews.includes(view.id)
+                            ? "bg-[#D4AF37]/10 text-[#D4AF37]"
+                            : "text-white/70 hover:bg-[#D4AF37]/5"
+                        }`}
+                        onClick={() => toggleView(view.id)}
+                      >
+                        <Checkbox
+                          checked={selectedViews.includes(view.id)}
+                          className="border-[#D4AF37] data-[state=checked]:bg-[#D4AF37] data-[state=checked]:text-black"
+                        />
+                        <span className="text-sm">{view.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Neighborhoods */}
+                {neighborhoodOptions.length > 0 && (
+                  <div className="mt-6">
+                    <label className="text-sm font-semibold text-white/90 mb-3 block">Neighborhoods</label>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
+                      {neighborhoodOptions.map((neighborhood) => (
+                        <div
+                          key={neighborhood.id}
+                          className={`flex items-center gap-2 p-2 rounded-md cursor-pointer transition-colors ${
+                            selectedNeighborhoods.includes(neighborhood.id)
+                              ? "bg-[#D4AF37]/10 text-[#D4AF37]"
+                              : "text-white/70 hover:bg-[#D4AF37]/5"
+                          }`}
+                          onClick={() => toggleNeighborhood(neighborhood.id)}
+                        >
+                          <Checkbox
+                            checked={selectedNeighborhoods.includes(neighborhood.id)}
+                            className="border-[#D4AF37] data-[state=checked]:bg-[#D4AF37] data-[state=checked]:text-black"
+                          />
+                          <span className="text-sm">{neighborhood.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Action buttons */}
+                <div className="mt-8 flex justify-end gap-3">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    className="text-white/70 hover:text-white hover:bg-black"
+                    onClick={resetFilters}
+                  >
+                    Reset
+                  </Button>
+                  <Button
+                    onClick={applyFilters}
+                    className="bg-[#D4AF37] text-black hover:bg-[#D4AF37]/90"
+                  >
+                    Apply Filters
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Mobile filter panel */}
+        <AnimatePresence>
+          {showMobileFilters && (
+            <motion.div
+              initial={{ opacity: 0, y: -50 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -50 }}
+              className="fixed inset-0 bg-black bg-opacity-90 z-50 overflow-y-auto pb-20"
+            >
+              <div className="bg-[#0a0a0a] border-b border-[#D4AF37]/30 p-4 sticky top-0 z-10">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-lg text-white font-semibold">Filters</h2>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-white"
+                    onClick={() => setShowMobileFilters(false)}
+                  >
+                    <X className="h-5 w-5" />
+                  </Button>
+                </div>
+              </div>
+
+              <div className="p-4 space-y-8">
+                {/* Market Type */}
+                <div>
+                  <label className="text-sm font-semibold text-white mb-3 block">Market Type</label>
+                  <div className="border border-[#D4AF37]/30 rounded-md bg-black p-2">
+                    <FilterToggle
+                      options={[{ id: "all", label: "All" }, ...marketTypes]}
+                      activeId={activeMarketType}
+                      onChange={setActiveMarketType}
+                      showAll={true}
+                    />
+                  </div>
+                </div>
+
+                {/* Listing Type */}
+                <div>
+                  <label className="text-sm font-semibold text-white mb-3 block">Listing Type</label>
+                  <div className="border border-[#D4AF37]/30 rounded-md bg-black p-2">
+                    <FilterToggle
+                      options={[{ id: "all", label: "All" }, ...listingTypes]}
+                      activeId={activeListingType}
+                      onChange={setActiveListingType}
+                      showAll={true}
+                    />
+                  </div>
+                </div>
+
+                {/* Property Category */}
+                <div>
+                  <label className="text-sm font-semibold text-white mb-3 block">Property Type</label>
+                  <div className="border border-[#D4AF37]/30 rounded-md bg-black p-2">
+                    <FilterToggle
+                      options={[{ id: "all", label: "All" }, ...propertyCategories]}
+                      activeId={activeCategory}
+                      onChange={setActiveCategory}
+                      showAll={true}
+                    />
+                  </div>
+                </div>
+
+                {/* Lifestyle */}
+                <div>
+                  <label className="text-sm font-semibold text-white mb-3 block">Lifestyle</label>
+                  <div className="border border-[#D4AF37]/30 rounded-md bg-black p-2">
+                    <FilterToggle
+                      options={[{ id: "all", label: "All" }, ...lifestyleOptions]}
+                      activeId={activeLifestyle}
+                      onChange={setActiveLifestyle}
+                      showAll={true}
+                    />
+                  </div>
+                </div>
+
+                {/* Price Range */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-semibold text-white">
+                      Price Range ({isRental ? "AED/year" : "AED"})
+                    </label>
+                    <div className="flex items-center">
+                      <Checkbox 
+                        id="enablePriceFilterMobile" 
+                        className="border-[#D4AF37] data-[state=checked]:bg-[#D4AF37] data-[state=checked]:text-black"
+                        checked={enablePriceFilter}
+                        onCheckedChange={(checked) => setEnablePriceFilter(checked as boolean)}
+                      />
+                      <label htmlFor="enablePriceFilterMobile" className="ml-2 text-xs text-white/70">
+                        Enable filter
+                      </label>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <label className="text-xs text-white/70">Min Price</label>
+                        <Input
+                          type="number"
+                          className="bg-black border-[#D4AF37]/30 text-white focus:border-[#D4AF37] focus:ring-[#D4AF37]/10"
+                          value={priceRange[0]}
+                          onChange={(e) => {
+                            const val = parseInt(e.target.value) || 0;
+                            setPriceRange([val, priceRange[1]]);
+                          }}
+                          placeholder="Min price"
+                          min={isRental ? 10000 : 100000}
+                          step={isRental ? 1000 : 10000}
+                          disabled={!enablePriceFilter}
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-xs text-white/70">Max Price</label>
+                        <Input
+                          type="number"
+                          className="bg-black border-[#D4AF37]/30 text-white focus:border-[#D4AF37] focus:ring-[#D4AF37]/10"
+                          value={priceRange[1]}
+                          onChange={(e) => {
+                            const val = parseInt(e.target.value) || 0;
+                            setPriceRange([priceRange[0], val]);
+                          }}
+                          placeholder="Max price"
+                          min={isRental ? 10000 : 100000}
+                          step={isRental ? 1000 : 10000}
+                          disabled={!enablePriceFilter}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex justify-between text-xs text-white/50 font-medium mt-1">
+                      <span>Min: {formatPrice(priceRange[0])}</span>
+                      <span>Max: {formatPrice(priceRange[1])}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Area Range */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-semibold text-white">Area (sq.ft)</label>
+                    <div className="flex items-center">
+                      <Checkbox 
+                        id="enableAreaFilterMobile" 
+                        className="border-[#D4AF37] data-[state=checked]:bg-[#D4AF37] data-[state=checked]:text-black"
+                        checked={enableAreaFilter}
+                        onCheckedChange={(checked) => setEnableAreaFilter(checked as boolean)}
+                      />
+                      <label htmlFor="enableAreaFilterMobile" className="ml-2 text-xs text-white/70">
+                        Enable filter
+                      </label>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <label className="text-xs text-white/70">Min Area</label>
+                        <Input
+                          type="number"
+                          className="bg-black border-[#D4AF37]/30 text-white focus:border-[#D4AF37] focus:ring-[#D4AF37]/10"
+                          value={areaRange[0]}
+                          onChange={(e) => {
+                            const val = parseInt(e.target.value) || 0;
+                            setAreaRange([val, areaRange[1]]);
+                          }}
+                          placeholder="Min area"
+                          min={100}
+                          step={50}
+                          disabled={!enableAreaFilter}
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-xs text-white/70">Max Area</label>
+                        <Input
+                          type="number"
+                          className="bg-black border-[#D4AF37]/30 text-white focus:border-[#D4AF37] focus:ring-[#D4AF37]/10"
+                          value={areaRange[1]}
+                          onChange={(e) => {
+                            const val = parseInt(e.target.value) || 0;
+                            setAreaRange([areaRange[0], val]);
+                          }}
+                          placeholder="Max area"
+                          min={100}
+                          step={50}
+                          disabled={!enableAreaFilter}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex justify-between text-xs text-white/50 font-medium mt-1">
+                      <span>Min: {formatArea(areaRange[0])}</span>
+                      <span>Max: {formatArea(areaRange[1])}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bedrooms */}
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-white">Bedrooms</label>
+                  <Select value={bedrooms} onValueChange={setBedrooms}>
+                    <SelectTrigger className="border border-[#D4AF37]/30 bg-black text-white hover:border-[#D4AF37]">
+                      <SelectValue placeholder="Any" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-black border border-[#D4AF37]/30 text-white">
+                      <SelectItem value="any">Any</SelectItem>
+                      <SelectItem value="studio">Studio</SelectItem>
+                      <SelectItem value="1">1 Bedroom</SelectItem>
+                      <SelectItem value="2">2 Bedrooms</SelectItem>
+                      <SelectItem value="3">3 Bedrooms</SelectItem>
+                      <SelectItem value="4">4 Bedrooms</SelectItem>
+                      <SelectItem value="5+">5+ Bedrooms</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Bathrooms */}
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-white">Bathrooms</label>
+                  <Select value={bathrooms} onValueChange={setBathrooms}>
+                    <SelectTrigger className="border border-[#D4AF37]/30 bg-black text-white hover:border-[#D4AF37]">
+                      <SelectValue placeholder="Any" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-black border border-[#D4AF37]/30 text-white">
+                      <SelectItem value="any">Any</SelectItem>
+                      <SelectItem value="1">1 Bathroom</SelectItem>
+                      <SelectItem value="2">2 Bathrooms</SelectItem>
+                      <SelectItem value="3">3 Bathrooms</SelectItem>
+                      <SelectItem value="4">4 Bathrooms</SelectItem>
+                      <SelectItem value="5+">5+ Bathrooms</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Rental Period - Only show for rental properties */}
+                {isRental && (
+                  <div>
+                    <label className="text-sm font-semibold text-white">Rental Period</label>
+                    <Select value={rentalPeriod} onValueChange={setRentalPeriod}>
+                      <SelectTrigger className="border border-[#D4AF37]/30 bg-black text-white hover:border-[#D4AF37]">
+                        <SelectValue placeholder="Any Period" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-black border border-[#D4AF37]/30 text-white">
+                        <SelectItem value="any">Any Period</SelectItem>
+                        <SelectItem value="weekly">Weekly</SelectItem>
+                        <SelectItem value="monthly">Monthly</SelectItem>
+                        <SelectItem value="yearly">Yearly</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+                {/* Amenities */}
+                <div>
+                  <label className="text-sm font-semibold text-white mb-3 block">Amenities</label>
+                  <div className="grid grid-cols-1 gap-2">
+                    {amenities.map((amenity) => (
+                      <div
+                        key={amenity.id}
+                        className={`flex items-center gap-2 p-2 rounded-md cursor-pointer transition-colors ${
+                          selectedAmenities.includes(amenity.id)
+                            ? "bg-[#D4AF37]/10 text-[#D4AF37]"
+                            : "text-white/70 hover:bg-[#D4AF37]/5"
+                        }`}
+                        onClick={() => toggleAmenity(amenity.id)}
+                      >
+                        <Checkbox
+                          checked={selectedAmenities.includes(amenity.id)}
+                          className="border-[#D4AF37] data-[state=checked]:bg-[#D4AF37] data-[state=checked]:text-black"
+                        />
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-sm">{amenity.label}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Views */}
+                <div>
+                  <label className="text-sm font-semibold text-white mb-3 block">Views</label>
+                  <div className="grid grid-cols-1 gap-2">
+                    {viewOptions.map((view) => (
+                      <div
+                        key={view.id}
+                        className={`flex items-center gap-2 p-2 rounded-md cursor-pointer transition-colors ${
+                          selectedViews.includes(view.id)
+                            ? "bg-[#D4AF37]/10 text-[#D4AF37]"
+                            : "text-white/70 hover:bg-[#D4AF37]/5"
+                        }`}
+                        onClick={() => toggleView(view.id)}
+                      >
+                        <Checkbox
+                          checked={selectedViews.includes(view.id)}
+                          className="border-[#D4AF37] data-[state=checked]:bg-[#D4AF37] data-[state=checked]:text-black"
+                        />
+                        <span className="text-sm">{view.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Neighborhoods */}
+                {neighborhoodOptions.length > 0 && (
+                  <div>
+                    <label className="text-sm font-semibold text-white mb-3 block">Neighborhoods</label>
+                    <div className="grid grid-cols-1 gap-2">
+                      {neighborhoodOptions.map((neighborhood) => (
+                        <div
+                          key={neighborhood.id}
+                          className={`flex items-center gap-2 p-2 rounded-md cursor-pointer transition-colors ${
+                            selectedNeighborhoods.includes(neighborhood.id)
+                              ? "bg-[#D4AF37]/10 text-[#D4AF37]"
+                              : "text-white/70 hover:bg-[#D4AF37]/5"
+                          }`}
+                          onClick={() => toggleNeighborhood(neighborhood.id)}
+                        >
+                          <Checkbox
+                            checked={selectedNeighborhoods.includes(neighborhood.id)}
+                            className="border-[#D4AF37] data-[state=checked]:bg-[#D4AF37] data-[state=checked]:text-black"
+                          />
+                          <span className="text-sm">{neighborhood.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Action buttons */}
+                <div className="fixed bottom-0 left-0 right-0 p-4 bg-[#0a0a0a] border-t border-[#D4AF37]/30 flex gap-3">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    className="flex-1 text-white/70 hover:text-white hover:bg-black"
+                    onClick={resetFilters}
+                  >
+                    Reset
+                  </Button>
+                  <Button
+                    onClick={applyFilters}
+                    className="flex-1 bg-[#D4AF37] text-black hover:bg-[#D4AF37]/90"
+                  >
+                    Apply Filters
+                  </Button>
                 </div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
-
-      {/* Mobile Filters Button */}
-      <div className="md:hidden mb-6">
-        <Button
-          variant="outline"
-          className="w-full border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10 flex items-center justify-center gap-2"
-          onClick={() => setShowMobileFilters(true)}
-        >
-          <Filter className="h-4 w-4" />
-          Filters
-        </Button>
-      </div>
-
-      {/* Mobile Filters Panel */}
-      <AnimatePresence>
-        {showMobileFilters && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-black/90 z-50 overflow-y-auto pb-20"
-          >
-            <div className="container mx-auto py-6 px-4">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-white">Filters</h2>
-                <Button
-                  variant="ghost"
-                  className="text-white hover:bg-white/10"
-                  onClick={() => setShowMobileFilters(false)}
-                >
-                  <X className="h-6 w-6" />
-                </Button>
-              </div>
-
-              {/* Mobile Filter Content */}
-              <div className="space-y-8">
-                {/* Listing Type Filter */}
-                <div className="space-y-3">
-                  <label className="text-sm font-semibold text-white">Listing Type</label>
-                  <FilterToggle options={listingTypes} activeId={activeListingType} onChange={setActiveListingType} />
-                </div>
-
-                {/* Market Type Filter (if not on a specific market page) */}
-                {!isOffPlan && !isRental && (
-                  <div className="space-y-3">
-                    <label className="text-sm font-semibold text-white">Market Type</label>
-                    <FilterToggle options={marketTypes} activeId={activeMarketType} onChange={setActiveMarketType} />
-                  </div>
-                )}
-
-                {/* Property Type Filter */}
-                <div className="space-y-3">
-                  <label className="text-sm font-semibold text-white">Property Type</label>
-                  <FilterToggle options={propertyCategories} activeId={activeCategory} onChange={setActiveCategory} />
-                </div>
-
-                {/* Lifestyle Filter */}
-                <div className="space-y-3">
-                  <label className="text-sm font-semibold text-white">Lifestyle</label>
-                  <FilterToggle options={lifestyleOptions} activeId={activeLifestyle} onChange={setActiveLifestyle} />
-                </div>
-
-                {/* Developer Filter (always shown for off-plan, optional for others) */}
-                {(isOffPlan || activeMarketType === "off-plan") && (
-                  <div className="space-y-3">
-                    <label className="text-sm font-semibold text-white">Developer</label>
-                    <FilterToggle options={developerOptions} activeId={activeDeveloper} onChange={setActiveDeveloper} />
-                  </div>
-                )}
-
-                {/* Price Range */}
-                <div className="space-y-3">
-                  <label className="text-sm font-semibold text-white">
-                    Price Range ({isRental ? "AED/year" : "AED"})
-                  </label>
-                  <div className="pt-6 px-2">
-                    <Slider
-                      value={priceRange}
-                      min={isRental ? 10000 : 100000}
-                      max={isRental ? 1000000 : 50000000}
-                      step={isRental ? 1000 : 10000}
-                      onValueChange={(value) => setPriceRange(value as [number, number])}
-                    />
-                  </div>
-                  <div className="flex justify-between text-sm text-white/70 font-medium">
-                    <span>{formatPrice(priceRange[0])}</span>
-                    <span>{formatPrice(priceRange[1])}</span>
-                  </div>
-                </div>
-
-                {/* Area Range */}
-                <div className="space-y-3">
-                  <label className="text-sm font-semibold text-white">Area (sq.ft)</label>
-                  <div className="pt-6 px-2">
-                    <Slider
-                      value={areaRange}
-                      min={100}
-                      max={20000}
-                      step={100}
-                      onValueChange={(value) => setAreaRange(value as [number, number])}
-                    />
-                  </div>
-                  <div className="flex justify-between text-sm text-white/70 font-medium">
-                    <span>{formatArea(areaRange[0])}</span>
-                    <span>{formatArea(areaRange[1])}</span>
-                  </div>
-                </div>
-
-                {/* Bedrooms */}
-                <div className="space-y-3">
-                  <label className="text-sm font-semibold text-white">Bedrooms</label>
-                  <Select value={bedrooms} onValueChange={setBedrooms}>
-                    <SelectTrigger className="bg-transparent border-[#D4AF37]/40 text-white h-10 font-medium">
-                      <SelectValue placeholder="Select bedrooms" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-black border-[#D4AF37]/40 text-white">
-                      <SelectItem value="any" className="font-medium">Any</SelectItem>
-                      <SelectItem value="studio" className="font-medium">Studio</SelectItem>
-                      <SelectItem value="1" className="font-medium">1 Bedroom</SelectItem>
-                      <SelectItem value="2" className="font-medium">2 Bedrooms</SelectItem>
-                      <SelectItem value="3" className="font-medium">3 Bedrooms</SelectItem>
-                      <SelectItem value="4" className="font-medium">4 Bedrooms</SelectItem>
-                      <SelectItem value="5+" className="font-medium">5+ Bedrooms</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Bathrooms */}
-                <div className="space-y-3">
-                  <label className="text-sm font-semibold text-white">Bathrooms</label>
-                  <Select value={bathrooms} onValueChange={setBathrooms}>
-                    <SelectTrigger className="bg-transparent border-[#D4AF37]/40 text-white h-10 font-medium">
-                      <SelectValue placeholder="Select bathrooms" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-black border-[#D4AF37]/40 text-white">
-                      <SelectItem value="any" className="font-medium">Any</SelectItem>
-                      <SelectItem value="1" className="font-medium">1 Bathroom</SelectItem>
-                      <SelectItem value="2" className="font-medium">2 Bathrooms</SelectItem>
-                      <SelectItem value="3" className="font-medium">3 Bathrooms</SelectItem>
-                      <SelectItem value="4" className="font-medium">4 Bathrooms</SelectItem>
-                      <SelectItem value="5+" className="font-medium">5+ Bathrooms</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Location Selection */}
-                <div className="space-y-3">
-                  <label className="text-sm font-semibold text-white">Location</label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
-                    {locationOptions.map((location) => (
-                      <div key={location.id} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={`mobile-location-${location.id}`}
-                          checked={selectedLocations.includes(location.id)}
-                          onCheckedChange={() => toggleLocation(location.id)}
-                          className="border-[#D4AF37]/40 data-[state=checked]:bg-[#D4AF37] data-[state=checked]:text-black"
-                        />
-                        <label
-                          htmlFor={`mobile-location-${location.id}`}
-                          className="text-sm font-medium text-white cursor-pointer"
-                        >
-                          {location.label}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Neighborhood Selection */}
-                <div className="space-y-3">
-                  <label className="text-sm font-semibold text-white">Neighborhood</label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
-                    {neighborhoodOptions.length > 0 ? (
-                      neighborhoodOptions.map((neighborhood) => (
-                        <div key={neighborhood.id} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={`mobile-neighborhood-${neighborhood.id}`}
-                            checked={selectedNeighborhoods.includes(neighborhood.id)}
-                            onCheckedChange={() => toggleNeighborhood(neighborhood.id)}
-                            className="border-[#D4AF37]/40 data-[state=checked]:bg-[#D4AF37] data-[state=checked]:text-black"
-                          />
-                          <label
-                            htmlFor={`mobile-neighborhood-${neighborhood.id}`}
-                            className="text-sm font-medium text-white cursor-pointer"
-                          >
-                            {neighborhood.name}
-                          </label>
-                        </div>
-                      ))
-                    ) : (
-                      <p className="text-sm text-white/50 italic">No neighborhoods available</p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Views Selection */}
-                <div className="space-y-3">
-                  <label className="text-sm font-semibold text-white">Views</label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
-                    {viewOptions.map((view) => (
-                      <div key={view.id} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={`mobile-view-${view.id}`}
-                          checked={selectedViews.includes(view.id)}
-                          onCheckedChange={() => toggleView(view.id)}
-                          className="border-[#D4AF37]/40 data-[state=checked]:bg-[#D4AF37] data-[state=checked]:text-black"
-                        />
-                        <label
-                          htmlFor={`mobile-view-${view.id}`}
-                          className="text-sm font-medium text-white cursor-pointer"
-                        >
-                          {view.label}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Amenities Selection */}
-                <div className="space-y-3">
-                  <label className="text-sm font-semibold text-white">Amenities</label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
-                    {amenities.map((amenity) => (
-                      <div key={amenity.id} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={`mobile-amenity-${amenity.id}`}
-                          checked={selectedAmenities.includes(amenity.id)}
-                          onCheckedChange={() => toggleAmenity(amenity.id)}
-                          className="border-[#D4AF37]/40 data-[state=checked]:bg-[#D4AF37] data-[state=checked]:text-black"
-                        />
-                        <label
-                          htmlFor={`mobile-amenity-${amenity.id}`}
-                          className="text-sm font-medium text-white cursor-pointer flex items-center gap-1.5"
-                        >
-                          {amenity.icon}
-                          {amenity.label}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Completion Year (for off-plan properties) */}
-                {(isOffPlan || activeMarketType === "off-plan") && (
-                  <div className="space-y-3">
-                    <label className="text-sm font-semibold text-white">Completion Year</label>
-                    <Select value={completionYear} onValueChange={setCompletionYear}>
-                      <SelectTrigger className="bg-transparent border-[#D4AF37]/40 text-white h-10 font-medium">
-                        <SelectValue placeholder="Select year" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-black border-[#D4AF37]/40 text-white">
-                        <SelectItem value="any" className="font-medium">Any</SelectItem>
-                        <SelectItem value="2023" className="font-medium">2023</SelectItem>
-                        <SelectItem value="2024" className="font-medium">2024</SelectItem>
-                        <SelectItem value="2025" className="font-medium">2025</SelectItem>
-                        <SelectItem value="2026" className="font-medium">2026</SelectItem>
-                        <SelectItem value="2027+" className="font-medium">2027+</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
-
-                {/* Furnishing Status (for rental properties) */}
-                {isRental && (
-                  <div className="space-y-3">
-                    <label className="text-sm font-semibold text-white">Furnishing Status</label>
-                    <Select value={furnishingStatus} onValueChange={setFurnishingStatus}>
-                      <SelectTrigger className="bg-transparent border-[#D4AF37]/40 text-white h-10 font-medium">
-                        <SelectValue placeholder="Select status" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-black border-[#D4AF37]/40 text-white">
-                        <SelectItem value="any" className="font-medium">Any</SelectItem>
-                        <SelectItem value="furnished" className="font-medium">Furnished</SelectItem>
-                        <SelectItem value="unfurnished" className="font-medium">Unfurnished</SelectItem>
-                        <SelectItem value="partially-furnished" className="font-medium">Partially Furnished</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
-
-                {/* Mobile Filter Action Buttons */}
-                <div className="mt-8 grid grid-cols-2 gap-4">
-                  <Button
-                    variant="outline"
-                    className="w-full border-[#D4AF37]/50 text-[#D4AF37] hover:bg-[#D4AF37]/10"
-                    onClick={resetFilters}
-                  >
-                    <X className="h-4 w-4 mr-2" />
-                    Reset
-                  </Button>
-                  <GradientButton className="w-full" onClick={applyFilters}>
-                    Apply Filters
-                  </GradientButton>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   )
 }

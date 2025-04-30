@@ -46,8 +46,44 @@ export default {
       name: "price",
       title: "Price",
       type: "number",
-      description: "Numeric price value (e.g., 1500000)",
+      description: "Numeric price value (e.g., 1500000). For sales or default price.",
       validation: (Rule: any) => Rule.required(),
+    },
+    {
+      name: "priceWeekly",
+      title: "Weekly Price",
+      type: "number",
+      description: "Weekly rental price (only applicable for rental properties)",
+      hidden: ({ document }: any) => document?.marketType !== "rent",
+    },
+    {
+      name: "priceMonthly",
+      title: "Monthly Price",
+      type: "number",
+      description: "Monthly rental price (only applicable for rental properties)",
+      hidden: ({ document }: any) => document?.marketType !== "rent",
+    },
+    {
+      name: "priceYearly",
+      title: "Yearly Price",
+      type: "number",
+      description: "Yearly rental price (only applicable for rental properties)",
+      hidden: ({ document }: any) => document?.marketType !== "rent",
+    },
+    {
+      name: "defaultRentalPeriod",
+      title: "Default Rental Period",
+      type: "string",
+      options: {
+        list: [
+          { title: "Weekly", value: "weekly" },
+          { title: "Monthly", value: "monthly" },
+          { title: "Yearly", value: "yearly" },
+        ],
+      },
+      description: "Default rental period to display (only applicable for rental properties)",
+      hidden: ({ document }: any) => document?.marketType !== "rent",
+      initialValue: "monthly",
     },
     {
       name: "bedrooms",
@@ -87,19 +123,6 @@ export default {
           },
         },
       ],
-    },
-    {
-      name: "status",
-      title: "Status",
-      type: "string",
-      options: {
-        list: [
-          { title: "For Sale", value: "For Sale" },
-          { title: "For Rent", value: "For Rent" },
-          { title: "Off Plan", value: "Off Plan" },
-        ],
-      },
-      validation: (Rule: any) => Rule.required(),
     },
     {
       name: "marketType",
@@ -149,18 +172,18 @@ export default {
       type: "array",
       of: [{ type: "string" }],
     },
-    // {
-    //   name: "amenities",
-    //   title: "Amenities",
-    //   type: "array",
-    //   of: [
-    //     {
-    //       type: "reference",
-    //       to: [{ type: "amenity" }],
-    //     },
-    //   ],
-    //   description: "Select amenities available in this property",
-    // },
+    {
+      name: "amenities",
+      title: "Amenities",
+      type: "array",
+      of: [
+        {
+          type: "reference",
+          to: [{ type: "amenity" }],
+        },
+      ],
+      description: "Select amenities available in this property",
+    },
     {
       name: "completionDate",
       title: "Completion Date",
@@ -200,7 +223,7 @@ export default {
       name: "isFeatured",
       title: "Featured Property",
       type: "boolean",
-      description: "Mark this property as featured",
+      description: "Mark this property as featured and show in home page",
       initialValue: false,
     },
   ],

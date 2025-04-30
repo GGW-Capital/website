@@ -15,6 +15,7 @@ export async function generateMetadata({
 }: {
   params: { id: string };
 }): Promise<Metadata> {
+  params = await params;
   const propertySlug = params.id;
   const property = await getPropertyBySlug(propertySlug);
 
@@ -64,6 +65,14 @@ export default async function PropertyDetailsPage({
   const lifestyleTitle =
     property.lifestyle?.name || property.lifestyleTitle || "";
 
+  // Get status label based on marketType
+  const statusLabel =
+    property.marketType === "buy"
+      ? "For Sale"
+      : property.marketType === "rent"
+        ? "For Rent"
+        : "Off Plan";
+
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="container mx-auto px-4 pt-48 pb-16">
@@ -71,9 +80,9 @@ export default async function PropertyDetailsPage({
         <div className="mb-6 flex justify-between items-center">
           <Link
             href={
-              property.status === "For Sale"
+              property.marketType === "buy"
                 ? "/buy"
-                : property.status === "For Rent"
+                : property.marketType === "rent"
                   ? "/rent"
                   : "/off-plan"
             }
@@ -122,165 +131,171 @@ export default async function PropertyDetailsPage({
           </div>
         </div>
 
-        {/* Property Title and Location - Server Rendered */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-          <div className="lg:col-span-2">
-            <h1 className="text-3xl md:text-4xl font-serif font-bold mb-4">
-              <span className="bg-gradient-to-r from-[#D4AF37] via-[#F5D87A] to-[#D4AF37] bg-clip-text text-transparent">
-                {property.title}
-              </span>
-            </h1>
-            <div className="flex items-center text-[#D4AF37] mb-2">
-              <MapPin className="h-4 w-4 mr-1" />
-              <span className="text-lg">{property.location}</span>
-            </div>
-            {neighborhoodName !== "Not specified" && (
-              <div className="flex items-center text-white/80 mb-4">
-                <Compass className="h-4 w-4 mr-1 text-[#D4AF37]/80" />
-                <span>{neighborhoodName}</span>
-              </div>
-            )}
-          </div>
+        {/* Property title */}
+        <h1 className="text-3xl md:text-5xl font-bold mb-4">
+          {property.title}
+        </h1>
 
-          <div className="flex flex-col justify-end">
-            <p className="text-2xl md:text-3xl font-bold text-[#D4AF37] mb-2">
-              {formattedPrice} {property.status === 'rent' && 'per month'}
-            </p>
-            <div className="flex flex-wrap gap-2 mb-4">
-              <span className="bg-[#0a0a0a] border border-[#D4AF37]/20 px-3 py-1 rounded-full text-sm">
-                {property.status}
-              </span>
-              {lifestyleTitle && (
-                <span className="bg-[#0a0a0a] border border-[#D4AF37]/20 px-3 py-1 rounded-full text-sm">
-                  {lifestyleTitle}
-                </span>
-              )}
-            </div>
-
-            <div className="flex justify-between mb-2">
-              <Link
-                href={`https://api.whatsapp.com/send?phone=+971568663666&text=I'm%20interested%20in%20${encodeURIComponent(property.title)}`}
-                target="_blank"
-              >
-                <GradientButton className="w-full md:w-auto">
-                  Request Information
-                </GradientButton>
-              </Link>
-            </div>
-          </div>
+        {/* Property location */}
+        <div className="flex items-center text-[#D4AF37] mb-8">
+          <MapPin className="h-5 w-5 mr-2" />
+          <span className="text-lg">{property.location}</span>
         </div>
 
-        {/* Main Image - Server Rendered */}
+        {/* Property description */}
         <div className="mb-12">
-          {property.mainImage ? (
-            <div className="relative h-[500px] rounded-xl overflow-hidden mb-4">
-              <Image
-                src={urlFor(property.mainImage).url()}
-                alt={property.title}
-                fill
-                className="object-cover"
-                priority
-              />
-            </div>
-          ) : (
-            <div className="h-[500px] rounded-xl overflow-hidden mb-4 bg-[#0a0a0a] border border-[#D4AF37]/20 flex items-center justify-center">
-              <p className="text-white/50">No image available</p>
-            </div>
-          )}
+          <p className="text-lg text-white/80 leading-relaxed mb-8">
+            {property.description}
+          </p>
         </div>
 
-        {/* Property Overview - Server Rendered */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-          <div className="lg:col-span-2">
-            <div className="bg-[#0a0a0a] border border-[#D4AF37]/20 rounded-xl p-6">
-              <h2 className="text-xl font-bold mb-4 text-white">
-                <span className="bg-gradient-to-r from-[#D4AF37] to-[#FFDF8E] bg-clip-text text-transparent">
-                  About This Property
-                </span>
-              </h2>
-              <p className="text-white/80 whitespace-pre-line mb-6 leading-relaxed">
-                {property.description}
-              </p>
-
-              {property.views && property.views.length > 0 && (
-                <div className="mt-4">
-                  <h3 className="text-lg font-semibold mb-2 text-[#D4AF37]/90">
-                    Views
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {property.views.map((view: string, index: number) => (
-                      <span
-                        key={index}
-                        className="bg-black/40 border border-[#D4AF37]/10 px-3 py-1 rounded-full text-sm text-white/90"
-                      >
-                        {view}
-                      </span>
-                    ))}
-                  </div>
+        {/* Property details grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+          {/* Main image & features */}
+          <div className="md:col-span-2">
+            {/* Main image */}
+            <div className="relative h-[500px] w-full rounded-xl overflow-hidden mb-8">
+              {property.mainImage ? (
+                <Image
+                  src={urlFor(property.mainImage).url()}
+                  alt={property.title}
+                  className="object-cover"
+                  fill
+                  priority
+                />
+              ) : (
+                <div className="w-full h-full bg-gray-900 flex items-center justify-center">
+                  <p className="text-white/50">No image available</p>
                 </div>
               )}
-            </div>
-          </div>
-
-          <div>
-            <div className="bg-[#0a0a0a] border border-[#D4AF37]/20 rounded-xl p-6">
-              <h2 className="text-xl font-bold mb-4 text-white">
-                <span className="bg-gradient-to-r from-[#D4AF37] to-[#FFDF8E] bg-clip-text text-transparent">
-                  Property Details
+              <div className="absolute top-4 left-4 z-10">
+                <span className="bg-[#D4AF37] text-black px-3 py-1 rounded-md text-sm font-medium">
+                  {statusLabel}
                 </span>
-              </h2>
+              </div>
+            </div>
 
-              <div className="space-y-4">
-                {property.bedrooms !== undefined && (
-                  <div className="flex justify-between items-center border-b border-[#D4AF37]/10 pb-2">
-                    <span className="text-white/70">Bedrooms</span>
-                    <span className="text-white font-medium">
-                      {property.bedrooms}
-                    </span>
+            {/* Property overview */}
+            <div className="bg-[#080808] rounded-xl p-6 border border-[#D4AF37]/10">
+              <h2 className="text-xl font-bold mb-4">Property Overview</h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-y-4">
+                {property.bedrooms && (
+                  <div>
+                    <p className="text-white/60 text-sm">Bedrooms</p>
+                    <p className="text-white font-medium">
+                      {property.bedrooms}{" "}
+                      {property.bedrooms === 1 ? "Bed" : "Beds"}
+                    </p>
                   </div>
                 )}
 
-                {property.bathrooms !== undefined && (
-                  <div className="flex justify-between items-center border-b border-[#D4AF37]/10 pb-2">
-                    <span className="text-white/70">Bathrooms</span>
-                    <span className="text-white font-medium">
-                      {property.bathrooms}
-                    </span>
-                  </div>
-                )}
+                <div>
+                  <p className="text-white/60 text-sm">Bathrooms</p>
+                  <p className="text-white font-medium">
+                    {property.bathrooms || 0}{" "}
+                    {property.bathrooms === 1 ? "Bath" : "Baths"}
+                  </p>
+                </div>
 
                 {property.area && (
-                  <div className="flex justify-between items-center border-b border-[#D4AF37]/10 pb-2">
-                    <span className="text-white/70">Area</span>
-                    <span className="text-white font-medium">
-                      {property.area} sq.ft.
-                    </span>
+                  <div>
+                    <p className="text-white/60 text-sm">Area</p>
+                    <p className="text-white font-medium">
+                      {property.area} sq.ft
+                    </p>
                   </div>
                 )}
 
                 {property.type && (
-                  <div className="flex justify-between items-center border-b border-[#D4AF37]/10 pb-2">
-                    <span className="text-white/70">Type</span>
-                    <span className="text-white font-medium">
-                      {property.type}
-                    </span>
-                  </div>
-                )}
-
-                {property.status && (
-                  <div className="flex justify-between items-center border-b border-[#D4AF37]/10 pb-2">
-                    <span className="text-white/70">Status</span>
-                    <span className="text-white font-medium">
-                      {property.status}
-                    </span>
+                  <div>
+                    <p className="text-white/60 text-sm">Property Type</p>
+                    <p className="text-white font-medium">{property.type}</p>
                   </div>
                 )}
 
                 {property.furnishingStatus && (
-                  <div className="flex justify-between items-center border-b border-[#D4AF37]/10 pb-2">
-                    <span className="text-white/70">Furnishing</span>
-                    <span className="text-white font-medium">
+                  <div>
+                    <p className="text-white/60 text-sm">Furnishing</p>
+                    <p className="text-white font-medium">
                       {property.furnishingStatus}
+                    </p>
+                  </div>
+                )}
+
+                {developerName && developerName !== "Not specified" && (
+                  <div>
+                    <p className="text-white/60 text-sm">Developer</p>
+                    <p className="text-white font-medium">{developerName}</p>
+                  </div>
+                )}
+
+                {neighborhoodName && neighborhoodName !== "Not specified" && (
+                  <div>
+                    <p className="text-white/60 text-sm">Neighborhood</p>
+                    <p className="text-white font-medium">{neighborhoodName}</p>
+                  </div>
+                )}
+
+                {lifestyleTitle && (
+                  <div>
+                    <p className="text-white/60 text-sm">Lifestyle</p>
+                    <p className="text-white font-medium">{lifestyleTitle}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Price & property highlights */}
+          <div>
+            {/* Price card */}
+            <div className="bg-[#D4AF37] rounded-xl p-6 text-black mb-8">
+              <h2 className="text-xl font-bold mb-2">Price</h2>
+              <p className="text-2xl font-bold mb-1">
+                {formattedPrice} {property.marketType === "rent" && "per month"}
+              </p>
+              <div className="flex items-center bg-black/10 px-3 py-1 rounded-md w-fit">
+                <span className="text-sm font-medium">{statusLabel}</span>
+              </div>
+            </div>
+
+            {/* Request info */}
+            <div className="bg-[#080808] rounded-xl p-6 border border-[#D4AF37]/10 mb-8">
+              <h2 className="text-xl font-bold mb-4">Request Information</h2>
+              <p className="text-white/70 mb-4">
+                Contact us to learn more about this exclusive property.
+              </p>
+              <div className="space-y-3">
+                <Link href="/contact">
+                  <GradientButton className="w-full">
+                    Contact Agent
+                  </GradientButton>
+                </Link>
+                <Link
+                  href={`https://api.whatsapp.com/send?phone=+971568663666&text=I'm%20interested%20in%20${encodeURIComponent(
+                    property.title
+                  )}`}
+                  target="_blank"
+                >
+                  <Button
+                    variant="outline"
+                    className="w-full border-[#D4AF37]/30 text-[#D4AF37] hover:bg-[#D4AF37]/10"
+                  >
+                    WhatsApp Inquiry
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            {/* Property details */}
+            <div className="bg-[#080808] rounded-xl p-6 border border-[#D4AF37]/10">
+              <h2 className="text-xl font-bold mb-4">Property Details</h2>
+              <div className="space-y-2">
+                {property.marketType && (
+                  <div className="flex justify-between items-center border-b border-[#D4AF37]/10 pb-2">
+                    <span className="text-white/70">Status</span>
+                    <span className="text-white font-medium">
+                      {statusLabel}
                     </span>
                   </div>
                 )}

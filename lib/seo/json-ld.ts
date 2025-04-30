@@ -41,7 +41,7 @@ export function generatePropertyJsonLd(property: any) {
     description: property.description,
     ...price,
     image: imageUrls.length > 0 ? imageUrls : undefined,
-    url: `${process.env.NEXT_PUBLIC_BASE_URL || "https://ggwcapital.com"}/properties/${property.slug?.current || ""}`,
+    url: `${process.env.NEXT_PUBLIC_BASE_URL || "https://ggwcapitalre.com"}/properties/${property.slug?.current || ""}`,
     datePosted: property._createdAt || new Date().toISOString(),
     validUntil: new Date(
       new Date().setFullYear(new Date().getFullYear() + 1)
@@ -121,7 +121,7 @@ export function generateProjectJsonLd(project: any) {
     name: project.title,
     description: project.description,
     image: imageUrls.length > 0 ? imageUrls : undefined,
-    url: `${process.env.NEXT_PUBLIC_BASE_URL || "https://ggwcapital.com"}/projects/${project.slug?.current || ""}`,
+    url: `${process.env.NEXT_PUBLIC_BASE_URL || "https://ggwcapitalre.com"}/projects/${project.slug?.current || ""}`,
     address: {
       "@type": "PostalAddress",
       addressRegion: "Dubai",
@@ -166,8 +166,8 @@ export function generateOrganizationJsonLd() {
     name: "GGW Capital",
     description:
       "Premier luxury real estate consultancy in the UAE, specializing in exclusive property investment opportunities.",
-    url: process.env.NEXT_PUBLIC_BASE_URL || "https://ggwcapital.com",
-    logo: `${process.env.NEXT_PUBLIC_BASE_URL || "https://ggwcapital.com"}/logo.png`,
+    url: process.env.NEXT_PUBLIC_BASE_URL || "https://ggwcapitalre.com",
+    logo: `${process.env.NEXT_PUBLIC_BASE_URL || "https://ggwcapitalre.com"}/logo.png`,
     sameAs: [
       "https://www.facebook.com/ggwcapital",
       "https://www.instagram.com/ggwcapital",
@@ -258,7 +258,7 @@ export function generateBlogJsonLd(blog: any) {
     headline: blog.title,
     description: blog.excerpt || blog.description,
     image: mainImageUrl,
-    url: `${process.env.NEXT_PUBLIC_BASE_URL || "https://ggwcapital.com"}/blogs/${blog.slug?.current || ""}`,
+    url: `${process.env.NEXT_PUBLIC_BASE_URL || "https://ggwcapitalre.com"}/blogs/${blog.slug?.current || ""}`,
     datePublished: blog.publishedAt || blog._createdAt,
     dateModified: blog._updatedAt,
     author: {
@@ -270,12 +270,12 @@ export function generateBlogJsonLd(blog: any) {
       name: "GGW Capital",
       logo: {
         "@type": "ImageObject",
-        url: `${process.env.NEXT_PUBLIC_BASE_URL || "https://ggwcapital.com"}/logo.png`,
+        url: `${process.env.NEXT_PUBLIC_BASE_URL || "https://ggwcapitalre.com"}/logo.png`,
       },
     },
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `${process.env.NEXT_PUBLIC_BASE_URL || "https://ggwcapital.com"}/blogs/${blog.slug?.current || ""}`,
+      "@id": `${process.env.NEXT_PUBLIC_BASE_URL || "https://ggwcapitalre.com"}/blogs/${blog.slug?.current || ""}`,
     },
   };
 }

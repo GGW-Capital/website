@@ -237,7 +237,7 @@ export default function PropertiesAndProjects() {
         const projectsData = await getProjects()
         if (projectsData && projectsData.length > 0) {
           // Transform the data to match the expected format
-          const formattedData = projectsData.map((project) => ({
+          const formattedData = projectsData.map((project: any) => ({
             ...project,
             id: project._id,
           }))
@@ -324,7 +324,11 @@ export default function PropertiesAndProjects() {
             className="object-cover group-hover:scale-110 transition-transform duration-700"
           />
           <div className="absolute top-4 left-4">
-            <span className="bg-[#D4AF37] text-black px-3 py-1 rounded-md text-sm font-medium">{property.status}</span>
+            <span className="bg-[#D4AF37] text-black px-3 py-1 rounded-md text-sm font-medium">
+              {property.marketType === "buy" ? "For Sale" : 
+               property.marketType === "rent" ? "For Rent" : 
+               property.marketType === "off-plan" ? "Off Plan" : ""}
+            </span>
           </div>
           <div className="absolute top-4 right-4">
             <span className="bg-black/70 text-white px-3 py-1 rounded-md text-sm font-medium border border-[#D4AF37]/30">

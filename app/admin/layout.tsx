@@ -1,3 +1,4 @@
+
 import type React from "react"
 import { Montserrat } from "next/font/google"
 import "../globals.css"
@@ -10,10 +11,6 @@ const montserrat = Montserrat({
   weight: ["300", "400", "500", "600", "700", "800"],
 })
 
-export const metadata = {
-  title: "GGW Capital Admin | Sanity Studio",
-  description: "Admin panel for GGW Capital",
-}
 
 export default function AdminLayout({
   children,
@@ -25,7 +22,6 @@ export default function AdminLayout({
       <body className="font-sans bg-white">
         {children}
       </body>
-      <style dangerouslySetInnerHTML={{__html: `* iframe, * .widget-visible iframe{display: none !important;}`}}/>
     </html>
   )
 }

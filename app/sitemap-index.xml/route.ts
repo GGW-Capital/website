@@ -1,6 +1,8 @@
-import { baseMetadata } from '@/lib/seo/metadata'
+import { baseMetadata } from "@/lib/seo/metadata";
 
-const BASE_URL = (baseMetadata.metadataBase?.toString() || 'https://ggwcapital.com').replace(/\/$/, '')
+const BASE_URL = (
+  baseMetadata.metadataBase?.toString() || "https://ggwcapitalre.com"
+).replace(/\/$/, "");
 
 export async function GET(): Promise<Response> {
   // Generate the sitemap index XML
@@ -26,12 +28,12 @@ export async function GET(): Promise<Response> {
     <loc>${BASE_URL}/sitemaps/sitemap-neighborhoods.xml</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
   </sitemap>
-</sitemapindex>`
+</sitemapindex>`;
 
   return new Response(xml, {
     headers: {
-      'Content-Type': 'application/xml',
-      'Cache-Control': 'public, max-age=3600, s-maxage=3600'
-    }
-  })
+      "Content-Type": "application/xml",
+      "Cache-Control": "public, max-age=3600, s-maxage=3600",
+    },
+  });
 }

@@ -28,7 +28,7 @@ const baskerville = Playfair_Display_SC({
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_BASE_URL || "https://ggwcapital.com"
+    process.env.NEXT_PUBLIC_BASE_URL || "https://ggwcapitalre.com"
   ),
   title: {
     template: "%s | GGW Capital Luxury Real Estate",
@@ -83,7 +83,7 @@ export const metadata: Metadata = {
     images: ["/og-image.jpg"],
   },
   alternates: {
-    canonical: "https://gulfgatewaycsp.com/",
+    canonical: "https://ggwcapitalre.com",
   },
   verification: {
     google: "google-site-verification-code", // Replace with actual verification code when available
@@ -110,7 +110,9 @@ export default function RootLayout({
         <Script src="https://unpkg.com/taos@1.0.5/dist/taos.js" />
       </head>
       <body className="font-sans bg-black text-white min-h-screen relative">
-        <Script dangerouslySetInnerHTML={{__html: `
+        <Script
+          dangerouslySetInnerHTML={{
+            __html: `
 var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
 (function(){
 var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
@@ -119,7 +121,9 @@ s1.src='https://embed.tawk.to/67f9732936f0cc190e5a1cf9/1ioj6jnuv';
 s1.charset='UTF-8';
 s1.setAttribute('crossorigin','*');
 s0.parentNode.insertBefore(s1,s0);
-})();`}} />
+})();`,
+          }}
+        />
         <div className="loading-screen-placeholder z-[100099] bg-black fixed inset-0 w-screen h-[200vh]"></div>
         {/* Loading screen overlay - independent of content */}
         <ClientVisitDetector />
