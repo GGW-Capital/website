@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   },
 };
 
-export let revalidate = 60 * 5;
+export const revalidate = 60;
 
 export default async function ContactPage() {
   // Fetch team members from Sanity CMS server-side
