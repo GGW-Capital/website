@@ -1,13 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Phone, Mail, MapPin, MessageCircle } from "lucide-react";
-import { WhatsappIcon } from "@/components/icons";
+import { Phone, Mail, MapPin } from "lucide-react";
+import { FacebookIcon, InstagramIcon, LinkedinIcon, TwitterIcon, WhatsappIcon } from "@/components/icons";
 import { getTeamMembers } from "@/lib/sanity";
 import { urlFor } from "@/lib/sanity";
 import GradientTitle from "@/components/ui/gradient-title";
 import { Metadata } from "next";
 import ContactForm from "@/components/contact-form";
-import LiveChatButton from "@/components/live-chat-button";
 
 // SEO metadata for the contact page
 export const metadata: Metadata = {
@@ -126,28 +125,6 @@ export default async function ContactPage() {
               </div>
             </Link>
 
-            <div
-              id="live-chat"
-              className="bg-[#0a0a0a] border border-[#D4AF37]/20 rounded-xl p-8 shadow-[0_0_15px_rgba(212,175,55,0.15)]"
-            >
-              <h2 className="text-2xl font-bold text-white mb-6">
-                Live Chat Support
-              </h2>
-              <div className="flex items-center gap-4 mb-6">
-                <div className="bg-[#D4AF37]/10 p-4 rounded-full">
-                  <MessageCircle className="h-8 w-8 text-[#D4AF37]" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-medium text-white">
-                    Chat with our team
-                  </h3>
-                  <p className="text-white/70">
-                    Available 24/7 for your inquiries
-                  </p>
-                </div>
-              </div>
-              <LiveChatButton />
-            </div>
 
             {/* Team Section */}
             {teamMembers.length > 0 && (
@@ -155,7 +132,7 @@ export default async function ContactPage() {
                 <h2 className="text-2xl font-bold text-white mb-6">
                   Our Expert Team
                 </h2>
-                <div className="space-y-6">
+                <div className="space-y-7">
                   {teamMembers.slice(0, 4).map((member:any) => (
                     <div className="flex items-center gap-4" key={member._id}>
                       <div className="relative h-16 w-16 rounded-full overflow-hidden">
@@ -179,17 +156,17 @@ export default async function ContactPage() {
                         )}
                       </div>
                       <div>
-                        <h3 className="text-lg font-medium text-white">
+                        <Link href={`/about#team`} className="text-lg font-medium text-white">
                           {member.name}
-                        </h3>
+                        </Link>
                         <p className="text-[#D4AF37]">{member.position}</p>
-                        <div className="flex items-center gap-4 mt-1">
+                        <div className="flex items-center gap-4 mt-2">
                           {member.phone && (
                             <a
                               href={`tel:${member.phone}`}
                               className="text-white/70 text-sm hover:text-white"
                             >
-                              {member.phone}
+                              <Phone className="h-4 w-4" />
                             </a>
                           )}
                           {member.email && (
@@ -198,6 +175,42 @@ export default async function ContactPage() {
                               className="text-white/70 text-sm hover:text-white"
                             >
                               <Mail className="h-4 w-4" />
+                            </a>
+                          )}
+                          {member.socialMedia.linkedin && (
+                            <a
+                              href={member.socialMedia.linkedin}
+                              target="_blank"
+                              className="text-white/70 text-sm hover:text-white"
+                            >
+                              <LinkedinIcon className="h-4 w-4" />
+                            </a>
+                          )}
+                          {member.socialMedia.facebook && (
+                            <a
+                              href={member.socialMedia.facebook}
+                              target="_blank"
+                              className="text-white/70 text-sm hover:text-white"
+                            >
+                              <FacebookIcon className="h-4 w-4" />
+                            </a>
+                          )}
+                          {member.socialMedia.instagram && (
+                            <a
+                              href={member.socialMedia.instagram}
+                              target="_blank"
+                              className="text-white/70 text-sm hover:text-white"
+                            >
+                              <InstagramIcon className="h-4 w-4" />
+                            </a>
+                          )}
+                          {member.socialMedia.twitter && (
+                            <a
+                              href={member.socialMedia.twitter}
+                              target="_blank"
+                              className="text-white/70 text-sm hover:text-white"
+                            >
+                              <TwitterIcon className="h-4 w-4" />
                             </a>
                           )}
                         </div>

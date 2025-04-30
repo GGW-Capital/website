@@ -1,8 +1,6 @@
 
 import type React from "react"
 import { Montserrat } from "next/font/google"
-import "../globals.css"
-
 // Initialize Montserrat font with multiple weights
 const montserrat = Montserrat({
   subsets: ["latin"],

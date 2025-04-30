@@ -83,7 +83,7 @@ export default function Footer() {
                 { label: "Home", href: "/" },
                 { label: "Properties for Sale", href: "/buy" },
                 { label: "Properties for Rent", href: "/rent" },
-                { label: "Off-Plan Projects", href: "/off-plan" },
+                { label: "Off-Plan Projects", href: "/projects?marketType=off-plan" },
                 { label: "Neighborhoods", href: "/neighborhoods" },
                 { label: "About Us", href: "/about" },
                 { label: "Contact Us", href: "/contact" },

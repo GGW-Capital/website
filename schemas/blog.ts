@@ -65,6 +65,33 @@ export default {
       of: [
         {
           type: 'block',
+          marks: {
+            annotations: [
+              {
+                name: 'link',
+                type: 'object',
+                title: 'External or Internal Link',
+                fields: [
+                  {
+                    name: 'href',
+                    type: 'url',
+                    title: 'URL',
+                    validation: (Rule: any) =>
+                      Rule.uri({
+                        allowRelative: true,
+                        scheme: ['http', 'https', 'mailto', 'tel'],
+                      }).required(),
+                  },
+                  {
+                    name: 'blank',
+                    type: 'boolean',
+                    title: 'Open in new tab?',
+                    initialValue: true,
+                  },
+                ],
+              },
+            ],
+          },
         },
         {
           type: 'image',
@@ -80,11 +107,12 @@ export default {
       ],
       validation: (Rule: any) => Rule.required(),
     },
+    
     {
       name: 'isFeatured',
       title: 'Featured Blog',
       type: 'boolean',
-      description: 'Mark this blog as featured to display on the home page',
+      description: 'Mark this blog as featured',
       initialValue: false,
     },
   ],

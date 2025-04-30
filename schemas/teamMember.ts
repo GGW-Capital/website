@@ -19,7 +19,7 @@ export default {
       name: 'bio',
       title: 'Bio',
       type: 'text',
-      validation: (Rule: any) => Rule.required(),
+      validation: (Rule: any) => Rule.max(200).required(),
     },
     {
       name: 'image',

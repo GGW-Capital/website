@@ -13,6 +13,7 @@ export default async function BlogPostPage({
 }: {
   params: { id: string };
 }) {
+  params = await params;
   // Safe params handling for Next.js
   if (!params?.id) return notFound();
   
@@ -217,10 +218,18 @@ export default async function BlogPostPage({
                               {children}
                             </code>
                           ),
-                          link: ({children, value}) => {
-                            const rel = value.href.startsWith('/') ? undefined : 'noreferrer noopener';
+                          link: ({ children, value }) => {
+                            const isBlank = value.blank === true;
+                            const rel = isBlank ? "noopener noreferrer" : undefined;
+                            const target = isBlank ? "_blank" : "_self";
+                
                             return (
-                              <a href={value.href} rel={rel} className="text-[#D4AF37] hover:underline font-medium">
+                              <a
+                                href={value.href}
+                                target={target}
+                                rel={rel}
+                                className="text-[#D4AF37] hover:underline font-medium"
+                              >
                                 {children}
                               </a>
                             );

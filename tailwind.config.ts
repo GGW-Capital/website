@@ -66,6 +66,7 @@ const config = {
         },
       },
       backgroundImage: {
+        
         "ggw-gradient":
           "linear-gradient(to right, #8A6E15, #B08C1A, #D4AF37, #B08C1A, #8A6E15)",
         "ggw-gradient-hover":

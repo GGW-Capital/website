@@ -1,11 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Check, ArrowRight } from "lucide-react";
+import { Check, ArrowRight, Mail, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getTeamMembers } from "@/lib/sanity";
 import { urlFor } from "@/lib/sanity";
 import GradientTitle from "@/components/ui/gradient-title";
 import { Metadata } from "next";
+import { FacebookIcon, InstagramIcon, LinkedinIcon, TwitterIcon } from "@/components/icons";
 
 // SEO metadata for the about page
 export const metadata: Metadata = {
@@ -98,7 +99,7 @@ export default async function AboutPage() {
           />
           <div>
             <h2 className="text-3xl font-bold mb-6 heading-2 text-white">
-              Our <span className="text-[#D4AF37]">Story</span>
+              Our <GradientTitle element="span">Story</GradientTitle>
             </h2>
             <p className="text-white/80 mb-6">
               GGW Capital was founded in 2010 with a vision to redefine luxury
@@ -130,7 +131,7 @@ export default async function AboutPage() {
         >
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-6 text-white heading-2">
-              Our <span className="text-[#D4AF37]">Core Values</span>
+              Our <GradientTitle element="span">Core Values</GradientTitle>
             </h2>
             <p className="text-white/80 max-w-3xl mx-auto">
               At GGW Capital, our values guide everything we do, from how we
@@ -165,7 +166,7 @@ export default async function AboutPage() {
         >
           <div className="text-center mb-10">
             <h2 className="text-3xl font-bold text-white heading-2">
-              Our <span className="text-[#D4AF37]">Achievements</span>
+              Our <GradientTitle element="span">Achievements</GradientTitle>
             </h2>
           </div>
 
@@ -189,10 +190,11 @@ export default async function AboutPage() {
         <div 
           className="mb-20"
           data-taos="fade-up"
+          id="team"
         >
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-6 text-white heading-2">
-              Meet Our <span className="text-[#D4AF37]">Team</span>
+              Meet Our <GradientTitle element="span">Team</GradientTitle>
             </h2>
             <p className="text-white/80 max-w-3xl mx-auto">
               Our team of experienced professionals is dedicated to providing
@@ -238,7 +240,7 @@ export default async function AboutPage() {
                     </h3>
                     <p className="text-[#D4AF37] mb-4">{member.position}</p>
                     {member.bio && (
-                      <p className="text-white/70 mb-4 line-clamp-3">
+                      <p className="text-white/70 mb-4">
                         {member.bio}
                       </p>
                     )}
@@ -249,20 +251,7 @@ export default async function AboutPage() {
                           href={`mailto:${member.email}`}
                           className="text-white/70 hover:text-[#D4AF37] transition-colors"
                         >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="20"
-                            height="20"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <rect width="20" height="16" x="2" y="4" rx="2" />
-                            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                          </svg>
+                          <Mail className="h-5 w-5" />
                         </a>
                       )}
                       {member.phone && (
@@ -270,19 +259,43 @@ export default async function AboutPage() {
                           href={`tel:${member.phone}`}
                           className="text-white/70 hover:text-[#D4AF37] transition-colors"
                         >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="20"
-                            height="20"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                          </svg>
+                          <Phone className="h-5 w-5" />
+                        </a>
+                      )}
+                      {member.socialMedia.linkedin && (
+                        <a
+                          href={member.socialMedia.linkedin}
+                          target="_blank"
+                          className="text-white/70 hover:text-[#D4AF37] transition-colors"
+                        >
+                          <LinkedinIcon className="h-5 w-5" />
+                        </a>
+                      )}
+                      {member.socialMedia.twitter && (
+                        <a
+                          href={member.socialMedia.twitter}
+                          target="_blank"
+                          className="text-white/70 hover:text-[#D4AF37] transition-colors"
+                        >
+                          <TwitterIcon className="h-5 w-5" />
+                        </a>
+                      )}
+                      {member.socialMedia.facebook && (
+                        <a
+                          href={member.socialMedia.facebook}
+                          target="_blank"
+                          className="text-white/70 hover:text-[#D4AF37] transition-colors"
+                        >
+                          <FacebookIcon className="h-5 w-5" />
+                        </a>
+                      )}
+                      {member.socialMedia.instagram && (
+                        <a
+                          href={member.socialMedia.instagram}
+                          target="_blank"
+                          className="text-white/70 hover:text-[#D4AF37] transition-colors"
+                        >
+                          <InstagramIcon className="h-5 w-5" />
                         </a>
                       )}
                     </div>
@@ -299,7 +312,7 @@ export default async function AboutPage() {
           data-taos="fade-up"
         >
           <h2 className="text-3xl font-bold mb-6 text-white">
-            Ready to Find Your <span className="text-[#D4AF37]">Dream Property?</span>
+            Ready to Find Your <GradientTitle element="span">Dream Property?</GradientTitle>
           </h2>
           <p className="text-white/80 max-w-3xl mx-auto mb-8">
             Our team of experts is ready to help you find the perfect property

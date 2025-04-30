@@ -1,7 +1,7 @@
 import type React from "react";
 import type { Metadata } from "next";
 import { Montserrat, Playfair_Display_SC } from "next/font/google";
-import "@/app/globals.css";
+import "@/app/(client-view)/globals.css";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 // import WhatsAppChat from "@/components/whatsapp-chat";
@@ -107,7 +107,6 @@ export default function RootLayout({
             __html: `document.documentElement.classList.add('js')`,
           }}
         />
-        <Script src="https://unpkg.com/taos@1.0.5/dist/taos.js" />
       </head>
       <body className="font-sans bg-black text-white min-h-screen relative">
         <Script
