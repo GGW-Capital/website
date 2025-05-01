@@ -8,7 +8,6 @@ const config = {
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
     "*.{js,ts,jsx,tsx,mdx}",
-    
   ],
   prefix: "",
   theme: {
@@ -66,7 +65,6 @@ const config = {
         },
       },
       backgroundImage: {
-        
         "ggw-gradient":
           "linear-gradient(to right, #8A6E15, #B08C1A, #D4AF37, #B08C1A, #8A6E15)",
         "ggw-gradient-hover":
@@ -100,7 +98,6 @@ const config = {
   },
   plugins: [
     require("tailwindcss-animate"),
-    require("taos/plugin"),
     ({ addUtilities }: any) => {
       addUtilities({
         ".scrollbar-hide": {
@@ -116,12 +113,7 @@ const config = {
       });
     },
   ],
-
-  safelist: [
-    "!duration-[0ms]",
-    "!delay-[0ms]",
-    'html.js:where([class*="taos:"]:not(.taos-init))',
-  ],
+  safelist: ["bg-black/90", "md:bg-black/40", "bg-black/40"],
 } satisfies Config;
 
 export default config;

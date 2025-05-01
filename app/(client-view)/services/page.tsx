@@ -22,15 +22,7 @@ export default function ServicesPage() {
 
   return (
     <main className="min-h-screen pt-48 bg-black text-white">
-      {loading && <LoadingScreen onComplete={handleLoadingComplete} />}
 
-      <AnimatePresence>
-        {!loading && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-          >
             <Navbar />
             <div className="container mx-auto px-4">
               <div className="max-w-4xl mx-auto text-center mb-16">
@@ -129,9 +121,6 @@ export default function ServicesPage() {
                 </div>
               </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </main>
   );
 }

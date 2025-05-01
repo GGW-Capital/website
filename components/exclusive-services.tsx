@@ -18,8 +18,7 @@ export default function ExclusiveServices() {
       >
         <div
           className="bg-[#0a0a0a] border border-[#D4AF37]/20 rounded-xl overflow-hidden shadow-[0_0_15px_rgba(212,175,55,0.15)] hover:shadow-[0_0_25px_rgba(212,175,55,0.3)] transition-all duration-500 group h-full"
-          data-taos-offset="100"
-          data-taos="fade-up"
+
         >
           <div className="relative h-48">
             <Image

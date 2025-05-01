@@ -4,10 +4,7 @@ import { Montserrat, Playfair_Display_SC } from "next/font/google";
 import "@/app/(client-view)/globals.css";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
-// import WhatsAppChat from "@/components/whatsapp-chat";
-import ClientVisitDetector from "@/components/client-visit-detector";
 import Script from "next/script";
-// Taos animations import is not needed, handled via Tailwind plugin
 
 // Initialize Montserrat font with multiple weights for UI elements
 const montserrat = Montserrat({
@@ -68,7 +65,7 @@ export const metadata: Metadata = {
       "Discover exclusive luxury properties in the UAE with GGW Capital. Find premium villas, apartments, and penthouses for sale, rent, and off-plan investments.",
     images: [
       {
-        url: "/og-image.jpg",
+        url: "/ggw-capital-logo.webp",
         width: 1200,
         height: 630,
         alt: "GGW Capital Luxury Real Estate",
@@ -80,7 +77,7 @@ export const metadata: Metadata = {
     title: "GGW Capital | Exclusive Luxury Real Estate",
     description:
       "Discover exclusive luxury properties in the UAE with GGW Capital. Premium villas, apartments, and penthouses.",
-    images: ["/og-image.jpg"],
+    images: ["/ggw-capital-logo.webp"],
   },
   alternates: {
     canonical: "https://ggwcapitalre.com",
@@ -123,9 +120,6 @@ s0.parentNode.insertBefore(s1,s0);
 })();`,
           }}
         />
-        <div className="loading-screen-placeholder z-[100099] bg-black fixed inset-0 w-screen h-[200vh]"></div>
-        {/* Loading screen overlay - independent of content */}
-        <ClientVisitDetector />
 
         {/* Page content rendered directly by the server */}
         <Navbar />

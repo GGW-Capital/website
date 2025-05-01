@@ -50,7 +50,7 @@ const defaultLifestyleOptions = [
 
 export default function HeroSearch() {
   const router = useRouter();
-  const [priceRange, setPriceRange] = useState([200, 500]);
+  const [priceRange, setPriceRange] = useState([200, 10000]);
   const [enablePriceFilter, setEnablePriceFilter] = useState(true);
   const [bedrooms, setBedrooms] = useState("any");
   const [location, setLocation] = useState("");

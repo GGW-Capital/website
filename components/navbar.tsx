@@ -20,11 +20,18 @@ const NAV_LINKS = [
       { href: "/off-plan", label: "Off-Plan" },
     ],
   },
+  {
+    href: "/about",
+    label: "About",
+    children: [
+      { href: "/about", label: "Who We Are" },
+      { href: "/about#team", label: "Our Team" },
+    ],
+  },
   { href: "/projects", label: "Projects" },
   { href: "/blogs", label: "Blogs" },
   { href: "/services", label: "Services" },
   { href: "/developers", label: "Developers" },
-  { href: "/contact", label: "Contact Us" },
 ];
 
 export default function Navbar() {
@@ -76,7 +83,7 @@ export default function Navbar() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? `bg-black/40 md:backdrop-blur-md border-b border-[#D4AF37]/20 shadow-sm`
+          ? `bg-black/90 md:bg-black/40 md:backdrop-blur-md border-b border-[#D4AF37]/20 shadow-sm`
           : "bg-gradient-to-b from-black/90 to-black/0 border-[#D4AF37]/0"
       }`}
     >

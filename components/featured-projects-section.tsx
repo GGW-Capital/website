@@ -62,8 +62,7 @@ export default async function FeaturedProjectsSection() {
       >
         <div
           className="bg-[#0a0a0a] border border-[#D4AF37]/20 rounded-xl overflow-hidden shadow-[0_0_20px_rgba(212,175,55,0.15)] hover:shadow-[0_0_30px_rgba(212,175,55,0.3)] transition-all duration-500 h-full"
-          data-taos-offset="100"
-          data-taos="fade-up"
+
         >
           <div className="relative h-[250px]">
             {project.mainImage ? (

@@ -33,8 +33,7 @@ export default async function FeaturedPropertiesSection() {
       >
         <div
           className="bg-[#0a0a0a] border border-[#D4AF37]/20 rounded-xl overflow-hidden shadow-[0_0_20px_rgba(212,175,55,0.15)] hover:shadow-[0_0_30px_rgba(212,175,55,0.3)] transition-all duration-500 h-full"
-          data-taos-offset="100"
-          data-taos="fade-up"
+         
         >
           <div className="relative h-[250px]">
             {property.mainImage ? (
@@ -136,8 +135,7 @@ export default async function FeaturedPropertiesSection() {
       <div className="container mx-auto px-4">
         {/* Title and description */}
         <div
-          className="max-w-7xl mt-5 mx-auto text-center relative mb-16 taos:opacity-0 duration-1000"
-          data-taos-offset="100"
+          className="max-w-7xl mt-5 mx-auto text-center relative mb-16 duration-1000"
         >
           <h2 className="text-3xl md:text-5xl font-bold mb-6 text-white font-serif">
             Featured <GradientTitle element="span">Properties</GradientTitle>

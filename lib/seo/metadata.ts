@@ -57,7 +57,7 @@ export const baseMetadata: Metadata = {
       "Discover exclusive luxury properties in the UAE with GGW Capital. Find premium villas, apartments, and penthouses for sale, rent, and off-plan investments.",
     images: [
       {
-        url: "/og-image.jpg",
+        url: "/ggw-capital-logo.webp",
         width: 1200,
         height: 630,
         alt: "GGW Capital Luxury Real Estate",
@@ -69,7 +69,7 @@ export const baseMetadata: Metadata = {
     title: "GGW Capital | Exclusive Luxury Real Estate",
     description:
       "Discover exclusive luxury properties in the UAE with GGW Capital. Premium villas, apartments, and penthouses.",
-    images: ["/og-image.jpg"],
+    images: ["/ggw-capital-logo.webp"],
   },
   alternates: {
     canonical: "/",
@@ -107,7 +107,7 @@ export function generatePropertyMetadata(property: any): Metadata {
   // Generate dynamic image URL
   const imageUrl = property.mainImage
     ? urlFor(property.mainImage).width(1200).height(630).url()
-    : "/og-image.jpg";
+    : "/ggw-capital-logo.webp";
 
   // Get canonical URL for this property
   const canonicalUrl = `/properties/${property.slug?.current || ""}`;
@@ -184,7 +184,7 @@ export function generateProjectMetadata(project: any): Metadata {
   // Generate dynamic image URL
   const imageUrl = project.mainImage
     ? urlFor(project.mainImage).width(1200).height(630).url()
-    : "/og-image.jpg";
+    : "/ggw-capital-logo.webp";
 
   // Get canonical URL for this project
   const canonicalUrl = `/projects/${project.slug?.current || ""}`;
@@ -248,7 +248,7 @@ export function generateBlogMetadata(blog: any): Metadata {
   // Generate dynamic image URL
   const imageUrl = blog.mainImage
     ? urlFor(blog.mainImage).width(1200).height(630).url()
-    : "/og-image.jpg";
+    : "/ggw-capital-logo.webp";
 
   // Get canonical URL for this blog
   const canonicalUrl = `/blogs/${blog.slug?.current || ""}`;
@@ -308,7 +308,7 @@ export function generateNeighborhoodMetadata(neighborhood: any): Metadata {
   // Generate dynamic image URL
   const imageUrl = neighborhood.mainImage
     ? urlFor(neighborhood.mainImage).width(1200).height(630).url()
-    : "/og-image.jpg";
+    : "/ggw-capital-logo.webp";
 
   // Get canonical URL for this neighborhood
   const canonicalUrl = `/neighborhoods/${neighborhood.slug?.current || ""}`;

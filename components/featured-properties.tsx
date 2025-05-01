@@ -10,6 +10,7 @@ import FilterToggle from "@/components/filter-toggle"
 import Carousel from "@/components/carousel"
 import PropertyCardNew from "@/components/property-card-new"
 import { motion } from "framer-motion"
+import GradientTitle from "./ui/gradient-title"
 
 // Define our filter options
 const marketTypes = [
@@ -91,7 +92,7 @@ export default function FeaturedProperties() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-bold mb-6 text-white">
-              Featured <span className="text-[#D4AF37]">Properties</span>
+              Featured <GradientTitle element="span">Properties</GradientTitle>
             </h2>
             <div className="w-24 h-1 bg-[#D4AF37]/60 mx-auto mb-6"></div>
             <p className="text-lg text-white/80">
@@ -193,21 +194,17 @@ export default function FeaturedProperties() {
   return (
     <section className="py-24 bg-gradient-to-b from-black to-[#050505]">
       <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+        <div
           className="max-w-4xl mx-auto text-center mb-16"
         >
           <h2 className="text-3xl md:text-5xl font-bold mb-6 text-white">
-            Featured <span className="text-[#D4AF37]">Properties</span>
+            Featured <GradientTitle element="span">Properties</GradientTitle>
           </h2>
           <div className="w-24 h-1 bg-[#D4AF37]/60 mx-auto mb-6"></div>
           <p className="text-lg text-white/80">
             Discover our handpicked selection of the most exclusive properties in the UAE.
           </p>
-        </motion.div>
+        </div>
 
         {/* Filter controls */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 max-w-7xl mx-auto">

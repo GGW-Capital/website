@@ -144,10 +144,10 @@ export default async function BlogPostPage({
           <div className="max-w-4xl mx-auto mb-12">
             <div className="relative h-[400px] md:h-[500px] rounded-xl overflow-hidden shadow-[0_0_15px_rgba(212,175,55,0.15)] mb-8">
               <Image 
-                src={blog.imageUrl} 
-                alt={blog.title} 
-                fill 
-                className="object-cover" 
+  src={urlFor(blog.mainImage).width(1200).height(800).url()}
+  alt={blog.mainImage?.alt || blog.title}
+  width={1200}
+  height={800}
                 priority 
               />
             </div>
