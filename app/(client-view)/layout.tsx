@@ -47,7 +47,9 @@ export const metadata: Metadata = {
     "Dubai luxury market",
     "UAE property consultants",
   ],
-  authors: [{ name: "GGW Capital" }],
+  authors: [
+    { name: "GGW Capital" },
+    { name: "Dynamic ORD", url: "https://dynamicord.com" },],
   creator: "GGW Capital",
   publisher: "GGW Capital",
   formatDetection: {
@@ -81,6 +83,9 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: "https://ggwcapitalre.com",
+  },
+  other: {
+    developer: "Dynamic ORD (https://dynamicord.com)", // 👈 Custom field for clarity
   },
   verification: {
     google: "google-site-verification-code", // Replace with actual verification code when available
