@@ -7,6 +7,7 @@ import Image from "next/image";
 import { Calendar, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { urlFor } from "@/lib/sanity";
 
 export default function BlogList({ blogs }: { blogs: any[] }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -72,13 +73,21 @@ export default function BlogList({ blogs }: { blogs: any[] }) {
   );
 }
 
+ function formatKebabCaseToTitle(input: string): string {
+  return input
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+
 function BlogCard({ post }: { post: any }) {
   return (
     <Link href={`/blogs/${post.slug?.current || post._id}`} className="group">
       <div className="bg-black border border-[#D4AF37]/20 rounded-xl overflow-hidden shadow-[0_0_15px_rgba(212,175,55,0.15)] hover:shadow-[0_0_25px_rgba(212,175,55,0.3)] transition-all duration-300">
-        <div className="relative h-[200px]">
+        <div className="relative h-[400px]">
           <Image
-            src={post.imageUrl || "/placeholder.svg"}
+            src={urlFor(post.mainImage).width(600).height(400).url() || "/placeholder.svg"}
             alt={post.title}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -86,7 +95,7 @@ function BlogCard({ post }: { post: any }) {
           {post.category && (
             <div className="absolute top-4 left-4">
               <Badge className="bg-[#D4AF37] text-black font-semibold px-3 py-1">
-                {post.category}
+                {formatKebabCaseToTitle(post.category)}
               </Badge>
             </div>
           )}
@@ -96,9 +105,9 @@ function BlogCard({ post }: { post: any }) {
             {post.title}
           </h3>
           <p className="text-white/70 mb-4 text-sm line-clamp-2">{post.excerpt}</p>
-          <div className="flex items-center text-xs text-white/60">
-            <Calendar className="h-3 w-3 text-[#D4AF37]" />
-            <span>{post.formattedDate}</span>
+          <div className="flex gap-2 items-center text-xs text-white/60">
+            <Calendar className="h-3 w-3 text-[#D4AF37]" />{" "}
+            <span cl>{post.formattedDate}</span>
           </div>
         </div>
       </div>

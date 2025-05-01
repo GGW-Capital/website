@@ -8,18 +8,9 @@ export const revalidate = 60;
 export default async function BlogsPage() {
   const data = await getBlogs();
   const blogs = (data || []).map((blog: any) => {
-    let imageUrl = "/placeholder.svg";
-    try {
-      if (blog.mainImage) {
-        imageUrl = urlFor(blog.mainImage).url();
-      }
-    } catch {
-      imageUrl = "/placeholder.svg";
-    }
     return {
       ...blog,
       formattedDate: formatDate(blog.publishedAt || blog._createdAt),
-      imageUrl,
     };
   });
 
