@@ -106,21 +106,18 @@ export default {
       name: "mainImage",
       title: "Main Image",
       type: "image",
-      options: {
-        hotspot: true,
-      },
+      description: "Main image for the property. (size: 1920 × 1280)",
       validation: (Rule: any) => Rule.required(),
     },
     {
       name: "images",
+      description: "Additional images for the property. (size: 1920 × 1280)",
       title: "Images",
       type: "array",
       of: [
         {
           type: "image",
-          options: {
-            hotspot: true,
-          },
+          
         },
       ],
     },

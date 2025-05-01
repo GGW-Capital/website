@@ -233,30 +233,15 @@ export default function Footer() {
             <p className="text-white/50 text-sm mb-4 md:mb-0">
               © {new Date().getFullYear()} GGW Capital. All rights reserved.
             </p>
-            <div
-  itemScope
-  itemType="https://schema.org/ProfessionalService"
-  className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-sm hover:shadow-md transition-all duration-300 text-sm"
->
-  <a
-    itemProp="url"
-    href="https://dynamicord.com?utm_source=clientsite&utm_medium=referral&utm_campaign=portfolio"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="flex items-center gap-2 text-white hover:text-[#00e0e0] transition-colors font-medium"
-  >
-    <Image
-      src="https://dynamicord.com/img/logo.svg" // Replace with your logo path
-      alt="Dynamic ORD Logo"
-      width={100}
-      height={60}
-      itemProp="logo"
-    />
-    <span itemProp="name">
-      Website by <span className="text-[#00e0e0]">Dynamic ORD</span>
-    </span>
-  </a>
-</div>
+            <p className="text-white/50 text-center text-sm mb-4 md:mb-0">
+  Developed by{" "}
+  <span itemScope itemType="https://schema.org/Organization">
+    <a itemProp="url" className="bg-ggw-gradient bg-clip-text text-transparent hover:underline decoration-primary font-bold" href="https://dynamicord.com?utm_source=clientsite&utm_medium=referral&utm_campaign=portfolio"
+       target="_blank" rel="noopener noreferrer">
+      <span itemProp="name">Dynamic ORD</span>
+    </a>
+  </span> — SEO-first development.
+</p>
 
 
             <div className="flex flex-wrap justify-center gap-4 text-sm text-white/50">

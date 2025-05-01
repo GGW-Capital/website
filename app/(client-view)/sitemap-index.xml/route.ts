@@ -33,7 +33,6 @@ export async function GET(): Promise<Response> {
   return new Response(xml, {
     headers: {
       "Content-Type": "application/xml",
-      "Cache-Control": "public, max-age=3600, s-maxage=3600",
     },
   });
 }

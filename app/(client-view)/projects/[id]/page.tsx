@@ -100,7 +100,7 @@ export default async function ProjectDetailsPage({ params }: { params: { id: str
                 
                 {project.lifestyle && (
                   <Badge className="bg-black border border-[#D4AF37]/30 text-white">
-                    {project.lifestyle} Lifestyle
+                    {project.lifestyleTitle} Lifestyle
                   </Badge>
                 )}
               </div>

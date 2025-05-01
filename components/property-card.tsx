@@ -1,9 +1,9 @@
-"use client"
+
 import Image from "next/image"
 import Link from "next/link"
 import { MapPin, BedDouble, Bath, Maximize2, Building } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { formatCurrency, formatRentalPrice } from "@/lib/utils"
+import { urlFor } from "@/lib/sanity"
 
 interface PropertyCardProps {
   property: any
@@ -15,15 +15,13 @@ export default function PropertyCard({ property }: PropertyCardProps) {
     return null
   }
 
-  // Get the property slug for the URL
-  const propertySlug = property.slug?.current || property._id
 
   return (
-    <Link href={`/properties/${propertySlug}`} className="group">
+    <div className="group">
       <div className="bg-[#0a0a0a] border border-[#D4AF37]/20 rounded-xl overflow-hidden shadow-[0_0_20px_rgba(212,175,55,0.15)] hover:shadow-[0_0_30px_rgba(212,175,55,0.3)] transition-all duration-500 h-full">
         <div className="relative h-[300px]">
           <Image
-            src={property.images?.[0] || "/placeholder.svg"}
+            src={property.mainImage ? urlFor(property.mainImage).width(800).height(533).url() : "/placeholder.jpg"}
             alt={property.title}
             fill
             className="object-cover group-hover:scale-110 transition-transform duration-700"
@@ -57,9 +55,9 @@ export default function PropertyCard({ property }: PropertyCardProps) {
         </div>
 
         <div className="p-6">
-          <h3 className="text-xl font-bold text-white mb-2 group-hover:text-[#D4AF37] transition-colors">
+          <Link href={`/properties/${property.slug.current}`} className="text-xl font-bold text-white mb-2 group-hover:text-[#D4AF37] transition-colors">
             {property.title}
-          </h3>
+          </Link>
 
           <div className="flex items-center text-[#D4AF37] mb-4">
             <MapPin className="h-4 w-4 mr-1" />
@@ -118,12 +116,12 @@ export default function PropertyCard({ property }: PropertyCardProps) {
                 : formatCurrency(property.price)
               }
             </span>
-            <Button variant="outline" size="sm" className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10">
+            <Link href={`/properties/${property.slug.current}`} className="border-[#D4AF37] bg-transparent transition-colors font-semibold border-[1px] text-sm px-[14px] py-2 border-solid text-[#D4AF37] hover:bg-[#D4AF37]/10">
               View Details
-            </Button>
+            </Link>
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   )
 }

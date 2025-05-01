@@ -115,7 +115,7 @@ export default function FeaturedProperties() {
   const PropertyCard = ({ property }: { property: any }) => {
     // Get image URL from Sanity
     const imageUrl = property.mainImage 
-      ? urlFor(property.mainImage).width(800).height(600).url()
+      ? urlFor(property.mainImage).width(800).height(533).url()
       : "/placeholder.jpg"
     
     // Format the property's slug for the URL

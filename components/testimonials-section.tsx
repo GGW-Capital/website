@@ -107,11 +107,7 @@ export default function TestimonialsSection() {
   return (
     <section className="py-24 bg-gradient-to-b from-black to-[#050505]">
       <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+        <div
           className="max-w-4xl mx-auto text-center mb-16"
         >
           <h2 className="text-3xl md:text-5xl heading-2 font-bold mb-6 text-white">
@@ -121,7 +117,7 @@ export default function TestimonialsSection() {
           <p className="text-lg text-white/80 font-medium">
             Hear from our satisfied clients about their experience working with GGW Real Estate.
           </p>
-        </motion.div>
+        </div>
 
         <Carousel
           key={carouselKey}

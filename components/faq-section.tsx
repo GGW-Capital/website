@@ -83,7 +83,7 @@ export default function FAQSection({
                 className="bg-gradient-to-r from-neutral-900 to-black rounded-lg shadow-lg overflow-hidden border border-[#D4AF37]/30 transition-all duration-300 hover:border-[#D4AF37]/50"
               >
                 <AccordionTrigger className="px-6 py-5 text-left font-medium hover:no-underline text-white group">
-                  <span className="group-hover:text-[#D4AF37] transition-colors duration-200">
+                  <span className="group-hover:text-[#D4AF37] w-full text-sm transition-colors duration-200">
                     {faq.question}
                   </span>
                 </AccordionTrigger>
