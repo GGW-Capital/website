@@ -67,7 +67,7 @@ export default async function FeaturedProjectsSection() {
           <div className="relative h-[250px]">
             {project.mainImage ? (
               <Image
-                src={urlFor(project.mainImage).url()}
+                src={urlFor(project.mainImage).width(800).height(533).url()}
                 alt={project.name}
                 fill
                 className="object-cover group-hover:scale-110 transition-transform duration-700"

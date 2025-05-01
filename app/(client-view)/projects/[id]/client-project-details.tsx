@@ -53,7 +53,7 @@ export default function ClientProjectDetails({ project }: ClientProjectDetailsPr
             {project.images && project.images.length > 0 ? (
               <>
                 <Image
-                  src={urlFor(project.images[currentImageIndex]).url()}
+                  src={urlFor(project.images[currentImageIndex]).width(1600).height(1066).url()}
                   alt={project.name}
                   fill
                   className="object-cover"
@@ -103,7 +103,7 @@ export default function ClientProjectDetails({ project }: ClientProjectDetailsPr
               </>
             ) : project.mainImage ? (
               <Image
-                src={urlFor(project.mainImage).url()}
+                src={urlFor(project.mainImage).width(1600).height(1066).url()}
                 alt={project.name}
                 fill
                 className="object-cover"
@@ -127,7 +127,7 @@ export default function ClientProjectDetails({ project }: ClientProjectDetailsPr
                   onClick={() => setCurrentImageIndex(index)}
                 >
                   <Image
-                    src={urlFor(image).url()}
+                    src={urlFor(image).width(800).height(533).url()}
                     alt={`${project.name} - Image ${index + 1}`}
                     fill
                     className="object-cover"

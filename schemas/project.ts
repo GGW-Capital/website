@@ -68,6 +68,9 @@ export default {
       name: "mainImage",
       title: "Main Image",
       type: "image",
+      description:
+        "Upload a high-resolution image sized 1920x1280 (3:2 ratio) for best display across the website.",
+
       options: {
         hotspot: true,
       },
@@ -76,6 +79,9 @@ export default {
     {
       name: "images",
       title: "Images",
+      description:
+        "Upload a high-resolution image sized 1920x1280 (3:2 ratio) for best display across the website.",
+
       type: "array",
       of: [
         {
@@ -132,10 +138,10 @@ export default {
       description: "The neighborhood where this project is located",
     },
     {
-      name: 'isFeatured',
-      title: 'Featured Project',
-      type: 'boolean',
-      description: 'Mark this project as featured',
+      name: "isFeatured",
+      title: "Featured Project",
+      type: "boolean",
+      description: "Mark this project as featured",
       initialValue: false,
     },
     {
