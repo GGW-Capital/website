@@ -447,7 +447,7 @@ export async function getProjects(filters?: Record<string, any>) {
       }
 
       if (filters.developer && filters.developer !== "all") {
-        filterConditions.push(`developer->_id == "${filters.developer}"`);
+        filterConditions.push(`developer->name match \"*${filters.developer}*\"`);
       }
       if (filters.neighborhood && filters.neighborhood !== "all") {
       // Filter by rental period if specified and for rental properties
