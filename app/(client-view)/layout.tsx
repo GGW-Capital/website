@@ -88,7 +88,7 @@ export const metadata: Metadata = {
     developer: "Dynamic ORD (https://dynamicord.com)", // 👈 Custom field for clarity
   },
   verification: {
-    google: "google-site-verification-code", // Replace with actual verification code when available
+    google: "poprW4idzg8MJ6-ThxMDpwk-4MHBWx5z0dM44yKosis", // Replace with actual verification code when available
   },
   category: "real estate",
 };
