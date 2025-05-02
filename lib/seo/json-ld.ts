@@ -187,7 +187,7 @@ export function generateOrganizationJsonLd() {
       longitude: 55.270783,
     },
     telephone: "+971 4 000 0000",
-    email: "hello@gulfgatewaycsp.ae",
+    email: "info@ggwcapitalre.com",
     openingHoursSpecification: [
       {
         "@type": "OpeningHoursSpecification",

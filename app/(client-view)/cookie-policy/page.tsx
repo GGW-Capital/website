@@ -1,4 +1,4 @@
-import GradientTitle from "@/components/ui/gradient-title"
+import GradientTitle from "@/components/ui/gradient-title";
 
 export default function CookiePolicyPage() {
   return (
@@ -161,8 +161,8 @@ export default function CookiePolicyPage() {
             technologies, please contact us:
           </p>
           <ul className="list-none space-y-2 text-white/80">
-            <li>By email: hello@gulfgatewaycsp.ae</li>
-            <li>By phone: +971 56 866 3666</li>
+            <li>By email: info@ggwcapitalre.com</li>
+            <li>By phone: +971 52 692 5562</li>
             <li>
               By mail: Downtown Dubai, Sheikh Mohammed bin Rashid Blvd, Dubai,
               UAE

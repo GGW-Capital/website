@@ -116,19 +116,19 @@ export default function Footer() {
               <li className="flex items-center">
                 <Phone className="h-5 w-5 mr-3 text-[#D4AF37]" />
                 <a
-                  href="tel:+971568663666"
+                  href="tel:+971526925562"
                   className="text-white/70 hover:text-[#D4AF37] transition-colors"
                 >
-                  +971 56 866 3666
+                  +971 52 692 5562
                 </a>
               </li>
               <li className="flex items-center">
                 <Mail className="h-5 w-5 mr-3 text-[#D4AF37]" />
                 <a
-                  href="mailto:hello@gulfgatewaycsp.ae"
+                  href="mailto:info@ggwcapitalre.com"
                   className="text-white/70 hover:text-[#D4AF37] transition-colors"
                 >
-                  hello@gulfgatewaycsp.ae
+                  info@ggwcapitalre.com
                 </a>
               </li>
             </ul>
@@ -234,15 +234,20 @@ export default function Footer() {
               © {new Date().getFullYear()} GGW Capital. All rights reserved.
             </p>
             <p className="text-white/50 text-center text-sm mb-4 md:mb-0">
-  Developed by{" "}
-  <span itemScope itemType="https://schema.org/Organization">
-    <a itemProp="url" className="bg-ggw-gradient bg-clip-text text-transparent hover:underline decoration-primary font-bold" href="https://dynamicord.com?utm_source=clientsite&utm_medium=referral&utm_campaign=portfolio"
-       target="_blank" rel="noopener noreferrer">
-      <span itemProp="name">Dynamic ORD</span>
-    </a>
-  </span> — SEO-first development.
-</p>
-
+              Developed by{" "}
+              <span itemScope itemType="https://schema.org/Organization">
+                <a
+                  itemProp="url"
+                  className="bg-ggw-gradient bg-clip-text text-transparent hover:underline decoration-primary font-bold"
+                  href="https://dynamicord.com?utm_source=clientsite&utm_medium=referral&utm_campaign=portfolio"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span itemProp="name">Dynamic ORD</span>
+                </a>
+              </span>{" "}
+              — SEO-first development.
+            </p>
 
             <div className="flex flex-wrap justify-center gap-4 text-sm text-white/50">
               <Link

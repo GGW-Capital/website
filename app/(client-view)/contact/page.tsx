@@ -1,7 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Phone, Mail, MapPin } from "lucide-react";
-import { FacebookIcon, InstagramIcon, LinkedinIcon, TwitterIcon, WhatsappIcon } from "@/components/icons";
+import {
+  FacebookIcon,
+  InstagramIcon,
+  LinkedinIcon,
+  TwitterIcon,
+  WhatsappIcon,
+} from "@/components/icons";
 import { getTeamMembers } from "@/lib/sanity";
 import { urlFor } from "@/lib/sanity";
 import GradientTitle from "@/components/ui/gradient-title";
@@ -70,7 +76,7 @@ export default async function ContactPage() {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <a
-                href="tel:+971568663666"
+                href="tel:+971526925562"
                 className="flex-1 bg-[#0a0a0a] border border-[#D4AF37]/20 rounded-xl p-6 flex items-center gap-4 hover:shadow-[0_0_15px_rgba(212,175,55,0.3)] transition-all"
               >
                 <div className="bg-[#D4AF37]/10 p-3 rounded-full">
@@ -78,7 +84,7 @@ export default async function ContactPage() {
                 </div>
                 <div>
                   <h3 className="text-lg font-medium text-white">Call Us</h3>
-                  <p className="text-white/70">+971 56 866 3666</p>
+                  <p className="text-white/70">+971 52 692 5562</p>
                 </div>
               </a>
 
@@ -91,7 +97,7 @@ export default async function ContactPage() {
                 </div>
                 <div>
                   <h3 className="text-lg font-medium text-white">WhatsApp</h3>
-                  <p className="text-white/70">+971 56 866 3666</p>
+                  <p className="text-white/70">+971 52 692 5562</p>
                 </div>
               </a>
             </div>
@@ -125,7 +131,6 @@ export default async function ContactPage() {
               </div>
             </Link>
 
-
             {/* Team Section */}
             {teamMembers.length > 0 && (
               <div className="bg-[#0a0a0a] border border-[#D4AF37]/20 rounded-xl p-8 shadow-[0_0_15px_rgba(212,175,55,0.15)]">
@@ -133,7 +138,7 @@ export default async function ContactPage() {
                   Our Expert Team
                 </h2>
                 <div className="space-y-7">
-                  {teamMembers.slice(0, 4).map((member:any) => (
+                  {teamMembers.slice(0, 4).map((member: any) => (
                     <div className="flex items-center gap-4" key={member._id}>
                       <div className="relative h-16 w-16 rounded-full overflow-hidden">
                         {member.image ? (
@@ -156,7 +161,10 @@ export default async function ContactPage() {
                         )}
                       </div>
                       <div>
-                        <Link href={`/about#team`} className="text-lg font-medium text-white">
+                        <Link
+                          href={`/about#team`}
+                          className="text-lg font-medium text-white"
+                        >
                           {member.name}
                         </Link>
                         <p className="text-[#D4AF37]">{member.position}</p>

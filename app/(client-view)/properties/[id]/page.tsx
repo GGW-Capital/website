@@ -263,7 +263,7 @@ export function generateJsonLd(property: any) {
   jsonLd.broker = {
     "@type": "RealEstateAgent",
     name: "GGW Capital",
-    telephone: "+971568663666",
+    telephone: "+971526925562",
     email: "info@ggwcapitalre.com", // Replace with your actual email
     url: "https://www.ggwcapitalre.com",
     logo: "https://www.ggwcapitalre.com/logo.png", // Replace with your actual logo URL
@@ -598,7 +598,7 @@ export default async function PropertyDetailsPage({
                     </GradientButton>
                   </Link>
                   <Link
-                    href={`https://api.whatsapp.com/send?phone=+971568663666&text=I'm%20interested%20in%20${encodeURIComponent(
+                    href={`https://api.whatsapp.com/send?phone=+971526925562&text=I'm%20interested%20in%20${encodeURIComponent(
                       property.title
                     )}`}
                     target="_blank"
@@ -658,7 +658,7 @@ export default async function PropertyDetailsPage({
                 <GradientButton>Contact Us</GradientButton>
               </Link>
               <Link
-                href={`https://api.whatsapp.com/send?phone=+971568663666&text=I'm%20interested%20in%20${encodeURIComponent(property.title)}`}
+                href={`https://api.whatsapp.com/send?phone=+971526925562&text=I'm%20interested%20in%20${encodeURIComponent(property.title)}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >

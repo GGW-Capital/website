@@ -96,18 +96,18 @@ export default function Navbar() {
         <div className="container mx-auto px-4 flex justify-between items-center">
           <div className="flex items-center space-x-6 text-sm text-white/70 font-medium">
             <a
-              href="tel:+971568663666"
+              href="tel:+971526925562"
               className="flex items-center hover:text-[#D4AF37] transition-colors"
             >
               <Phone className="h-4 w-4 mr-2" />
-              +971 56 866 3666
+              +971 52 692 5562
             </a>
             <a
-              href="mailto:hello@gulfgatewaycsp.ae"
+              href="mailto:info@ggwcapitalre.com"
               className="flex items-center hover:text-[#D4AF37] transition-colors"
             >
               <Mail className="h-4 w-4 mr-2" />
-              hello@gulfgatewaycsp.ae
+              info@ggwcapitalre.com
             </a>
           </div>
           <div className="flex items-center">
@@ -258,18 +258,18 @@ export default function Navbar() {
 
             <div className="flex flex-col space-y-4 pt-6">
               <a
-                href="tel:+971568663666"
+                href="tel:+971526925562"
                 className="flex items-center text-white/70 hover:text-[#D4AF37] transition-colors font-medium"
               >
                 <Phone className="h-5 w-5 mr-3" />
-                +971 56 866 3666
+                +971 52 692 5562
               </a>
               <a
-                href="mailto:hello@gulfgatewaycsp.ae"
+                href="mailto:info@ggwcapitalre.com"
                 className="flex items-center text-white/70 hover:text-[#D4AF37] transition-colors font-medium"
               >
                 <Mail className="h-5 w-5 mr-3" />
-                hello@gulfgatewaycsp.ae
+                info@ggwcapitalre.com
               </a>
             </div>
           </div>
