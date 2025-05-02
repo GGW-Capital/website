@@ -27,18 +27,7 @@ export async function POST(req: NextRequest) {
 
     // Build email content
     const emailContent = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>New Contact Form Submission</title>
-      <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
-      </style>
-    </head>
-    <body style="margin: 0; padding: 0; font-family: 'Montserrat', Arial, sans-serif; background-color: #f5f5f5;">
-      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width: 600px; margin: 0 auto; background-color: #0a0a0a; color: #ffffff;">
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width: 600px;padding: 0; font-family: 'Google Sans', Roboto, Arial, sans-serif; background-color: #f5f5f5; margin: 0 auto; background-color: #0a0a0a; color: #ffffff;">
         <!-- Header with logo -->
         <tr>
           <td style="padding: 30px 30px 20px 30px; text-align: center; border-bottom: 1px solid rgba(212, 175, 55, 0.3);">
@@ -98,8 +87,6 @@ export async function POST(req: NextRequest) {
           </td>
         </tr>
       </table>
-    </body>
-    </html>
     `;
 
     // Send email
