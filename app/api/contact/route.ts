@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
         <!-- Header with logo -->
         <tr>
           <td style="padding: 30px 30px 20px 30px; text-align: center; border-bottom: 1px solid rgba(212, 175, 55, 0.3);">
-            <img src="https://www.ggwcapital.com/logo.png" alt="GGW Capital" width="150" style="max-width: 100%; height: auto;">
+            <img src="https://ggwcapitalre.com/images/ggw-capital-logo.svg" alt="GGW Capital" width="150" style="max-width: 100%; height: auto;">
           </td>
         </tr>
         
