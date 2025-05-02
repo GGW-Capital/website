@@ -50,28 +50,25 @@ export default function Footer() {
             </p>
             <div className="flex space-x-4">
               <a
-                href="#"
+                href="https://www.instagram.com/ggwcapital/"
+                target="_blank"
                 className="text-white/70 hover:text-[#D4AF37] transition-colors"
               >
                 <Instagram className="h-5 w-5" />
               </a>
               <a
-                href="#"
+                href="https://www.facebook.com/profile.php?id=61565948621617"
+                target="_blank"
                 className="text-white/70 hover:text-[#D4AF37] transition-colors"
               >
                 <Facebook className="h-5 w-5" />
               </a>
               <a
-                href="#"
+                href="https://www.linkedin.com/company/ggw-capital-real-estate-brokerage"
+                target="_blank"
                 className="text-white/70 hover:text-[#D4AF37] transition-colors"
               >
                 <Linkedin className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
-                className="text-white/70 hover:text-[#D4AF37] transition-colors"
-              >
-                <Twitter className="h-5 w-5" />
               </a>
             </div>
           </div>
