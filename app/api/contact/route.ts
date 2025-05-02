@@ -27,15 +27,79 @@ export async function POST(req: NextRequest) {
 
     // Build email content
     const emailContent = `
-      <h2>New Contact Form Submission</h2>
-      <p><strong>Name:</strong> ${name}</p>
-      <p><strong>Email:</strong> ${email}</p>
-      ${phone ? `<p><strong>Phone:</strong> ${phone}</p>` : ''}
-      ${interest ? `<p><strong>Interest:</strong> ${interest}</p>` : ''}
-      <p><strong>Message:</strong></p>
-      <p>${message.replace(/\n/g, '<br/>')}</p>
-      <hr />
-      <p><em>This email was sent from the contact form on the website.</em></p>
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>New Contact Form Submission</title>
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+      </style>
+    </head>
+    <body style="margin: 0; padding: 0; font-family: 'Montserrat', Arial, sans-serif; background-color: #f5f5f5;">
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width: 600px; margin: 0 auto; background-color: #0a0a0a; color: #ffffff;">
+        <!-- Header with logo -->
+        <tr>
+          <td style="padding: 30px 30px 20px 30px; text-align: center; border-bottom: 1px solid rgba(212, 175, 55, 0.3);">
+            <img src="https://www.ggwcapital.com/logo.png" alt="GGW Capital" width="150" style="max-width: 100%; height: auto;">
+          </td>
+        </tr>
+        
+        <!-- Main content -->
+        <tr>
+          <td style="padding: 30px;">
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+              <tr>
+                <td>
+                  <h2 style="margin: 0 0 20px 0; font-size: 24px; line-height: 30px; color: #D4AF37; font-weight: 600;">New Contact Form Submission</h2>
+                  
+                  <div style="background-color: #080808; border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 12px; padding: 25px; margin-bottom: 25px;">
+                    <p style="margin: 0 0 15px 0; font-size: 16px; line-height: 24px;">
+                      <span style="color: #D4AF37; font-weight: 600;">Name:</span> 
+                      <span style="color: #ffffff;">${name}</span>
+                    </p>
+                    
+                    <p style="margin: 0 0 15px 0; font-size: 16px; line-height: 24px;">
+                      <span style="color: #D4AF37; font-weight: 600;">Email:</span> 
+                      <span style="color: #ffffff;">${email}</span>
+                    </p>
+                    
+                    ${phone ? `
+                    <p style="margin: 0 0 15px 0; font-size: 16px; line-height: 24px;">
+                      <span style="color: #D4AF37; font-weight: 600;">Phone:</span> 
+                      <span style="color: #ffffff;">${phone}</span>
+                    </p>
+                    ` : ''}
+                    
+                    ${interest ? `
+                    <p style="margin: 0 0 15px 0; font-size: 16px; line-height: 24px;">
+                      <span style="color: #D4AF37; font-weight: 600;">Interest:</span> 
+                      <span style="color: #ffffff;">${interest}</span>
+                    </p>
+                    ` : ''}
+                  </div>
+                  
+                  <div style="background-color: #080808; border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 12px; padding: 25px;">
+                    <p style="margin: 0 0 15px 0; font-size: 16px; line-height: 24px; color: #D4AF37; font-weight: 600;">Message:</p>
+                    <p style="margin: 0; font-size: 16px; line-height: 24px; color: rgba(255, 255, 255, 0.8);">${message.replace(/\n/g, '<br/>')}</p>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        
+        <!-- Footer -->
+        <tr>
+          <td style="padding: 20px 30px; text-align: center; font-size: 14px; background-color: #080808; color: rgba(255, 255, 255, 0.6); border-top: 1px solid rgba(212, 175, 55, 0.3);">
+            <p style="margin: 0;">This email was sent from the contact form on the GGW Capital website.</p>
+            <p style="margin: 10px 0 0 0;">© ${new Date().getFullYear()} GGW Capital. All rights reserved.</p>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
     `;
 
     // Send email
