@@ -36,7 +36,6 @@ export async function POST(req: NextRequest) {
           </td>
         </tr>
         
-                  <a href="https://dynamicord.com" style="display:none !importantl">dynamicord.com</a>
         <!-- Main content -->
         <tr>
           <td style="padding: 30px;">
@@ -98,7 +97,6 @@ export async function POST(req: NextRequest) {
             <h2 style="margin: 0 0 20px 0; font-size: 22px; line-height: 30px; color: #D4AF37; font-weight: 600;">We've received your contact form submission</h2>
           </td>
         </tr>
-                  <a href="https://dynamicord.com" style="display:none !importantl">dynamicord.com</a>
         
         <!-- Main content -->
         <tr>
