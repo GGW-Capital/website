@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
         <!-- Header with logo -->
         <tr>
           <td style="padding: 30px 30px 20px 30px; text-align: center; border-bottom: 1px solid rgba(212, 175, 55, 0.3);">
-            <img src="https://ggwcapitalre.com/images/ggw-capital-logo.svg" alt="GGW Capital" width="150" style="max-width: 100%; height: auto;">
+            <h2 style="margin: 0 0 20px 0; font-size: 24px; line-height: 30px; color: #D4AF37; font-weight: 600;">New Contact Form Submission</h2>
           </td>
         </tr>
         
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
             <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
               <tr>
                 <td>
-                  <h2 style="margin: 0 0 20px 0; font-size: 24px; line-height: 30px; color: #D4AF37; font-weight: 600;">New Contact Form Submission</h2>
+                  
                   
                   <div style="background-color: #080808; border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 12px; padding: 25px; margin-bottom: 25px;">
                     <p style="margin: 0 0 15px 0; font-size: 16px; line-height: 24px;">
@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
                     
                     <p style="margin: 0 0 15px 0; font-size: 16px; line-height: 24px;">
                       <span style="color: #D4AF37; font-weight: 600;">Email:</span> 
-                      <span style="color: #ffffff;">${email}</span>
+                      <span style="color: color: #D4AF37 !important;">${email}</span>
                     </p>
                     
                     ${phone ? `
