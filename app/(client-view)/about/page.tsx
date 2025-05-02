@@ -102,24 +102,13 @@ export default async function AboutPage() {
               Our <GradientTitle element="span">Story</GradientTitle>
             </h2>
             <p className="text-white/80 mb-6">
-              GGW Capital was founded in 2010 with a vision to redefine luxury
-              real estate in the UAE. What began as a boutique agency has grown
-              into one of the most respected names in the Dubai property market,
-              known for exceptional service and an unrivaled portfolio of
-              high-end properties.
+            At GGW Capital, we don’t just broker properties — we broker ambition. Founded with the purpose of elevating the standards of real estate in the UAE, we’ve built our legacy around trust, precision, and an unrelenting pursuit of excellence. From prime investment opportunities to curated luxury residences, we navigate Dubai’s dynamic market with a sharp eye for value and growth.
             </p>
             <p className="text-white/80 mb-6">
-              Our journey has been marked by a commitment to excellence,
-              integrity, and a deep understanding of both the local market and
-              the unique needs of our international clientele. We've cultivated
-              relationships with developers, property owners, and investors
-              around the world, establishing GGW Capital as a trusted partner in
-              luxury real estate.
+            Our team brings decades of combined experience, deep local insight, and a global mindset. Whether serving high-net-worth investors, visionary developers, or first-time buyers entering the UAE market, we deliver more than transactions — we deliver outcomes that move lives forward.
             </p>
             <p className="text-white/80">
-              Today, we continue to push boundaries and set new standards in the
-              industry, guided by our founding principles and an unwavering
-              dedication to our clients' success.
+            Today, GGW Capital stands as a bold force in real estate — driven by strategy, grounded in integrity, and committed to unlocking what’s next for our clients.
             </p>
           </div>
         </div>
