@@ -171,6 +171,7 @@ export async function POST(req: NextRequest) {
     };
 
     await transporter.sendMail(mailOptions);
+    await transporter.sendMail(clientMailOptions);
 
     return NextResponse.json({ success: true });
   } catch (error) {
