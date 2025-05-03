@@ -1,10 +1,8 @@
-// app/blogs/page.tsx
-import { getBlogs, urlFor } from "@/lib/sanity";
+import { getBlogs } from "@/lib/sanity";
 import { formatDate } from "@/lib/utils";
 import BlogList from "@/components/BlogList";
 import GradientTitle from "@/components/ui/gradient-title";
 import { Metadata } from "next";
-import Head from "next/head";
 export const revalidate = 60;
 const structuredData = {
   "@context": "https://schema.org",
@@ -70,10 +68,11 @@ export default async function BlogsPage() {
   });
 
   return (
-    <><Head><script
-    type="application/ld+json"
-    dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-  /></Head>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       <main className="min-h-screen bg-black text-white pt-48 pb-20">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center mb-16">

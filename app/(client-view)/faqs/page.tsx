@@ -2,7 +2,6 @@ import Navbar from "@/components/navbar";
 import FAQSection from "@/components/faq-section";
 import { Metadata } from "next";
 import { getFAQs } from "@/lib/sanity";
-import SchemaJsonLd from "@/components/schema-json-ld";
 import { generateFAQSchema } from "@/lib/seo/faq-schema";
 import GradientTitle from "@/components/ui/gradient-title";
 
@@ -21,8 +20,10 @@ export default async function FAQPage() {
   const allFaqs = await getFAQs();
 
   return (
-    <>
-      <SchemaJsonLd data={generateFAQSchema(allFaqs)} />
+    <><script
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{ __html: JSON.stringify(generateFAQSchema(allFaqs)) }}
+  />
 
       <main className="min-h-screen bg-black text-white">
         <Navbar />

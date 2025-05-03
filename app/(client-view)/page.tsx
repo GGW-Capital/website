@@ -46,8 +46,10 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 export default function Home() {
   return (
-    <>
-          <SchemaJsonLd data={generateOrganizationJsonLd()} />
+    <><script
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{ __html: JSON.stringify(generateOrganizationJsonLd()) }}
+  />
       <div className="loading-screen-placeholder z-[100099] bg-black fixed inset-0 w-screen h-[200vh]"></div>
       {/* Loading screen overlay - independent of content */}
       <ClientVisitDetector />

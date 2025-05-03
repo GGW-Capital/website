@@ -111,8 +111,10 @@ export default async function BlogPostPage({
         };
       });
 
-    return (<>
-  <SchemaJsonLd data={generateBlogJsonLd(blogData)} />
+    return (<><script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(generateBlogJsonLd(blogData)) }}
+    />
       <main className="min-h-screen bg-black text-white pt-40 pb-20">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto mb-8">

@@ -824,7 +824,7 @@ export async function getBlogBySlug(slug: string) {
         excerpt,
         mainImage,
         body,
-        category
+        category,
       }
     `,
       { slug }
