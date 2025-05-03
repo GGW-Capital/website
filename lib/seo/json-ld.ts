@@ -169,9 +169,9 @@ export function generateOrganizationJsonLd() {
     url: process.env.NEXT_PUBLIC_BASE_URL || "https://ggwcapitalre.com",
     logo: `${process.env.NEXT_PUBLIC_BASE_URL || "https://ggwcapitalre.com"}/logo.png`,
     sameAs: [
-      "https://www.facebook.com/ggwcapital",
+      "https://www.facebook.com/profile.php?id=61565948621617",
       "https://www.instagram.com/ggwcapital",
-      "https://www.linkedin.com/company/ggwcapital",
+      "https://www.linkedin.com/company/ggw-capital-real-estate-brokerage",
     ],
     address: {
       "@type": "PostalAddress",
