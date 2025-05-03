@@ -91,7 +91,7 @@ export const metadata: Metadata = {
   verification: {
     google: "poprW4idzg8MJ6-ThxMDpwk-4MHBWx5z0dM44yKosis",
     other: {
-      "msvalidate.01": "EF63FD99380D174E03C91CCEEED7DE5B",
+      "msvalidate.01": "0A2575AC00CC1BECD65FB7C06173AD61",
     },
   },
   category: "real estate",
