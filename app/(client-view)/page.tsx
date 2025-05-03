@@ -16,7 +16,7 @@ import { generateOrganizationJsonLd } from "@/lib/seo/json-ld";
 export const metadata: Metadata = {
   title: "GGW Capital | Exclusive Luxury Real Estate in UAE",
   description:
-    "Discover exclusive luxury properties in the UAE with GGW Capital. Our handpicked selection of premium villas, apartments, and penthouses in Dubai, Abu Dhabi, and beyond offers unmatched quality and investment value.",
+    "Explore luxury villas, apartments, and penthouses in the UAE with GGW Capital—handpicked for quality, prestige, and investment value.",
   alternates: {
     canonical: "/",
   },
