@@ -41,7 +41,24 @@ export async function generateMetadata({
       ? project.description.substring(0, 160)
       : `Discover ${project.name}, a luxury development in ${project.location}`,
     openGraph: {
-      images: project.mainImage ? [urlFor(project.mainImage).url()] : [],
+      images: project.mainImage ? [urlFor(project.mainImage).width(1600).height(1066).url()] : [],
+      title: `${project.title} | GGW Capital`,
+      description: project.description
+        ? project.description.substring(0, 160)
+        : `Discover ${project.name}, a luxury development in ${project.location}`,
+      type: "article",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: project.title,
+      description:
+        project.description?.substring(0, 200) ||
+        `Exclusive luxury development in ${project.location || "Dubai"}`,
+      images: [
+        project.mainImage
+          ? urlFor(project.mainImage).width(1600).height(1066).url()
+          : "/placeholder.svg",
+      ],
     },
   };
 }

@@ -1,50 +1,86 @@
-"use client";
+import Image from "next/image"
+import Link from "next/link"
+import { ExternalLink } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { getDevelopers, urlFor } from "@/lib/sanity"
+import Navbar from "@/components/navbar"
+import GradientTitle from "@/components/ui/gradient-title"
+import type { Metadata } from "next"
 
-import { useState, useEffect } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { ExternalLink } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { getDevelopers, urlFor } from "@/lib/sanity";
-import Navbar from "@/components/navbar";
-import GradientTitle from "@/components/ui/gradient-title";
+export const metadata: Metadata = {
+  title: "Developers | GGW Capital Luxury Real Estate",
+  description:
+    "Explore projects from the UAE's most prestigious developers, updated daily with the latest launches and exclusive offers.",
+  openGraph: {
+    title: "Developers | GGW Capital Luxury Real Estate",
+    description:
+      "Explore projects from the UAE's most prestigious developers, updated daily with the latest launches and exclusive offers.",
+    images: [
+      {
+        url: "/developers-showcase.webp", // Replace with actual image
+        width: 1200,
+        height: 630,
+        alt: "UAE's Top Real Estate Developers",
+      },
+    ],
+  },
+}
 
-export default function DevelopersPage() {
-  const [developers, setDevelopers] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+export const revalidate = 60
 
-  useEffect(() => {
-    async function loadDevelopers() {
-      try {
-        const developersData = await getDevelopers();
-        if (developersData && developersData.length > 0) {
-          // Process developers to format image URLs
-          const processedDevelopers = developersData.map((developer: any) => ({
-            ...developer,
-            logoUrl: developer.logo
-              ? urlFor(developer.logo).url()
-              : "/placeholder-logo.svg",
-          }));
-          setDevelopers(processedDevelopers);
-        } else {
-          console.warn("No developers returned from Sanity");
-        }
-      } catch (error) {
-        console.error("Error loading developers:", error);
-      } finally {
-        setLoading(false);
-      }
+export default async function DevelopersPage() {
+  // Fetch developers data server-side
+  let developers: any[] = []
+  let error = null
+
+  try {
+    const developersData = await getDevelopers()
+    if (developersData && developersData.length > 0) {
+      // Process developers to format image URLs
+      developers = developersData.map((developer: any) => ({
+        ...developer,
+        logoUrl: developer.logo ? urlFor(developer.logo).url() : "/placeholder-logo.svg",
+      }))
+    } else {
+      console.warn("No developers returned from Sanity")
     }
+  } catch (err) {
+    console.error("Error loading developers:", err)
+    error = err
+  }
 
-    loadDevelopers();
-  }, []);
+  const featuredDevelopers = developers.filter((dev) => dev.isFeatured)
+  const otherDevelopers = developers.filter((dev) => !dev.isFeatured)
 
-  const featuredDevelopers = developers.filter((dev) => dev.isFeatured);
-  const otherDevelopers = developers.filter((dev) => !dev.isFeatured);
+  // Generate JSON-LD for developers
+  const developersJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: developers.map((developer, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "Organization",
+        name: developer.name,
+        description: developer.description,
+        logo: developer.logoUrl,
+        url: developer.website || `https://ggwcapitalre.com/buy?developer=${encodeURIComponent(developer.name) || ""}`,
+        numberOfItems: developer.projectCount || 0,
+      },
+    })),
+  }
 
   return (
     <main className="min-h-screen bg-black text-white">
       <Navbar />
+
+      {/* Add JSON-LD structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(developersJsonLd),
+        }}
+      />
 
       <div className="container mx-auto px-4 pt-48 pb-20">
         <div className="max-w-4xl mx-auto text-center mb-16">
@@ -53,22 +89,24 @@ export default function DevelopersPage() {
           </h1>
           <div className="w-24 h-1 bg-[#D4AF37]/60 mx-auto mb-6"></div>
           <p className="text-lg text-white/80">
-            Explore projects from the UAE's most prestigious developers, updated
-            daily with the latest launches and exclusive offers.
+            Explore projects from the UAE's most prestigious developers, updated daily with the latest launches and
+            exclusive offers.
           </p>
         </div>
 
-        {loading ? (
-          <div className="flex justify-center py-20">
-            <div className="w-16 h-16 border-4 border-[#D4AF37] border-t-transparent rounded-full animate-spin"></div>
+        {error ? (
+          <div className="text-center py-20 bg-[#0a0a0a] border border-[#D4AF37]/20 rounded-xl max-w-4xl mx-auto">
+            <h3 className="text-2xl font-bold text-white mb-4">Error Loading Developers</h3>
+            <p className="text-white/70 mb-8">
+              We encountered an issue while loading the developers. Please try again later.
+            </p>
           </div>
         ) : (
           <>
             {featuredDevelopers.length > 0 && (
               <section className="mb-16">
                 <h2 className="text-2xl font-bold text-white mb-8 flex items-center">
-                  <span className="text-[#D4AF37] mr-2">Featured</span>{" "}
-                  Developers
+                  <span className="text-[#D4AF37] mr-2">Featured</span> Developers
                 </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -92,26 +130,17 @@ export default function DevelopersPage() {
                           </div>
                         </div>
 
-                        <h3 className="text-xl font-bold text-white mb-3">
-                          {developer.name}
-                        </h3>
-                        <p className="text-white/70 mb-6 flex-grow">
-                          {developer.description}
-                        </p>
+                        <h3 className="text-xl font-bold text-white mb-3">{developer.name}</h3>
+                        <p className="text-white/70 mb-6 flex-grow">{developer.description}</p>
 
                         <div className="flex gap-4">
-                          {developer.projects &&
-                            developer.projects.length > 0 && (
-                              <Link
-                                href={`/buy?developer=${encodeURIComponent(developer.name)}`}
-                                className="flex-1"
-                              >
-                                <Button className="w-full bg-[#D4AF37] text-black hover:bg-[#C4A030] flex items-center justify-center gap-2">
-                                  View Projects{" "}
-                                  <ExternalLink className="h-4 w-4" />
-                                </Button>
-                              </Link>
-                            )}
+                          {developer.projects && developer.projects.length > 0 && (
+                            <Link href={`/buy?developer=${encodeURIComponent(developer.name)}`} className="flex-1">
+                              <Button className="w-full bg-[#D4AF37] text-black hover:bg-[#C4A030] flex items-center justify-center gap-2">
+                                View Projects <ExternalLink className="h-4 w-4" />
+                              </Button>
+                            </Link>
+                          )}
 
                           {developer.website && (
                             <Link
@@ -163,26 +192,17 @@ export default function DevelopersPage() {
                           </div>
                         </div>
 
-                        <h3 className="text-xl font-bold text-white mb-3">
-                          {developer.name}
-                        </h3>
-                        <p className="text-white/70 mb-6 flex-grow">
-                          {developer.description}
-                        </p>
+                        <h3 className="text-xl font-bold text-white mb-3">{developer.name}</h3>
+                        <p className="text-white/70 mb-6 flex-grow">{developer.description}</p>
 
                         <div className="flex gap-4">
-                          {developer.projects &&
-                            developer.projects.length > 0 && (
-                              <Link
-                                href={`/buy?developer=${encodeURIComponent(developer.name)}`}
-                                className="flex-1"
-                              >
-                                <Button className="w-full bg-[#D4AF37] text-black hover:bg-[#C4A030] flex items-center justify-center gap-2">
-                                  View Projects{" "}
-                                  <ExternalLink className="h-4 w-4" />
-                                </Button>
-                              </Link>
-                            )}
+                          {developer.projects && developer.projects.length > 0 && (
+                            <Link href={`/buy?developer=${encodeURIComponent(developer.name)}`} className="flex-1">
+                              <Button className="w-full bg-[#D4AF37] text-black hover:bg-[#C4A030] flex items-center justify-center gap-2">
+                                View Projects <ExternalLink className="h-4 w-4" />
+                              </Button>
+                            </Link>
+                          )}
 
                           {developer.website && (
                             <Link
@@ -209,12 +229,9 @@ export default function DevelopersPage() {
 
             {developers.length === 0 && (
               <div className="text-center py-20 bg-[#0a0a0a] border border-[#D4AF37]/20 rounded-xl max-w-4xl mx-auto">
-                <h3 className="text-2xl font-bold text-white mb-4">
-                  No Developers Found
-                </h3>
+                <h3 className="text-2xl font-bold text-white mb-4">No Developers Found</h3>
                 <p className="text-white/70 mb-8">
-                  We couldn't find any developers in our database. Please check
-                  back later.
+                  We couldn't find any developers in our database. Please check back later.
                 </p>
               </div>
             )}
@@ -222,5 +239,5 @@ export default function DevelopersPage() {
         )}
       </div>
     </main>
-  );
+  )
 }
