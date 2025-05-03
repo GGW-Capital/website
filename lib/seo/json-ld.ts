@@ -167,7 +167,7 @@ export function generateOrganizationJsonLd() {
     description:
       "Premier luxury real estate consultancy in the UAE, specializing in exclusive property investment opportunities.",
     url: process.env.NEXT_PUBLIC_BASE_URL || "https://ggwcapitalre.com",
-    logo: `${process.env.NEXT_PUBLIC_BASE_URL || "https://ggwcapitalre.com"}/logo.png`,
+    logo: `https://ggwcapitalre.com/images/ggw-capital-logo.webp`,
     sameAs: [
       "https://www.facebook.com/profile.php?id=61565948621617",
       "https://www.instagram.com/ggwcapital",

@@ -252,9 +252,9 @@ export default function Navbar() {
           </nav>
 
           <div className="mt-8 space-y-4">
-            <GradientButton className="w-full  py-6 font-semibold">
-              <Link href="/contact">Book a Consultation</Link>
-            </GradientButton>
+           <Link href="/contact"> <GradientButton className="w-full py-6 font-semibold">
+              Book a Consultation
+            </GradientButton></Link>
 
             <div className="flex flex-col space-y-4 pt-6">
               <a
