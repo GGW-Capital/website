@@ -89,6 +89,7 @@ export const metadata: Metadata = {
     google: "poprW4idzg8MJ6-ThxMDpwk-4MHBWx5z0dM44yKosis",
     other: {
       "msvalidate.01": "0A2575AC00CC1BECD65FB7C06173AD61",
+      "yandex-verification": '65c3f2d8d6582f4e'
     },
   },
   category: "real estate",
