@@ -1,5 +1,4 @@
 import Navbar from "@/components/navbar";
-import Footer from "@/components/footer";
 import FAQSection from "@/components/faq-section";
 import { Metadata } from "next";
 import { getFAQs } from "@/lib/sanity";

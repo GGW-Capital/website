@@ -175,10 +175,10 @@ export function generateOrganizationJsonLd() {
     ],
     address: {
       "@type": "PostalAddress",
-      streetAddress: "Downtown Dubai",
+      streetAddress: "Business Bay",
       addressLocality: "Dubai",
       addressRegion: "Dubai",
-      postalCode: "00000",
+      postalCode: "500001",
       addressCountry: "AE",
     },
     geo: {
@@ -186,7 +186,7 @@ export function generateOrganizationJsonLd() {
       latitude: 25.204849,
       longitude: 55.270783,
     },
-    telephone: "+971 4 000 0000",
+    telephone: "+971 52 692 5562",
     email: "info@ggwcapitalre.com",
     openingHoursSpecification: [
       {
@@ -202,42 +202,42 @@ export function generateOrganizationJsonLd() {
         closes: "16:00",
       },
     ],
-    areaServed: [
-      {
-        "@type": "City",
-        name: "Dubai",
-      },
-      {
-        "@type": "City",
-        name: "Abu Dhabi",
-      },
-    ],
     makesOffer: {
       "@type": "Offer",
       itemOffered: [
         {
           "@type": "Service",
-          name: "Property Sales",
-          description: "Luxury property sales services in the UAE",
-        },
-        {
-          "@type": "Service",
-          name: "Property Rentals",
-          description: "Premium property rental services in the UAE",
-        },
-        {
-          "@type": "Service",
-          name: "Off-Plan Investments",
-          description: "Expert guidance for off-plan property investments",
-        },
-        {
-          "@type": "Service",
-          name: "Real Estate Consulting",
+          name: "Off-Plan Projects",
           description:
-            "Professional real estate investment consulting services",
+            "Secure your investment in Dubai's future with our exclusive off-plan projects offering high ROI potential and customization options.",
+        },
+        {
+          "@type": "Service",
+          name: "Ready-to-Move-In Properties",
+          description:
+            "Find your perfect home that's ready for immediate occupancy in Dubai's most sought-after neighborhoods with no waiting periods.",
+        },
+        {
+          "@type": "Service",
+          name: "Rental Solutions",
+          description:
+            "Discover our premium rental properties with flexible terms, full furnishing options, and comprehensive management services.",
+        },
+        {
+          "@type": "Service",
+          name: "Investment Consulting",
+          description:
+            "Our expert advisors provide tailored investment strategies based on in-depth market analysis to maximize your returns.",
+        },
+        {
+          "@type": "Service",
+          name: "Property Management",
+          description:
+            "Let us handle every aspect of your property management, from tenant acquisition to maintenance and financial reporting.",
         },
       ],
-    },
+    }
+    
   };
 }
 
