@@ -18,14 +18,7 @@ export const metadata: Metadata = {
     title: "Developers | GGW Capital Luxury Real Estate",
     description:
       "Explore projects from the UAE's most prestigious developers, updated daily with the latest launches and exclusive offers.",
-    images: [
-      {
-        url: "/developers-showcase.webp", // Replace with actual image
-        width: 1200,
-        height: 630,
-        alt: "UAE's Top Real Estate Developers",
-      },
-    ],
+    
   },
 }
 
