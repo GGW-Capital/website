@@ -67,7 +67,6 @@ export async function generateMetadata({
       title: propertyTitle,
       description: propertyDescription,
       images: [mainImageUrl],
-      creator: "@ggwcapital", // Replace with your Twitter handle
     },
     alternates: {
       canonical: `https://www.ggwcapitalre.com/properties/${propertySlug}`,

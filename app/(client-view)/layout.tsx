@@ -82,9 +82,6 @@ export const metadata: Metadata = {
       "Discover exclusive luxury properties in the UAE with GGW Capital. Premium villas, apartments, and penthouses.",
     images: ["/images/ggw-capital-logo.webp"],
   },
-  alternates: {
-    canonical: "https://ggwcapitalre.com",
-  },
   other: {
     developer: "Dynamic ORD (https://dynamicord.com)", // 👈 Custom field for clarity
   },
@@ -95,6 +92,7 @@ export const metadata: Metadata = {
     },
   },
   category: "real estate",
+  
 };
 
 export default function RootLayout({

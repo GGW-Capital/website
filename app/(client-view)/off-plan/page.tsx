@@ -26,9 +26,13 @@ export const metadata: Metadata = {
       "Explore our collection of off-plan properties in prime UAE locations.",
     type: "website",
   },
+  
+  alternates: {
+    canonical: "https://ggwcapitalre.com/off-plan",
+  }
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function OffPlanPage({
   searchParams,

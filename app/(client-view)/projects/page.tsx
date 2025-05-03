@@ -25,6 +25,9 @@ export const metadata: Metadata = {
       "Explore our collection of luxury development projects in the UAE.",
     type: "website",
   },
+  alternates: {
+    canonical: "https://ggwcapitalre.com/projects",
+  }
 };
 
 export const revalidate = 60; 

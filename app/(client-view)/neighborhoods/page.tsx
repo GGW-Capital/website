@@ -13,6 +13,9 @@ export const metadata: Metadata = {
     title: "Dubai Neighborhoods | Explore Premium Areas",
     description: "Discover the most prestigious and sought-after neighborhoods in Dubai, each with its unique character, lifestyle, and luxury properties.",
     type: "website"
+  },
+  alternates: {
+    canonical: "https://ggwcapitalre.com/nieghborhoods",
   }
 }
 

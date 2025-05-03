@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   description:
     "Explore luxury villas, apartments, and penthouses in the UAE with GGW Capital—handpicked for quality, prestige, and investment value.",
   alternates: {
-    canonical: "/",
+    canonical: "https://ggwpcapitalre.com",
   },
   openGraph: {
     title: "GGW Capital | Premium Luxury Real Estate in UAE",
@@ -41,6 +41,7 @@ export const metadata: Metadata = {
       "Explore premium luxury properties across the UAE with GGW Capital, your trusted real estate partner.",
     images: ["/images/ggw-capital-logo.webp"],
   },
+  
 };
 export const revalidate = 60;
 export default function Home() {

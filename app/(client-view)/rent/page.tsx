@@ -20,6 +20,9 @@ export const metadata: Metadata = {
     description: "Browse our exclusive collection of luxury properties for rent. Find your dream home in premium locations.",
     type: "website",
   },
+  alternates: {
+    canonical: "https://ggwcapitalre.com/rent",
+  }
 }
 
 export const revalidate = 60 // Revalidate every 60 seconds
