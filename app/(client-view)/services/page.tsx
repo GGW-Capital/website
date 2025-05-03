@@ -21,7 +21,7 @@ export default function ServicesPage() {
   return (
     <>
         <Script
-          type="application/json"
+          type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: `{
   "@context": "https://schema.org",
