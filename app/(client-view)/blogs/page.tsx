@@ -42,13 +42,13 @@ export default async function BlogsPage() {
     description="Explore expert insights, market trends, and property tips from GGW Capital's real estate blog."
     openGraph={{
       type: 'website',
-      url: 'https://www.yourdomain.com/blogs',
+      url: 'https://ggwpcapitalre.com/blogs',
       title: 'GGW Capital Blog',
       description:
         'Explore expert insights, market trends, and property tips from GGW Capital\'s real estate blog.',
       images: [
         {
-          url: 'https://www.yourdomain.com/og-image.jpg',
+          url: 'https://ggwpcapitalre.com/images/ggw-capital-logo.png',
           width: 1200,
           height: 630,
           alt: 'GGW Capital Blog',
