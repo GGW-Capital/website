@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   description:
     "Find answers to common questions about our luxury real estate services, property buying process, investments, and more.",
   alternates: {
-    canonical: "/faq",
+    canonical: "https://ggwcapitalre.com/faq",
   },
 };
 export const revalidate = 60; // Revalidate every 60 seconds

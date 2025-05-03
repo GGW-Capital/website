@@ -68,7 +68,7 @@ export const metadata: Metadata = {
       "Discover exclusive luxury properties in the UAE with GGW Capital. Find premium villas, apartments, and penthouses for sale, rent, and off-plan investments.",
     images: [
       {
-        url: "/ggw-capital-logo.webp",
+        url: "/images/ggw-capital-logo.webp",
         width: 1200,
         height: 630,
         alt: "GGW Capital Luxury Real Estate",
@@ -80,7 +80,7 @@ export const metadata: Metadata = {
     title: "GGW Capital | Exclusive Luxury Real Estate",
     description:
       "Discover exclusive luxury properties in the UAE with GGW Capital. Premium villas, apartments, and penthouses.",
-    images: ["/ggw-capital-logo.webp"],
+    images: ["/images/ggw-capital-logo.webp"],
   },
   alternates: {
     canonical: "https://ggwcapitalre.com",
@@ -107,8 +107,14 @@ export default function RootLayout({
       lang="en"
       className={`${montserrat.variable} ${baskerville.variable} js`}
     >
-      <head> {/* Google Analytics */}
-        <Script async src="https://www.googletagmanager.com/gtag/js?id=G-3YXKDW657X" strategy="afterInteractive" />
+      <head>
+        {" "}
+        {/* Google Analytics */}
+        <Script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-3YXKDW657X"
+          strategy="afterInteractive"
+        />
         <Script id="gtag-init" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];

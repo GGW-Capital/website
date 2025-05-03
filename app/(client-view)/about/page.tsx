@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     "luxury Dubai property agents",
   ],
   alternates: {
-    canonical: "/about",
+    canonical: "https://ggwcapitalre.com/about",
   },
 };
 
