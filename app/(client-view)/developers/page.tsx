@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: "Developers | GGW Capital Luxury Real Estate",
   alternates: {
     canonical: "https://ggwcapitalre.com/developers",
-  }
+  },
   description:
     "Explore projects from the UAE's most prestigious developers, updated daily with the latest launches and exclusive offers.",
   openGraph: {
