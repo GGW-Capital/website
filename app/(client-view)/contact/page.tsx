@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     "schedule property tour Dubai",
   ],
   alternates: {
-    canonical: "/contact",
+    canonical: "https://ggwcapitalre.com/contact",
   },
 };
 

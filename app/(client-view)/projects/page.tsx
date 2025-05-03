@@ -5,7 +5,6 @@ import ProjectCardNew from "@/components/project-card-new";
 import ProjectFilters from "@/components/project-filters";
 import Pagination from "@/components/pagination";
 import Navbar from "@/components/navbar";
-import Footer from "@/components/footer";
 import {
   getProjects,
   getNeighborhoods,

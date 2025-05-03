@@ -1,6 +1,5 @@
 import { Suspense } from "react"
 import { Metadata } from "next"
-import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import PropertyCardSkeleton from "@/components/property-card-skeleton"
 import PropertyCard from "@/components/property-card"
@@ -20,7 +19,7 @@ export const metadata: Metadata = {
   },
 }
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 60 // Revalidate every 60 seconds
 
 export default async function BuyPage({
   searchParams,

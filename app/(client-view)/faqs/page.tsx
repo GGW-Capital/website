@@ -15,6 +15,7 @@ export const metadata: Metadata = {
     canonical: "/faq",
   },
 };
+export const revalidate = 60; // Revalidate every 60 seconds
 
 export default async function FAQPage() {
   // Fetch all FAQs from Sanity
