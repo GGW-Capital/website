@@ -4,7 +4,6 @@ import { ArrowRight, MapPin } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { getNeighborhoods, urlFor } from "@/lib/sanity"
 import { Metadata } from "next"
-import ClientLoadingWrapper from "@/components/client-loading-wrapper"
 import GradientTitle from "@/components/ui/gradient-title"
 
 export const metadata: Metadata = {
@@ -102,7 +101,6 @@ export default async function NeighborhoodsPage() {
   }
 
   return (
-    <ClientLoadingWrapper>
       <main className="pb-20">
         {/* Hero Section */}
         <section className="bg-black min-h-[40vh] flex items-center justify-center bg-cover bg-center relative" style={{ backgroundImage: "url('/images/dubai-skyline.avif')" }}>
@@ -184,6 +182,5 @@ export default async function NeighborhoodsPage() {
           </div>
         </section>
       </main>
-    </ClientLoadingWrapper>
   )
 }

@@ -85,7 +85,6 @@ export default async function NeighborhoodDetailPage({
     : "/placeholder.jpg"
 
   return (
-    <ClientLoadingWrapper>
       <main className="min-h-screen bg-black text-white pb-20">
         {/* Hero Section */}
         <section className="relative pt-44 pb-16">
@@ -150,6 +149,5 @@ export default async function NeighborhoodDetailPage({
           projects={projects}
         />
       </main>
-    </ClientLoadingWrapper>
   )
 }

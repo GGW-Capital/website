@@ -6,7 +6,7 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN!,
 })
 
-// Helper to detect static assets (images, css, js, etc.)
+// Helper to detect static assets
 const isStaticAsset = (pathname: string) => {
   return /\.(png|jpe?g|gif|svg|webp|ico|css|js|woff2?|ttf|eot|otf|txt|xml|json)$/.test(pathname)
 }
@@ -14,35 +14,35 @@ const isStaticAsset = (pathname: string) => {
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
 
-  // Skip static assets
   if (isStaticAsset(pathname)) {
     return NextResponse.next()
   }
 
-  // Get IP
   const ip =
     req.ip ??
     req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
     'unknown'
 
-  const now = Date.now()
-  const key = `ratelimit:last:${ip}`
+  const key = `ratelimit:burst:${ip}`
+  const maxRequests = 6
+  const windowSeconds = 3
 
   try {
-    const lastRequest = await redis.get<string>(key)
+    const current = await redis.incr(key)
 
-    if (lastRequest) {
-      const lastTimestamp = parseInt(lastRequest, 10)
-      if (!isNaN(lastTimestamp) && now - lastTimestamp < 1000) {
-        return new NextResponse('Too many requests', { status: 429 })
-      }
+    if (current === 1) {
+      await redis.expire(key, windowSeconds)
     }
 
-    await redis.set(key, now.toString(), { ex: 10 })
+    if (current > maxRequests) {
+      return new NextResponse('Too many interactions. Try again shortly.', {
+        status: 429,
+      })
+    }
 
     return NextResponse.next()
-  } catch (error) {
-    console.error('Rate limit middleware error:', error)
+  } catch (err) {
+    console.error('Rate limiting error:', err)
     return NextResponse.next()
   }
 }
