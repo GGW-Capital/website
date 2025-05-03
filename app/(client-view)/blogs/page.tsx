@@ -23,7 +23,7 @@ export default async function BlogsPage() {
       "@type": "BlogPosting",
       "headline": blog.title,
       "image": urlFor(blog.mainImage).url(),
-      "url": `https://www.yourdomain.com/blogs/${blog.slug.current}`,
+      "url": `https://ggwpcapitalre.com/blogs/${blog.slug.current}`,
       "datePublished": blog.publishedAt,
       "description": blog.excerpt,
       "author": { "@type": "Organization", "name": "GGW Capital" },
@@ -32,7 +32,7 @@ export default async function BlogsPage() {
         "name": "GGW Capital",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://www.yourdomain.com/logo.png"
+          "url": "https://ggwpcapitalre.com/images/ggw-capital-logo.webp",
         }
       }
     }))
@@ -48,7 +48,7 @@ export default async function BlogsPage() {
         'Explore expert insights, market trends, and property tips from GGW Capital\'s real estate blog.',
       images: [
         {
-          url: 'https://ggwpcapitalre.com/images/ggw-capital-logo.png',
+          url: 'https://ggwpcapitalre.com/images/ggw-capital-logo.webp',
           width: 1200,
           height: 630,
           alt: 'GGW Capital Blog',
