@@ -22,7 +22,7 @@ export async function middleware(req: NextRequest) {
     if (lastRequest) {
       const lastTimestamp = parseInt(lastRequest, 10)
 
-      if (!isNaN(lastTimestamp) && now - lastTimestamp < 1000) {
+      if (!isNaN(lastTimestamp) && now - lastTimestamp < 10000) {
         console.log(`⛔ Throttled IP: ${ip}, waited only ${now - lastTimestamp}ms`)
         return new NextResponse('Too many requests', { status: 429 })
       }
