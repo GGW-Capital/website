@@ -33,7 +33,7 @@ export async function middleware(req: NextRequest) {
 
     if (lastRequest) {
       const lastTimestamp = parseInt(lastRequest, 10)
-      if (!isNaN(lastTimestamp) && now - lastTimestamp < 200) {
+      if (!isNaN(lastTimestamp) && now - lastTimestamp < 200 ) {
         return new NextResponse('Too many requests', { status: 429 })
       }
     }
