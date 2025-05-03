@@ -13,10 +13,10 @@ export async function middleware(req: NextRequest) {
 
   const count = await redis.incr(key)
   if (count === 1) {
-    await redis.expire(key, 60) // 60 seconds window
+    await redis.expire(key, 30) // 60 seconds window
   }
 
-  if (count > 100) {
+  if (count > 30) {
     return new NextResponse("Rate limit exceeded", { status: 429 })
   }
 
