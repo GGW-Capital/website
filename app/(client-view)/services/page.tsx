@@ -4,8 +4,6 @@ import Navbar from "@/components/navbar";
 import { MAIN_SERVICES } from "@/lib/services-data";
 import { GradientButton } from "@/components/ui/gradient-button";
 import GradientTitle from "@/components/ui/gradient-title";
-import { NextSeo } from "next-seo";
-import Head from "next/head";
 import Script from "next/script";
 
 export const metadata = {
