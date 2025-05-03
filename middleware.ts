@@ -1,13 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Redis } from '@upstash/redis'
 
-// Initialize Redis client
 const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL!,
   token: process.env.UPSTASH_REDIS_REST_TOKEN!,
 })
 
+// Helper to detect static assets (images, css, js, etc.)
+const isStaticAsset = (pathname: string) => {
+  return /\.(png|jpe?g|gif|svg|webp|ico|css|js|woff2?|ttf|eot|otf|txt|xml|json)$/.test(pathname)
+}
+
 export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl
+
+  // Skip static assets
+  if (isStaticAsset(pathname)) {
+    return NextResponse.next()
+  }
+
+  // Get IP
   const ip =
     req.ip ??
     req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
@@ -21,20 +33,16 @@ export async function middleware(req: NextRequest) {
 
     if (lastRequest) {
       const lastTimestamp = parseInt(lastRequest, 10)
-
-      if (!isNaN(lastTimestamp) && now - lastTimestamp < 10000) {
-        console.log(`⛔ Throttled IP: ${ip}, waited only ${now - lastTimestamp}ms`)
+      if (!isNaN(lastTimestamp) && now - lastTimestamp < 1000) {
         return new NextResponse('Too many requests', { status: 429 })
       }
     }
 
-    // Store new timestamp with 10-second expiry
     await redis.set(key, now.toString(), { ex: 10 })
 
     return NextResponse.next()
   } catch (error) {
     console.error('Rate limit middleware error:', error)
-    // Let request through if Redis fails (fail open)
     return NextResponse.next()
   }
 }
