@@ -49,7 +49,8 @@ export const metadata: Metadata = {
   ],
   authors: [
     { name: "GGW Capital" },
-    { name: "Dynamic ORD", url: "https://dynamicord.com" },],
+    { name: "Dynamic ORD", url: "https://dynamicord.com" },
+  ],
   creator: "GGW Capital",
   publisher: "GGW Capital",
   formatDetection: {
@@ -88,10 +89,10 @@ export const metadata: Metadata = {
     developer: "Dynamic ORD (https://dynamicord.com)", // 👈 Custom field for clarity
   },
   verification: {
-    google: "poprW4idzg8MJ6-ThxMDpwk-4MHBWx5z0dM44yKosis", 
+    google: "poprW4idzg8MJ6-ThxMDpwk-4MHBWx5z0dM44yKosis",
     other: {
       "msvalidate.01": "EF63FD99380D174E03C91CCEEED7DE5B",
-    }
+    },
   },
   category: "real estate",
 };
@@ -112,6 +113,15 @@ export default function RootLayout({
             __html: `document.documentElement.classList.add('js')`,
           }}
         />
+        <Script
+          dangerouslySetInnerHTML={{
+            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-WZCKNJQ6');`,
+          }}
+        />
       </head>
       <body className="font-sans bg-black text-white min-h-screen relative">
         <Script
@@ -128,7 +138,14 @@ s0.parentNode.insertBefore(s1,s0);
 })();`,
           }}
         />
-
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-WZCKNJQ6"
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          ></iframe>
+        </noscript>
         {/* Page content rendered directly by the server */}
         <Navbar />
         {/* Main content wrapper with navbar spacing */}
