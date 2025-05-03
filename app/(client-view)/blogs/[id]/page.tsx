@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button"
 import { getBlogBySlug, getBlogs, urlFor } from "@/lib/sanity"
 import { formatDate } from "@/lib/utils"
 import { PortableText } from "@portabletext/react"
+import SchemaJsonLd from "@/components/schema-json-ld"
+import { generateBlogJsonLd } from "@/lib/seo/json-ld"
 
 // Server component to fetch data
 export default async function BlogPostPage({
@@ -109,7 +111,8 @@ export default async function BlogPostPage({
         };
       });
 
-    return (
+    return (<>
+  <SchemaJsonLd data={generateBlogJsonLd(blogData)} />
       <main className="min-h-screen bg-black text-white pt-40 pb-20">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto mb-8">
@@ -370,7 +373,7 @@ export default async function BlogPostPage({
               </div>
             </div>
           )}
-      </main>
+      </main></>
     );
   } catch (error) {
     console.error("Error loading blog post:", error);

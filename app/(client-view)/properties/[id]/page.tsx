@@ -266,7 +266,7 @@ export function generateJsonLd(property: any) {
     telephone: "+971526925562",
     email: "info@ggwcapitalre.com", // Replace with your actual email
     url: "https://www.ggwcapitalre.com",
-    logo: "https://www.ggwcapitalre.com/logo.png", // Replace with your actual logo URL
+    logo: "https://www.ggwcapitalre.com/images/ggw-capital-logo.webp", // Replace with your actual logo URL
   };
 
   // Add additional properties

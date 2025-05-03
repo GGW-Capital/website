@@ -236,8 +236,7 @@ export function generateOrganizationJsonLd() {
             "Let us handle every aspect of your property management, from tenant acquisition to maintenance and financial reporting.",
         },
       ],
-    }
-    
+    },
   };
 }
 
@@ -270,7 +269,7 @@ export function generateBlogJsonLd(blog: any) {
       name: "GGW Capital",
       logo: {
         "@type": "ImageObject",
-        url: `${process.env.NEXT_PUBLIC_BASE_URL || "https://ggwcapitalre.com"}/logo.png`,
+        url: `${process.env.NEXT_PUBLIC_BASE_URL || "https://ggwcapitalre.com"}/images/ggw-capital-logo.webp`,
       },
     },
     mainEntityOfPage: {
