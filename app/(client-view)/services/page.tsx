@@ -22,7 +22,6 @@ export const metadata = {
 export default function ServicesPage() {
   return (
     <>
-      <Head>
         <Script
           type="application/json"
           dangerouslySetInnerHTML={{
@@ -88,7 +87,6 @@ export default function ServicesPage() {
 `,
           }}
         />
-      </Head>
       <main className="min-h-screen pt-48 bg-black text-white">
         <Navbar />
         <div className="container mx-auto px-4">
