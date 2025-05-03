@@ -183,9 +183,9 @@ export default function Navbar() {
 
           {/* CTA Button */}
           <div className="hidden md:block">
-            <GradientButton>
-              <Link href="/contact">Book a Consultation</Link>
-            </GradientButton>
+            <Link href="/contact"><GradientButton>
+              Book a Consultation
+            </GradientButton></Link>
           </div>
 
           {/* Mobile Menu Button */}
