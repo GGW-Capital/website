@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { Clock, Mail, Phone, MapPin } from "lucide-react";
 import GradientTitle from "@/components/ui/gradient-title";
 
@@ -47,8 +46,8 @@ export default function ComingSoonPage() {
         <Image
             src="/images/ggw-capital-logo.svg"
             alt="GGW Capital"
-            width={150}
-            height={50}
+            width={225}
+            height={75}
             className="object-contain mx-auto block my-10"
           />
           <div className="mb-6">
@@ -95,16 +94,20 @@ export default function ComingSoonPage() {
             <p className="text-white text-sm">
               © {new Date().getFullYear()} GGW Capital. All rights reserved.
             </p>
-            <p className="text-white text-sm">
-              Website by{" "}
-              <Link
-                href="https://dynamicord.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-transparent bg-clip-text bg-ggw-gradient decoration-ggw-darkGold font-semibold hover:underline transition-colors"
-              >
-                Dynamicord
-              </Link>
+            <p className="text-white/50 text-center text-sm mb-4 md:mb-0">
+              Developed by{" "}
+              <span itemScope itemType="https://schema.org/Organization">
+                <a
+                  itemProp="url"
+                  className="bg-ggw-gradient bg-clip-text text-transparent hover:underline decoration-primary font-bold"
+                  href="https://dynamicord.com?utm_source=clientsite&utm_medium=referral&utm_campaign=portfolio"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span itemProp="name">Dynamic ORD</span>
+                </a>
+              </span>{" "}
+              — SEO-first development.
             </p>
           </div>
         </div>
