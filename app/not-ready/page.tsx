@@ -7,7 +7,7 @@ export default function ComingSoonPage() {
   return (
     <div className="min-h-screen bg-black flex flex-col font-sans">
       {/* Header */}
-      <div className="hidden xl:block py-5 transition-all border-b border-[#D4AF37]/10 duration-300 bg-transparent">
+      <div className="hidden md:block py-5 transition-all border-b border-[#D4AF37]/10 duration-300 bg-transparent">
         <div className="container relative mx-auto px-4 flex justify-between items-center">
           <div className="flex items-center space-x-6 text-sm text-white/70 font-medium">
             <a
@@ -25,13 +25,7 @@ export default function ComingSoonPage() {
               info@ggwcapitalre.com
             </a>
           </div>
-          <Image
-            src="/images/ggw-capital-logo.svg"
-            alt="GGW Capital"
-            width={150}
-            height={50}
-            className="object-contain absolute left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-1/2"
-          />
+          
           <div className="flex items-center">
             <a
               href="https://maps.app.goo.gl/URZeDftHMxVpZTCL7"
@@ -50,6 +44,13 @@ export default function ComingSoonPage() {
       {/* Main Content */}
       <main className="flex-1 flex flex-col items-center justify-center px-4 md:px-6">
         <div className="max-w-4xl mx-auto text-center">
+        <Image
+            src="/images/ggw-capital-logo.svg"
+            alt="GGW Capital"
+            width={150}
+            height={50}
+            className="object-contain mb-20"
+          />
           <div className="mb-6">
             <div className="h-1 w-32 bg-ggw-gradient mx-auto"></div>
           </div>
