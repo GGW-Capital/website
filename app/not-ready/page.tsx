@@ -49,7 +49,7 @@ export default function ComingSoonPage() {
             alt="GGW Capital"
             width={150}
             height={50}
-            className="object-contain mb-20"
+            className="object-contain mx-auto w-max block mb-20"
           />
           <div className="mb-6">
             <div className="h-1 w-32 bg-ggw-gradient mx-auto"></div>
