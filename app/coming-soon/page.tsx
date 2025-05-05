@@ -72,18 +72,6 @@ export default function ComingSoonPage() {
             bring you an exceptional browsing experience.
           </p>
 
-          <div className="flex flex-col md:flex-row items-center justify-center gap-8 mb-5">
-            <div className="flex items-center justify-center w-full md:w-auto">
-              <div className="bg-black border-2 border-ggw-darkGold rounded-lg p-6 w-full md:w-auto">
-                <div className="flex items-center justify-center gap-4">
-                  <Clock className="h-8 w-8 text-ggw-darkGold" />
-                  <div className="text-left">
-                    <p className="text-white/80 text-sm leading-none">Estimated Launch</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </main>
 
