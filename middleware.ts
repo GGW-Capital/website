@@ -1,52 +1,35 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { Redis } from '@upstash/redis'
+import { NextResponse } from "next/server"
+import type { NextRequest } from "next/server"
 
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL!,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-})
+export function middleware(request: NextRequest) {
+  // Get the pathname of the request
+  const path = request.nextUrl.pathname
 
-// Helper to detect static assets (images, css, js, etc.)
-const isStaticAsset = (pathname: string) => {
-  return /\.(png|jpe?g|gif|svg|webp|ico|css|js|woff2?|ttf|eot|otf|txt|xml|json)$/.test(pathname)
-}
-
-export async function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl
-
-  // Skip static assets
-  if (isStaticAsset(pathname)) {
+  // Exclude the not-ready page itself and any static assets
+  if (
+    path === "/not-ready" ||
+    path.startsWith("/_next") ||
+    path.startsWith("/api") ||
+    path.includes(".") // This will catch most static files
+  ) {
     return NextResponse.next()
   }
 
-  // Get IP
-  const ip =
-    req.ip ??
-    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
-    'unknown'
-
-  const now = Date.now()
-  const key = `ratelimit:last:${ip}`
-
-  try {
-    const lastRequest = await redis.get<string>(key)
-
-    if (lastRequest) {
-      const lastTimestamp = parseInt(lastRequest, 10)
-      if (!isNaN(lastTimestamp) && now - lastTimestamp < 200 ) {
-        return new NextResponse('Too many requests', { status: 429 })
-      }
-    }
-
-    await redis.set(key, now.toString(), { ex: 10 })
-
-    return NextResponse.next()
-  } catch (error) {
-    console.error('Rate limit middleware error:', error)
-    return NextResponse.next()
-  }
+  // Redirect all other paths to the not-ready page
+  const url = request.nextUrl.clone()
+  url.pathname = "/not-ready"
+  return NextResponse.redirect(url)
 }
 
 export const config = {
-  matcher: ['/:path*'],
+  matcher: [
+    /*
+     * Match all request paths except:
+     * 1. /not-ready path
+     * 2. /_next (Next.js internals)
+     * 3. /api (API routes)
+     * 4. all root files inside public (e.g. /favicon.ico)
+     */
+    "/((?!not-ready|_next|api|.*\\..*).*)",
+  ],
 }
