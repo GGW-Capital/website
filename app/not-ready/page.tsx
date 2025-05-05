@@ -49,7 +49,7 @@ export default function ComingSoonPage() {
             alt="GGW Capital"
             width={150}
             height={50}
-            className="object-contain mx-auto w-max block mb-20"
+            className="object-contain mx-auto w-max block mb-20 mt-10"
           />
           <div className="mb-6">
             <div className="h-1 w-32 bg-ggw-gradient mx-auto"></div>
@@ -73,14 +73,13 @@ export default function ComingSoonPage() {
             bring you an exceptional browsing experience.
           </p>
 
-          <div className="flex flex-col md:flex-row items-center justify-center gap-8 mb-16">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-8 mb-5">
             <div className="flex items-center justify-center w-full md:w-auto">
               <div className="bg-black border-2 border-ggw-gold rounded-lg p-6 w-full md:w-auto">
                 <div className="flex items-center justify-center gap-4">
                   <Clock className="h-8 w-8 text-ggw-gold" />
                   <div className="text-left">
-                    <p className="text-white/80 text-sm">Estimated Launch</p>
-                    <p className="text-white font-medium">Coming Soon</p>
+                    <p className="text-white/80 text-sm leading-none">Estimated Launch</p>
                   </div>
                 </div>
               </div>
