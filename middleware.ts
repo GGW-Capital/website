@@ -10,6 +10,7 @@ export function middleware(request: NextRequest) {
     path === "/coming-soon" ||
     path.startsWith("/_next") ||
     path.startsWith("/api") ||
+    path.startsWith("/admin") ||
     path.includes(".") // This will catch most static files
   ) {
     return NextResponse.next();
