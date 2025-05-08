@@ -107,7 +107,6 @@ export default function RootLayout({
       className={`${montserrat.variable} ${baskerville.variable} js`}
     >
       <head>
-        {" "}
         {/* Google Analytics */}
         <Script
           async
